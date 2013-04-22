@@ -1,0 +1,25 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Express 2012 for Windows Desktop
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "SpiderKiller", "Project2\Project2.vcxproj", "{40DB0EDA-03F2-442D-80A6-FF999C333F2D}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{D025C5B9-CC8E-4D04-AD69-E908F6078262}"
+	ProjectSection(SolutionItems) = preProject
+		Class Conventions.txt = Class Conventions.txt
+	EndProjectSection
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Win32 = Debug|Win32
+		Release|Win32 = Release|Win32
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{40DB0EDA-03F2-442D-80A6-FF999C333F2D}.Debug|Win32.ActiveCfg = Debug|Win32
+		{40DB0EDA-03F2-442D-80A6-FF999C333F2D}.Debug|Win32.Build.0 = Debug|Win32
+		{40DB0EDA-03F2-442D-80A6-FF999C333F2D}.Release|Win32.ActiveCfg = Release|Win32
+		{40DB0EDA-03F2-442D-80A6-FF999C333F2D}.Release|Win32.Build.0 = Release|Win32
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+EndGlobal
