@@ -11,16 +11,9 @@ enum UpdateResult
 {
 	UPDATE_NONE,
 	UPDATE_REDRAW,
-	UPDATE_DELETE,
-	UPDATE_RESTART
+	UPDATE_DELETE
 };
 
-enum ViewMode
-{
-	VIEW_TOP_DOWN,
-	VIEW_THIRD_Hero,
-	VIEW_FIRST_Hero
-};
 
 const unsigned int LEFT_MOUSE = 0x1;
 const unsigned int RIGHTKEY = 0x2;
@@ -50,10 +43,10 @@ public:
 	Drawable *TheScene;	
 	//Each key is represented by a bit, 1 means down, 0 means up
 	unsigned int KeyStates;	
-	ViewMode View;
+
 	//Camera values
 
-	Vector2d CamPos;
+	Vector2d HeroPos;
 
 
 	//Mouse Position on button down

@@ -1,0 +1,38 @@
+Important functions
+
+CreepSpawner:
+	AddSpawner(std::string CreepName, Vector2d _Pos, int _SpawnRate, GLuint _Texture, double _Scale, double _Speed, double _TurnSpeed, Vector3d _Color)
+		CreepName - String reference for the map of spawns (can be used to directly access a spawn location)
+		_Pos - The Spawn location
+		_SpawnRate - number of milliseconds between creature spawns
+		_Texture - The texture that the creeps will have (should be a square texture.. not implemented yet)
+		_Scale - Size of the creep (1 is the size of the hero)
+		_Speed - Speed of the creeps which are spawned (hero is .5)
+		_TurnSpeed - Speed at which the creep turns (Hero is 10)
+		_Color - Color (Should be obsolete once the texture is used (unless you want to colorize different creeps with the same texture)
+
+draw()/draw2() - draw2() draws the local object only.  draw() first draws the object (via draw) then recursively draws the children
+	e.g. CreepSpawner holds all creeps as children, a call to Creepspawner.draw() will draw all creeps (via a scene graph)
+
+update()/update2() - same thing, but for updating the state of the objects
+	Return Values are:
+		UPDATE_NONE - Nothing is needed after the update
+		UPDATE_REDRAW - A redraw is queued since the update changes the visible state
+		UPDATE_DELETE - The parent of the drawable will delete the drawable
+
+Note: pretty much, only draw2 and update2 are overridden (with the exception of Scene, which needs to set up the viewport, lighting, etc... and queue redraws)
+
+
+TODO:
+
+bool GetWalkable(Vector2d Pos)
+	Temporary... right now, I use this to determine where things can walk (let me know how you implement this)
+
+GLuint GetTexture(string TexName) ????
+	I am not quite sure how we want to pass the textures to the CreepSpawner class the easiest way I can think of is to hold a pointer to a texturing class in the GS variable
+	But... anyway you do it is fine
+
+Creep.GetBestAngle()
+	This is what I want to spend most of my time (pathing and flock/crowd movement) making sure things dont collide and still move toward the hero...
+
+Animations? (walking/death)

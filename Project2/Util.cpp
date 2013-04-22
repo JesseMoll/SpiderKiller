@@ -18,3 +18,24 @@ double DegToRad(double Deg)
 {
 	return Deg / (180.0 / 3.1415926535897932384626433832795);
 }
+
+void TurnTo(double & CurrentAngle, double TargetAngle, double TurnSpeed)
+{
+	double AngleAdder = TurnSpeed;
+	double AngletoTurn = (TargetAngle - CurrentAngle);
+	while (AngletoTurn < -180)
+		AngletoTurn += 360;
+	while (AngletoTurn >  180)
+		AngletoTurn -= 360;
+	if (fabs(AngletoTurn) < TurnSpeed)
+		AngleAdder = AngletoTurn;
+	else if (AngletoTurn > 0)
+		AngleAdder = TurnSpeed;
+	else
+		AngleAdder = -TurnSpeed;
+	CurrentAngle += AngleAdder;
+	if (CurrentAngle < 0)
+		CurrentAngle += 360;
+	if (CurrentAngle >= 360)
+		CurrentAngle -= 360;
+}

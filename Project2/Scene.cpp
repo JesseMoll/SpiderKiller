@@ -1,5 +1,6 @@
 #include "Scene.h"
 #include "Hero.h"
+#include "CreepSpawner.h"
 
 const int TextureWidth = 512;
 // Texture is a WxWx4 array (rgba)
@@ -83,7 +84,8 @@ void Scene::DestructGame()
 void Scene::InitGame()
 {
 	new (&GS) GlobalState();
-    GS.TheHero = AddChild(new Hero(Vector2d(TextureWidth/2, TextureWidth/2), this, 0));	
+    GS.TheHero = AddChild(new Hero(this, 0, Vector2d(TextureWidth/2, TextureWidth/2)));	
+	AddChild(new CreepSpawner(this));	
 }
 
 
@@ -95,7 +97,7 @@ void Scene::draw()
 	glLoadIdentity(); // reset the projection
 	const int ViewSize = 40;
 
-	gluOrtho2D(GS.CamPos.x - ViewSize, GS.CamPos.x + ViewSize, GS.CamPos.y - ViewSize, GS.CamPos.y + ViewSize);
+	gluOrtho2D(GS.HeroPos.x - ViewSize, GS.HeroPos.x + ViewSize, GS.HeroPos.y - ViewSize, GS.HeroPos.y + ViewSize);
 	glMatrixMode(GL_MODELVIEW); // return to modelview mode
 
 
@@ -141,10 +143,10 @@ void Scene::draw()
 
 void Scene::Timer(int value){
     std::chrono::time_point<std::chrono::system_clock> CurrentTime = std::chrono::system_clock::now();
-	long msSinceLastUpdate = std::chrono::duration_cast<std::chrono::milliseconds>(CurrentTime - LastUpdate).count();
+	__int64 msSinceLastUpdate = std::chrono::duration_cast<std::chrono::milliseconds>(CurrentTime - LastUpdate).count();
 	LastUpdate = CurrentTime;
 
-	if(ptrInstance->update(msSinceLastUpdate, GS) != UPDATE_NONE) // update everything and if anything has changed...
+	if(ptrInstance->update((int)msSinceLastUpdate, GS) != UPDATE_NONE) // update everything and if anything has changed...
 		glutPostRedisplay(); // redraw everything;
     glutTimerFunc(UPDATE_INTERVAL, Timer, 0);
 }
@@ -203,7 +205,8 @@ UpdateResult Scene::update2(int ms, GlobalState &GS)
 		GS.MouseSemaphore = true;
 		//TODO Do Mouse Dragging stuff
 		//Probably wont need to do anything here
-		glutWarpPointer(GS.MousePos.x, GS.MousePos.y);
+		//this will capture the pointer to allow unlimited dragging (for rotation and whatnot)
+		//glutWarpPointer((int)GS.MousePos.x, (int)GS.MousePos.y);
 	}
 	void Scene::mouseButton(int button, int state, int xx, int yy){
 		//Register left mouse as a keystate

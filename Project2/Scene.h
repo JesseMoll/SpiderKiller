@@ -3,10 +3,6 @@
 #include "Drawable.h"
 #include <chrono>
 
-
-
-
-
 class Scene : public Drawable
 {
     public:

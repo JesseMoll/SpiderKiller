@@ -16,7 +16,7 @@ class Drawable
 {
     public:
 		//constructor (Takes position and parent, leave inheritance to handle anything else)
-        Drawable(Vector2d _Pos = Vector2d(0,0), Drawable* _Parent = 0, GLuint _Texture = 0);
+        Drawable(Drawable* _Parent = 0, GLuint _Texture = 0, Vector2d _Pos = Vector2d(0,0), Vector2d _Scale = Vector2d(1,1), Vector3d _Color = Vector3d(1,1,1));
 
 		//deconstructor (virtual because it will handle all cleanup)
         virtual ~Drawable();
@@ -53,7 +53,8 @@ class Drawable
 		std::list<Drawable*>::iterator end(){return Children.end();};
 
 		
-    protected:
+   // protected:
+
 		virtual void draw2(); // Draw the object (excluding parent-to-child transformation)
         Vector2d Pos;	// localized object Position
 		Vector2d Scale;	// Object's Scale

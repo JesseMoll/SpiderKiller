@@ -3,14 +3,15 @@
 
 
 
-Drawable::Drawable(Vector2d _Pos, Drawable* _Parent, GLuint _Texture):
+Drawable::Drawable(Drawable* _Parent, GLuint _Texture, Vector2d _Pos, Vector2d _Scale, Vector3d _Color):
 	Pos(_Pos),
 	Parent(_Parent),
 	Texture(_Texture),
-	Color(1.0,0.0,1.0),
-	Scale(1.0,1.0),
+	Scale(_Scale),
+	Color(_Color),
 	Rot(0)
-{}
+{
+}
 
 
 Drawable::~Drawable()
@@ -87,10 +88,10 @@ void Drawable::draw2()
 {
 	if(Texture == 0)
 	{
-	glColor3d(Color.x, Color.y, Color.z); //Draw a 2x2 Colored square
+		glColor3d(Color.x, Color.y, Color.z); //Draw a 2x2 Colored square
 
-	glRectf(-1,-1,1,1);
-	glRectf(-.25f,-.25f,2,.25f);
+		glRectf(-1,-1,1,1);
+		glRectf(-.25f,-.25f,2,.25f);
 	}
 	else
 	{

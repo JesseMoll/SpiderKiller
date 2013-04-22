@@ -1,36 +1,11 @@
 #include "Hero.h"
 
 
-Hero::Hero(Vector2d _Pos, Drawable* _Parent, GLuint _Texture):Drawable(_Pos, _Parent, _Texture),AnimationTime(0)
+Hero::Hero(Drawable* _Parent, GLuint _Texture, Vector2d _Pos):Drawable(_Parent, _Texture, _Pos),
+	AnimationTime(0)
 {
 	Color = Vector3d(0,1,0);
 }
-
-
-//Turn from an angle to another angle at a set speed
-void TurnTo(double & CurrentAngle, double TargetAngle, double TurnSpeed)
-{
-	double AngleAdder = TurnSpeed;
-	double AngletoTurn = (TargetAngle - CurrentAngle);
-	while (AngletoTurn < -180)
-		AngletoTurn += 360;
-	while (AngletoTurn >  180)
-		AngletoTurn -= 360;
-	if (fabs(AngletoTurn) < TurnSpeed)
-		AngleAdder = AngletoTurn;
-	else if (AngletoTurn > 0)
-		AngleAdder = TurnSpeed;
-	else
-		AngleAdder = -TurnSpeed;
-	CurrentAngle += AngleAdder;
-	if (CurrentAngle < 0)
-		CurrentAngle += 360;
-	if (CurrentAngle >= 360)
-		CurrentAngle -= 360;
-}
-
-
-
 
 UpdateResult Hero::update2(int ms, GlobalState &GS)
 {
@@ -70,6 +45,7 @@ UpdateResult Hero::update2(int ms, GlobalState &GS)
 		PosAdder.x = cos(DegToRad(Rot)) * GS.MoveSpeed;
 		PosAdder.y = sin(DegToRad(Rot)) * GS.MoveSpeed;
 
+		//Will the new position be valid?
 		if(GetWalkable(Pos + PosAdder))
 			Pos += PosAdder;
 		
@@ -79,7 +55,7 @@ UpdateResult Hero::update2(int ms, GlobalState &GS)
 	}
 
 
-		GS.CamPos = Pos;
+		GS.HeroPos = Pos;
 
 
 	return UPDATE_REDRAW;
