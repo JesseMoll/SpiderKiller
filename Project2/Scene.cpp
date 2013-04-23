@@ -50,6 +50,7 @@ Scene* Scene::Instance()
 
 Scene::Scene()
 {
+	SetupWallRepulsionArray();
 	LastUpdate = std::chrono::system_clock::now();
 
 
@@ -95,7 +96,7 @@ void Scene::draw()
 
     glMatrixMode(GL_PROJECTION); // projection matrix is active
 	glLoadIdentity(); // reset the projection
-	const int ViewSize = 40;
+	const int ViewSize = 60;
 
 	gluOrtho2D(GS.HeroPos.x - ViewSize, GS.HeroPos.x + ViewSize, GS.HeroPos.y - ViewSize, GS.HeroPos.y + ViewSize);
 	glMatrixMode(GL_MODELVIEW); // return to modelview mode

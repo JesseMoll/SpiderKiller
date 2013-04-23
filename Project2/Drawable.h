@@ -45,7 +45,7 @@ class Drawable
 		//Gets the bounding rectangle for this drawable (including all children)
 		virtual Rect2d GetBoundingRect();
 
-		//Gets the bounding rectangle for this drawable (including all children)
+		//Gets the bounding rectangle for this drawable (excluding all children)
 		virtual Rect2d GetBoundingRect2();
 
 		//Expose the begining and end of the children so that we can iterate through a drawable's children

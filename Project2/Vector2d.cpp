@@ -36,6 +36,7 @@ Vector2d& Vector2d::operator+=(const Vector2d& v)
 Vector2d& Vector2d::operator-=(const Vector2d& v) 
 	{ x -= v.x; y -= v.y; return *this; }
 
+
 Vector2d& Vector2d::operator*=(Scalar s) 
 	{ x *= s; y *= s; return *this; }
 
@@ -47,6 +48,9 @@ Vector2d Vector2d::operator+(const Vector2d& v) const
 
 Vector2d Vector2d::operator*(const Vector2d& v) const //item by item Multiplication (not dot or cross product)
 	{ return Vector2d(x * v.x, y * v.y); }
+
+Vector2d Vector2d::operator/(const Vector2d& v) const //item by item Division
+	{ return Vector2d(x / v.x, y / v.y); }
 
 Vector2d Vector2d::operator-(const Vector2d& v) const 
 	{ return Vector2d(x - v.x, y -v.y); }
@@ -63,10 +67,19 @@ Vector2d Vector2d::operator-() const
 Scalar Vector2d::length() const
 	{ return sqrt(x*x + y*y); }
 
+
 void Vector2d::normalize() {				// normalize to unit length
 	Scalar w = length(); 
 	if (w == 0) { x = 1; y = 0; }			// too short!
 	else { x /= w; y /= w; }				// scale by 1/length
+}
+
+Vector2d Vector2d::exp(const Vector2d& v)
+{
+	Vector2d tmp; 
+	tmp.x = std::exp(v.x); 
+	tmp.y = std::exp(v.y); 
+	return tmp;
 }
 
 Vector2d Vector2d::normalize(const Vector2d& v) {

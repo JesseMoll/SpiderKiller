@@ -11,6 +11,7 @@ GlobalState::GlobalState(void):
 	MouseSemaphore(false),
 	MoveSpeed(.5)
 {
+	
 }
 
 

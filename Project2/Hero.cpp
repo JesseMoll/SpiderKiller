@@ -9,7 +9,7 @@ Hero::Hero(Drawable* _Parent, GLuint _Texture, Vector2d _Pos):Drawable(_Parent, 
 
 UpdateResult Hero::update2(int ms, GlobalState &GS)
 {
-	
+	//std::cout << GetWallRepulsion(Pos) << std::endl;
 	Vector2d WalkingDirection(0,0);
 
 	//Set walking direction (forward/backward) and angle depending on which key is pressed

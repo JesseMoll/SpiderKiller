@@ -9,7 +9,7 @@ Drawable::Drawable(Drawable* _Parent, GLuint _Texture, Vector2d _Pos, Vector2d _
 	Texture(_Texture),
 	Scale(_Scale),
 	Color(_Color),
-	Rot(0)
+	Rot(Random(360))
 {
 }
 
@@ -45,8 +45,8 @@ double Drawable::getRot()
 Rect2d Drawable::GetBoundingRect2()
 {
 	//by default (all squares drawn in this program) squares are all from -1,-1 to 1,1
-	//return Rect2d(Point2d(-1,-1) * Scale + Pos, Point2d( 1, 1) * Scale + Pos);
-	return Rect2d(Point2d(-1,-1), Point2d( 1, 1));
+	return Rect2d(Point2d(-1,-1) * Scale + Pos, Point2d( 1, 1) * Scale + Pos);
+	//return Rect2d(Point2d(-1,-1), Point2d( 1, 1));
 }
 
 //Will get the bounding rectangle of the object and its children

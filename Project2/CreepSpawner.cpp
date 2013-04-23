@@ -24,10 +24,10 @@ Creep* CreepSpawn::CheckSpawnTimer(int ms, GlobalState &GS)
 
 CreepSpawner::CreepSpawner(Drawable* _Parent):Drawable(_Parent)
 {
-	AddSpawner("s1", Vector2d(256,300), 1000, 0, .5, .25, 5, Vector3d(0,0,1));
-	AddSpawner("s2", Vector2d(256,200), 3000, 0, .9, .15, 3, Vector3d(0,1,1));
-	AddSpawner("s3", Vector2d(200,256), 1000, 0, .5, .25, 5, Vector3d(1,0,0));
-	AddSpawner("s4", Vector2d(300,256), 3000, 0, .9, .15, 3, Vector3d(1,0,1));
+	AddSpawner("s1", Vector2d(256,300), 250, 0, .5, .25, 5, Vector3d(0,0,1));
+	AddSpawner("s2", Vector2d(256,200), 1000, 0, .9, .15, 3, Vector3d(0,1,1));
+	AddSpawner("s3", Vector2d(200,256), 250, 0, .5, .25, 5, Vector3d(1,0,0));
+	AddSpawner("s4", Vector2d(300,256), 1000, 0, .9, .15, 3, Vector3d(1,0,1));
 }
 
 
@@ -37,7 +37,10 @@ CreepSpawner::~CreepSpawner(void)
 
 Creep* CreepSpawn::SpawnCreep()
 {	
-	return new Creep(CreepType);
+	Creep* NewCreep = new Creep(CreepType);
+	NewCreep->setPos(NewCreep->getPos() + Vector2d(Random() * 5, Random() * 5)); 
+
+	return NewCreep;
 }
 
 void CreepSpawner::AddSpawner(std::string CreepName, Vector2d _Pos, int _SpawnRate, GLuint _Texture, double _Scale, double _Speed, double _TurnSpeed, Vector3d _Color)
