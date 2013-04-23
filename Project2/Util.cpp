@@ -4,9 +4,9 @@
 
 
 const int TextureWidth = 512;
-const int FilterWidth = 3;
+const int FilterWidth = 4;
 Vector2d WallRespulsionArray[TextureWidth][TextureWidth];
-const double FilterSigma = 2.0;
+const double FilterSigma = 1.5;
 
 
 void SetupWallRepulsionArray()
@@ -20,7 +20,6 @@ void SetupWallRepulsionArray()
 			Vector2d lpos(x, y);
 			Vector2d Mult = Vector2d::exp(-(lpos * lpos) / (2*FilterSigma*FilterSigma));
 			GaussSum += Mult.x;
-			std::cout << Mult << std::endl;
 			FilterArray[x + FilterWidth][y + FilterWidth] = Mult;
 		}
 	}
@@ -60,7 +59,7 @@ bool GetWalkable(Vector2d Pos)
 {
 	if(abs(Pos.x - 256) < 8) return true;
 	if(abs(Pos.y - 256) < 8) return true;
-	if((Pos.x - 256) * (Pos.x - 256) + (Pos.y - 256) * (Pos.y - 256) < 400) return true;
+	if((Pos.x - 256) * (Pos.x - 256) + (Pos.y - 256) * (Pos.y - 256) < 900) return true;
 	return false;
 }
 

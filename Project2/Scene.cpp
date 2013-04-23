@@ -56,7 +56,7 @@ Scene::Scene()
 
 	glutInitDisplayMode(GLUT_DOUBLE | GLUT_RGBA | GLUT_DEPTH);
 	glutInitWindowPosition(100, 100);
-	glutInitWindowSize(400, 400);// Initial Window
+	glutInitWindowSize(720, 720);// Initial Window
 	glutCreateWindow("Kill the Spiders!!!");
 
 	glutReshapeFunc(Reshape); // window reshape callback

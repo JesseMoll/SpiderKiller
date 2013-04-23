@@ -23,26 +23,38 @@ Creep::~Creep(void)
 UpdateResult Creep::update2(int ms, GlobalState &GS)
 {
 	
+	const double PreferredDistance = 1.5;
+
 	Vector2d WalkingDirection = GS.HeroPos - Pos;
 	WalkingDirection.normalize();
 	Vector2d WallRepulsion = GetWallRepulsion(Pos);
-	
-	/*
-	const int GRID_CHECK_WIDTH = 5;
-	int n = 0;
-	for(int x = -GRID_CHECK_WIDTH; x <= GRID_CHECK_WIDTH; x++)
-		for(int y = -GRID_CHECK_WIDTH; y <= GRID_CHECK_WIDTH; y++)
+	Vector2d CreepRepulsion (0,0);
+	//Loop through all of the creeps (OMG THIS DOESNT WORK WELL... O(n^2) is bad...)
+	//Will fix in the future, for now, compiling as Release works for me
+	for (std::list<Drawable*>::iterator itr = Parent->begin(); itr != Parent->end(); itr++)
+	{
+		Vector2d VecToCreep = (*itr)->Pos - Pos;
+		//Creep is within range and is not itself
+		if (VecToCreep.length() < 6 && *itr != this)
 		{
-			Vector2d CheckPos(x,y);
-			if((x !=0 || y !=0) && GetWalkable(Pos + CheckPos))
-			{
-				double length = CheckPos.length();
-				WallRepulsion += CheckPos / (length * length);
-			}
+			double x = VecToCreep.length() / (PreferredDistance + 1.5 * (Scale.x + (*itr)->Scale.x));
+			//This just works, a function which is:
+				//infinite at 0 (to prevent collisions)
+				//0 at 1 (to maintain a preferred distance)
+				//negative greater than 1 (forces creeps to bunch up)
+				//0 at infinity (a creep far away will not move toward other creep)
+			//Should give a pretty smooth way to maintain distance
+			double Attractivity = tanh(1-x)/(x*x);
+
+			//Big creeps are less influenced by smaller ones
+			Attractivity *= (*itr)->Scale.x / Scale.x;
+			Attractivity *= (*itr)->Scale.x / Scale.x;
+			CreepRepulsion -=  Vector2d::normalize(VecToCreep) * Attractivity;
 		}
-		*/
-	//std::cout << n << std::endl;
-	WalkingDirection += WallRepulsion;
+	}
+
+	WalkingDirection += WallRepulsion * 10;
+	WalkingDirection += CreepRepulsion;
 	double NewAngle = RadToDeg(atan2(WalkingDirection.y,WalkingDirection.x));
 
 	//Turn toward the hero at the turn speed
