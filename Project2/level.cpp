@@ -26,7 +26,7 @@ level::level(const std::string& name)
 		switch (line[0])
 		{
 		case '0':
-			current_state = level::TRANSPARENT;
+			current_state = level::CLEAR;
 			break;
 		
 		case '1':

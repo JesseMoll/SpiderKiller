@@ -6,7 +6,7 @@
 class level
 {
 private:
-	enum tile_state {TRANSPARENT, SOLID, START};
+	enum tile_state {CLEAR, SOLID, START};
 	typedef std::pair<tile_state, std::string> tile;
 	std::vector<std::vector<tile> > tile_rows;
 

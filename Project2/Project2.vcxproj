@@ -77,10 +77,13 @@
     <ClCompile Include="Creep.cpp" />
     <ClCompile Include="CreepSpawner.cpp" />
     <ClCompile Include="Drawable.cpp" />
+    <ClCompile Include="level.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="Hero.cpp" />
+    <ClCompile Include="RGBpixmap.cpp" />
     <ClCompile Include="Scene.cpp" />
     <ClCompile Include="GlobalState.cpp" />
+    <ClCompile Include="texture_manager.cpp" />
     <ClCompile Include="Util.cpp" />
     <ClCompile Include="Vector2d.cpp" />
   </ItemGroup>
@@ -89,9 +92,13 @@
     <ClInclude Include="Creep.h" />
     <ClInclude Include="CreepSpawner.h" />
     <ClInclude Include="Drawable.h" />
+    <ClInclude Include="exceptions.h" />
     <ClInclude Include="GlobalState.h" />
     <ClInclude Include="Hero.h" />
+    <ClInclude Include="level.h" />
+    <ClInclude Include="RGBpixmap.h" />
     <ClInclude Include="Scene.h" />
+    <ClInclude Include="texture_manager.h" />
     <ClInclude Include="Util.h" />
     <ClInclude Include="Vector2d.h" />
   </ItemGroup>
