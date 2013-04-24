@@ -36,11 +36,14 @@ class Drawable
 		//Accessor for the Position
 		Vector2d getPos();
 
-		//Accessor for the Position
-		double getRot();
+		//Accessor for the Rotation
+		double getRot(bool GlobalRot = false);
 
 		//Mutator for the Position
 		void setPos(Vector2d _Pos){Pos = _Pos;};
+
+		//Mutator for the Rotation
+		void setRot(double _Rot){Rot = _Rot;};
 
 		//Gets the bounding rectangle for this drawable (including all children)
 		virtual Rect2d GetBoundingRect();

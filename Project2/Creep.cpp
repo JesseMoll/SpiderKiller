@@ -1,11 +1,12 @@
 #include "Creep.h"
 
-Creep::Creep(Drawable* _Parent, GLuint _Texture, Vector2d _Pos, double _Scale, double _Speed, double _TurnSpeed, Vector3d _Color):
+Creep::Creep(Drawable* _Parent, GLuint _Texture, Vector2d _Pos, double _Scale, double _Rot, double _Speed, double _TurnSpeed, Vector3d _Color):
 	Drawable(_Parent, _Texture, _Pos, Vector2d(_Scale,_Scale), _Color),
 	Speed(_Speed),
 	TurnSpeed(_TurnSpeed)
 {
-
+	
+	Rot = _Rot;
 }
 
 Creep::Creep(Creep * c):
@@ -13,6 +14,7 @@ Creep::Creep(Creep * c):
 	Speed(c->Speed),
 	TurnSpeed(c->TurnSpeed)
 {
+	Rot = c->Rot;
 }
 
 Creep::~Creep(void)
@@ -59,9 +61,10 @@ UpdateResult Creep::update2(int ms, GlobalState &GS)
 	double NewAngle = RadToDeg(atan2(WalkingDirection.y,WalkingDirection.x));
 
 	//Turn toward the hero at the turn speed
-	TurnTo(Rot, NewAngle, TurnSpeed);
+	TurnTo(Rot, NewAngle, TurnSpeed * (ms / 1000.0));
 	//Walk in the direction that he is facing
-	Vector2d PosAdder(cos(DegToRad(Rot)) * Speed, sin(DegToRad(Rot)) * Speed);
+	Vector2d PosAdder(cos(DegToRad(Rot)), sin(DegToRad(Rot)));
+	PosAdder *= Speed * (ms / 1000.0);
 	//Will the new position be valid?
 	if(GetWalkable(Pos + PosAdder))
 		Pos += PosAdder;

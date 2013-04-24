@@ -9,7 +9,7 @@ GlobalState::GlobalState(void):
 	HeroPos(10,10),
 	MousePos(0,0),
 	MouseSemaphore(false),
-	MoveSpeed(.5)
+	MoveSpeed(20)
 {
 	
 }

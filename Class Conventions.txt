@@ -1,3 +1,7 @@
+Graphics Conventions
+
+	Y increases as you move up the screen
+
 Important functions
 
 CreepSpawner:

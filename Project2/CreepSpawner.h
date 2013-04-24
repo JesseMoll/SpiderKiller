@@ -22,7 +22,7 @@ public:
 	CreepSpawner(Drawable* _Parent);
 	~CreepSpawner(void);
 	
-	void AddSpawner(std::string CreepName, Vector2d _Pos, int _SpawnRate = 1000, GLuint _Texture = 0, double _Scale = .5, double _Speed = .25, double _TurnSpeed = 5, Vector3d _Color = Vector3d (1,1,1));
+	void AddSpawner(std::string CreepName, Vector2d _Pos, int _SpawnRate = 1000, GLuint _Texture = 0, double _Scale = .5, double _Speed = .25, double _TurnSpeed = 5, Vector3d _Color = Vector3d (1,1,1), double _Rot = 0);
 	
 
 //Inherited Functions

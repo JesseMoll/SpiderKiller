@@ -39,12 +39,10 @@ UpdateResult Hero::update2(int ms, GlobalState &GS)
 		double NewAngle = RadToDeg(atan2(WalkingDirection.y,WalkingDirection.x));
 
 		//Man turns at 10 degrees per frame
-		TurnTo(Rot, NewAngle, 10.0);
+		TurnTo(Rot, NewAngle, 720.0 * (ms / 1000.0));
 		//Walk in the direction that he is facing
-		Vector2d PosAdder;
-		PosAdder.x = cos(DegToRad(Rot)) * GS.MoveSpeed;
-		PosAdder.y = sin(DegToRad(Rot)) * GS.MoveSpeed;
-
+		Vector2d PosAdder(cos(DegToRad(Rot)), sin(DegToRad(Rot)));
+		PosAdder *= (ms / 1000.0) * GS.MoveSpeed;
 		//Will the new position be valid?
 		if(GetWalkable(Pos + PosAdder))
 			Pos += PosAdder;

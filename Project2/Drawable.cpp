@@ -9,7 +9,7 @@ Drawable::Drawable(Drawable* _Parent, GLuint _Texture, Vector2d _Pos, Vector2d _
 	Texture(_Texture),
 	Scale(_Scale),
 	Color(_Color),
-	Rot(Random(360))
+	Rot(0)
 {
 }
 
@@ -32,11 +32,14 @@ Vector2d Drawable::getPos()
 };
 
 //Returns the actual (not relative to the parent) position of the object
-double Drawable::getRot()
+double Drawable::getRot(bool GlobalRot)
 {
+
 	double RetVal = Rot;
-	if(Parent != 0)
-		RetVal += Parent->getRot();
+	if (GlobalRot && Parent != 0)
+	{
+		RetVal += Parent->getRot(true);
+	}
 	return RetVal;
 };
 
