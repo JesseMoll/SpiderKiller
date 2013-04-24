@@ -23,7 +23,7 @@ Creep::~Creep(void)
 UpdateResult Creep::update2(int ms, GlobalState &GS)
 {
 	
-	const double PreferredDistance = 1.5;
+	
 
 	Vector2d WalkingDirection = GS.HeroPos - Pos;
 	WalkingDirection.normalize();
@@ -34,10 +34,11 @@ UpdateResult Creep::update2(int ms, GlobalState &GS)
 	for (std::list<Drawable*>::iterator itr = Parent->begin(); itr != Parent->end(); itr++)
 	{
 		Vector2d VecToCreep = (*itr)->Pos - Pos;
-		//Creep is within range and is not itself
-		if (VecToCreep.length() < 6 && *itr != this)
+		const double PreferredDistance = (1.5 + 1.5 * (Scale.x + (*itr)->Scale.x));
+		//Creep is within range (twice the preferred distance) and is not itself
+		if (VecToCreep.length() < PreferredDistance * 2 && *itr != this)
 		{
-			double x = VecToCreep.length() / (PreferredDistance + 1.5 * (Scale.x + (*itr)->Scale.x));
+			double x = VecToCreep.length() / PreferredDistance;
 			//This just works, a function which is:
 				//infinite at 0 (to prevent collisions)
 				//0 at 1 (to maintain a preferred distance)

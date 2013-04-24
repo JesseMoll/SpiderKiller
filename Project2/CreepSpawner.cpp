@@ -25,8 +25,8 @@ Creep* CreepSpawn::CheckSpawnTimer(int ms, GlobalState &GS)
 CreepSpawner::CreepSpawner(Drawable* _Parent):Drawable(_Parent)
 {
 	AddSpawner("s1", Vector2d(256,356), 2000, 0, .5, .25, 6, Vector3d(0,0,1));
-	AddSpawner("s2", Vector2d(256,156), 4000, 0, 1.5, .1, 3, Vector3d(0,1,1));
-	AddSpawner("s3", Vector2d(156,256), 500, 0, .5, .25, 6, Vector3d(1,0,0));
+	AddSpawner("s2", Vector2d(256,156), 4000, 0, .25, .2, 3, Vector3d(0,1,1));
+//	AddSpawner("s3", Vector2d(156,256), 500, 0, .5, .25, 6, Vector3d(1,0,0));
 //	AddSpawner("s4", Vector2d(356,256), 1000, 0, .9, .15, 4, Vector3d(1,0,1));
 }
 
@@ -63,6 +63,9 @@ UpdateResult CreepSpawner::update2(int ms, GlobalState &GS)
 			AddChild(CreepToAdd);
 			if(i->first == "s1")
 				for(int n = 0; n != 20; n++)
+					AddChild(i->second.SpawnCreep());
+			if(i->first == "s2")
+				for(int n = 0; n != 40; n++)
 					AddChild(i->second.SpawnCreep());
 		}
 	}
