@@ -1,7 +1,7 @@
 #include "CreepSpawner.h"
+#include "texture_manager.h"
 
 using namespace std;
-
 
 
 CreepSpawn::CreepSpawn(int _SpawnRate, Creep* _CreepType):
@@ -24,8 +24,8 @@ Creep* CreepSpawn::CheckSpawnTimer(int ms, GlobalState &GS)
 
 CreepSpawner::CreepSpawner(Drawable* _Parent):Drawable(_Parent)
 {
-	AddSpawner("s1", Vector2d(256,300), 4000, 0, .5, 15, 270, Vector3d(0,0,1), 270);
-	AddSpawner("s2", Vector2d(256,200), 5000, 0, .25, 19, 360, Vector3d(0,1,1), 90);
+	AddSpawner("s1", Vector2d(225,300), 4000, texture_manager::get_texture_name("Spider.bmp"), 1.5, 25, 270, Vector3d(0,0,1), 270);
+	AddSpawner("s2", Vector2d(250,200), 5000, texture_manager::get_texture_name("Spider.bmp"), .75, 30, 360, Vector3d(0,1,1), 90);
 //	AddSpawner("s3", Vector2d(156,256), 500, 0, .5, .25, 6, Vector3d(1,0,0));
 //	AddSpawner("s4", Vector2d(356,256), 1000, 0, .9, .15, 4, Vector3d(1,0,1));
 }

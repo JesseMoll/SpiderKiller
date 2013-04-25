@@ -96,4 +96,12 @@
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
+  <ItemGroup>
+    <Image Include="Spider.bmp">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="Level1.bmp">
+      <Filter>Resource Files</Filter>
+    </Image>
+  </ItemGroup>
 </Project>

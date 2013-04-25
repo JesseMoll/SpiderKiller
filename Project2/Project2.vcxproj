@@ -102,6 +102,10 @@
     <ClInclude Include="Util.h" />
     <ClInclude Include="Vector2d.h" />
   </ItemGroup>
+  <ItemGroup>
+    <Image Include="Level1.bmp" />
+    <Image Include="Spider.bmp" />
+  </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
   </ImportGroup>

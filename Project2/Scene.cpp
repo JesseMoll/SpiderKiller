@@ -1,40 +1,11 @@
 #include "Scene.h"
 #include "Hero.h"
 #include "CreepSpawner.h"
+#include "texture_manager.h"
 
 const int TextureWidth = 512;
 // Texture is a WxWx4 array (rgba)
 static GLubyte TexImage[TextureWidth][TextureWidth][4];
-//So OpenGL can access the texture
-static GLuint TextureName;
-
-
-
-// procedure to create a little texture by doing some random xoring and addition on the coords
-void MakeTexture()
-{
-  for (int i = 0;i < TextureWidth;i++)
-  { for (int j = 0; j < TextureWidth;j++)
-    {
-	if (GetWalkable((Vector2d(i,j))))
-	{
-      TexImage[i][j][0] = (GLubyte) 100;
-      TexImage[i][j][1] = (GLubyte) 60;
-      TexImage[i][j][2] = (GLubyte) 30;
-      TexImage[i][j][3] = 255;
-	}
-	else
-	{
-      TexImage[i][j][0] = 25;
-      TexImage[i][j][1] = 0;
-      TexImage[i][j][2] = 0;
-      TexImage[i][j][3] = 255;
-	}
-
-    }
-  }
-}
-
 
 //static class variables
 Scene* Scene::ptrInstance = NULL; 
@@ -50,7 +21,6 @@ Scene* Scene::Instance()
 
 Scene::Scene()
 {
-	SetupWallRepulsionArray();
 	LastUpdate = std::chrono::system_clock::now();
 
 
@@ -73,7 +43,7 @@ Scene::Scene()
 	glutIgnoreKeyRepeat(1);
 
 	GS.TheScene = this;
-    InitGame();
+    
 	glutTimerFunc(0, Timer, 0);
 
 }
@@ -84,9 +54,11 @@ void Scene::DestructGame()
 
 void Scene::InitGame()
 {
+	SetupWallRepulsionArray();
 	new (&GS) GlobalState();
     GS.TheHero = AddChild(new Hero(this, 0, Vector2d(TextureWidth/2, TextureWidth/2)));	
-	AddChild(new CreepSpawner(this));	
+	AddChild(new CreepSpawner(this));
+	
 }
 
 
@@ -104,10 +76,9 @@ void Scene::draw()
 
 	glLoadIdentity(); // reset the modelview
 	
-	
 	//Turn Textures on for the ground
 	glEnable (GL_TEXTURE_2D);
-
+	glBindTexture (GL_TEXTURE_2D, texture_manager::get_texture_name("Level1.bmp"));
 	//Draw the ground (10 squares x 10 squares)
 
 	const int NUM_QUADS = 10;
@@ -143,6 +114,7 @@ void Scene::draw()
 }
 
 void Scene::Timer(int value){
+
     std::chrono::time_point<std::chrono::system_clock> CurrentTime = std::chrono::system_clock::now();
 	__int64 msSinceLastUpdate = std::chrono::duration_cast<std::chrono::milliseconds>(CurrentTime - LastUpdate).count();
 	LastUpdate = CurrentTime;
@@ -223,7 +195,7 @@ UpdateResult Scene::update2(int ms, GlobalState &GS)
 	
 	void Scene::Display()
 	{
-		glClearColor(0.0f, 0.7f, 1.0f, 1.0f); //Should never see this
+		glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
 		glClear(GL_COLOR_BUFFER_BIT); // clear buffers
 		glLoadIdentity(); // reset modelview transformation
 		ptrInstance->draw(); // draw the world
@@ -237,25 +209,26 @@ UpdateResult Scene::update2(int ms, GlobalState &GS)
 		{
 			FirstTime = false;
 			glShadeModel(GL_SMOOTH);
-	
-			//Yeah, Textures have to be done elsewhere
-			MakeTexture();
-			glGenTextures (1,&TextureName);
-			glBindTexture (GL_TEXTURE_2D,TextureName);
-			gluBuild2DMipmaps(GL_TEXTURE_2D, GL_RGBA8, TextureWidth, TextureWidth, GL_RGBA, GL_UNSIGNED_BYTE, TexImage);
-
-			//Set up the material of the ground (this only needs to be done once too)
-			glBindTexture (GL_TEXTURE_2D, TextureName);
+			
+			//Load the Textures with the texture_manager
+			texture_manager::load_texture("Level1.bmp", 512, 512);
+			texture_manager::load_texture("Spider.bmp", 256, 256);
+			
 			glTexEnvf (GL_TEXTURE_ENV,GL_TEXTURE_ENV_MODE,GL_REPLACE);
-
 			//Load the material (everything uses the same material)
 			const GLfloat MatColor[] = {1, 1, 1, 1.0};
 			const GLfloat Shininess[] = {10};
+
+			//Allow transparency in textures
+			glEnable (GL_BLEND);
+			glBlendFunc(GL_SRC_ALPHA,GL_ONE_MINUS_SRC_ALPHA);
 
 			glMaterialfv( GL_FRONT_AND_BACK, GL_DIFFUSE, MatColor );
 			glMaterialfv( GL_FRONT_AND_BACK, GL_SPECULAR, MatColor );
 			glMaterialfv( GL_FRONT_AND_BACK, GL_SHININESS, Shininess );
 
+			//Init everything after textures and whatnot are setup
+			ptrInstance->InitGame();
 		}
 		if(w > h)
 		{

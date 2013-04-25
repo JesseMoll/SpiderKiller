@@ -1,16 +1,19 @@
 #include "Util.h"
 #include "Vector2d.h"
 #include <cmath>
+#include "texture_manager.h"
 
 
 const int TextureWidth = 512;
 const int FilterWidth = 4;
 Vector2d WallRespulsionArray[TextureWidth][TextureWidth];
 const double FilterSigma = 1.5;
+texture Tex;
 
 
 void SetupWallRepulsionArray()
 {
+	Tex = texture_manager::get_texture("Level1.bmp");
 	Vector2d FilterArray[FilterWidth * 2 + 1][FilterWidth * 2 + 1];
 	double GaussSum = 0;
 	for (int x = -FilterWidth;x <= FilterWidth;x++)
@@ -23,10 +26,9 @@ void SetupWallRepulsionArray()
 			FilterArray[x + FilterWidth][y + FilterWidth] = Mult;
 		}
 	}
-	//return;
-	for (int i = 0;i < TextureWidth;i++)
+	for (int i = FilterWidth;i < TextureWidth - FilterWidth;i++)
 	{
-		for (int j = 0; j < TextureWidth;j++)
+		for (int j = FilterWidth; j < TextureWidth - FilterWidth;j++)
 		{
 			WallRespulsionArray[i][j] = Vector2d(0,0);
 			Vector2d gPos = Vector2d(i,j);
@@ -57,9 +59,11 @@ Vector2d GetWallRepulsion(Vector2d Pos)
 
 bool GetWalkable(Vector2d Pos)
 {
-	if(abs(Pos.x - 256) < 8) return true;
-	if(abs(Pos.y - 256) < 8) return true;
-	if((Pos.x - 256) * (Pos.x - 256) + (Pos.y - 256) * (Pos.y - 256) < 900) return true;
+	//If transparent, we can't walk there, its a wall
+	//We need a better func than this (built into the level class)
+	//I just really like seeing things work
+	if(Tex[((int)(Pos.y) * 512 + (int)Pos.x) * 4 + 3] != 0)
+		return true;
 	return false;
 }
 

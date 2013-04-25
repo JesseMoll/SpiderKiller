@@ -2,6 +2,8 @@
 
 #include "Vector2d.h"
 #include "Util.h"
+#include <GL/glut.h>
+
 class Drawable;
 
 
@@ -57,6 +59,7 @@ public:
 
 	double MoveSpeed;
 
+	GLuint Tex;
 	
 
 };

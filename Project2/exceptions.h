@@ -23,5 +23,6 @@ public: \
 DEFINE_MESSAGE_EXCEPTION(file_open_error_exception, "Could not open file: ");
 DEFINE_MESSAGE_EXCEPTION(file_read_error_exception, "Error reading file: ");
 DEFINE_MESSAGE_EXCEPTION(texture_not_loaded_exception, "Texture not loaded: ");
+DEFINE_MESSAGE_EXCEPTION(texture_not_found, "Texture not found: ");
 
 #endif
