@@ -62,6 +62,8 @@ bool GetWalkable(Vector2d Pos)
 	//If transparent, we can't walk there, its a wall
 	//We need a better func than this (built into the level class)
 	//I just really like seeing things work
+	if(Pos.x >= 512 || Pos.y >= 512 || Pos.x < 0 || Pos.y < 0)
+		return false;
 	if(Tex[((int)(Pos.y) * 512 + (int)Pos.x) * 4 + 3] != 0)
 		return true;
 	return false;

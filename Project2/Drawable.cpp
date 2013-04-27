@@ -60,7 +60,7 @@ Rect2d Drawable::GetBoundingRect()
 	//If it has a parent, convert relative to absolute coords
 	if(Parent != 0)
 	{
-		//RetVal += Parent->getPos();
+		RetVal += Parent->getPos();
 	}
 	//Go through all the children and perform a Union of all the bounding rects
 	for (std::list<Drawable*>::iterator dPtr = Children.begin();dPtr != Children.end(); dPtr++) {
@@ -91,8 +91,8 @@ void Drawable::draw2()
 {
 	if(Texture == 0)
 	{
+		glDisable(GL_TEXTURE_2D);
 		glColor3d(Color.x, Color.y, Color.z); //Draw a 2x2 Colored square
-
 		glRectf(-1,-1,1,1);
 		glRectf(-.25f,-.25f,2,.25f);
 	}

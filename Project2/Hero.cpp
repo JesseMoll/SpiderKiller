@@ -1,5 +1,5 @@
 #include "Hero.h"
-
+#include "Projectile.h"
 
 Hero::Hero(Drawable* _Parent, GLuint _Texture, Vector2d _Pos):Drawable(_Parent, _Texture, _Pos),
 	AnimationTime(0)
@@ -31,15 +31,12 @@ UpdateResult Hero::update2(int ms, GlobalState &GS)
 		WalkingDirection.x = -1;
 	}
 
-	
 	//If we are walking
 	if (WalkingDirection.x != 0 || WalkingDirection.y != 0)
 	{
-
-		
 		double NewAngle = RadToDeg(atan2(WalkingDirection.y,WalkingDirection.x));
 
-		//Man turns at 10 degrees per frame
+		//Man turns at 720 degrees per second
 		TurnTo(Rot, NewAngle, 720.0 * (ms / 1000.0));
 		//Walk in the direction that he is facing
 		Vector2d PosAdder(cos(DegToRad(Rot)), sin(DegToRad(Rot)));
@@ -52,15 +49,14 @@ UpdateResult Hero::update2(int ms, GlobalState &GS)
 		AnimationTime += ms / 200.0f;
 
 	}
-
-
-		GS.HeroPos = Pos;
-
-
+	GS.HeroPos = Pos;
 	return UPDATE_REDRAW;
 }
 
 
+
 Hero::~Hero(void)
 {
+	//Clean up weapons
+
 }

@@ -67,7 +67,7 @@ GLuint texture_manager::get_texture_name(const std::string& name)
 
 texture texture_manager::get_texture(const std::string& name)
 {
-	if(textures.find(name) == textures.end())
+	if(textures.count(name) != 1)
 		throw(texture_not_found(name));
 	return textures[name];
 }

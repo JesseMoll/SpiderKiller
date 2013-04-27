@@ -4,19 +4,46 @@ Graphics Conventions
 
 Important functions
 
-CreepSpawner:
-	AddSpawner(std::string CreepName, Vector2d _Pos, int _SpawnRate, GLuint _Texture, double _Scale, double _Speed, double _TurnSpeed, Vector3d _Color)
-		CreepName - String reference for the map of spawns (can be used to directly access a spawn location)
-		_Pos - The Spawn location
-		_SpawnRate - number of milliseconds between creature spawns
-		_Texture - The texture that the creeps will have (should be a square texture.. not implemented yet)
-		_Scale - Size of the creep (1 is the size of the hero)
-		_Speed - Speed of the creeps which are spawned (hero is .5)
-		_TurnSpeed - Speed at which the creep turns (Hero is 10)
-		_Color - Color (Should be obsolete once the texture is used (unless you want to colorize different creeps with the same texture)
+creep_manager:
+	void add_creep(std::string creep_name, double health, std::string texture_name, double scale, double speed, double turn_speed = 270, Vector3d color = Vector3d(1,1,1));
+		creep_name - a string of the name of the creep
+		health - the health of the creep
+		texture_name - the name of the texture when created with the texture manager (the filename)
+		scale - the size of the creep (the hero is .5)
+		speed - speed of the creep
+		turn_speed - number of degrees per second (270 seems to work pretty good for everything)
+		color - Color (Should be obsolete once the texture is used (unless we want to colorize different creeps with the same texture)
+
+	void add_spawner(Vector2d pos, int spawn_rate = 1000, int spawn_amount = 20, std::string creep_name = "", double rot = 0);
+		pos - spawn location
+		spawn_rate - number of milliseconds between creature spawns
+		spawn_amount - the number of creeps that will spawn each time
+		creep_name - a string of the name of the creep (see above)
+		rot - initial rotation the creeps will move out of after spawn (degrees, 0 is right, 90 is up, etc...) 
+		
+weapon_manager:
+	Projectile* add_projectile(std::string projectile_name, std::string texture_name = "", double size = .2, double speed = 40, double damage = 100, double max_distance = 1e6, std::string on_death_projectile_name = "", int on_death_number = 0, double on_death_spread = 0);
+		projectile_name - name of the projectile
+		texture_name - name of the texture to skin the projectile with ("" if none)
+		size - size of the projectile (.5 is the size of the hero)
+		speed - number of units per second the bullets travel
+		damage - damage of the projectile (also the health, it will lose damage as it hit spiders, dying when it reaches 0)
+		max_distance - the maximum distance the projectile will travel (e.g. fire has a very short range), it will then die
+		on_death_projectile_name - name of the projectile to spawn when the projectile dies (e.g. frag grenade spawns pellets on explosion)
+		on_death_number - number of that projectile to spawn (e.g. shotgun shell will spawn 8 pellets when leaving the barrel)
+		on_death_spread - arc length of the spread of the spawned bullets (in degrees, e.g. the grenade spawns pellets in 360 degrees)
+
+	Weapon* add_weapon(std::string weapon_name, double fire_rate, std::string projectile_name);
+		weapon_name - name of the weapon
+		fire_rate - number of ms between fires
+		projectile_name - name of the projectile that the gun will produce (see above)
+	
+NOTE:  projectiles are used recursively.  E.g. the BFG will shoot a Super Bomb which will spawn 10 Fire Bombs in a circle when it explodes
+	Those Fire Bombs will each spawn Fires and each Fire will then spawn Flames which travel a distance and then disapear
+	I plan to implement spawns over time, so we can implement a point defense turret (e.g. stationary object which will put out flames continuously for 15 seconds)
 
 draw()/draw2() - draw2() draws the local object only.  draw() first draws the object (via draw) then recursively draws the children
-	e.g. CreepSpawner holds all creeps as children, a call to Creepspawner.draw() will draw all creeps (via a scene graph)
+	e.g. creep_manager holds all creeps as children, a call to creep_spawnerer.draw() will draw all creeps (via the scene graph)
 
 update()/update2() - same thing, but for updating the state of the objects
 	Return Values are:
@@ -29,14 +56,7 @@ Note: pretty much, only draw2 and update2 are overridden (with the exception of 
 
 TODO:
 
-bool GetWalkable(Vector2d Pos)
-	Temporary... right now, I use this to determine where things can walk (let me know how you implement this)
-
-GLuint GetTexture(string TexName) ????
-	I am not quite sure how we want to pass the textures to the CreepSpawner class the easiest way I can think of is to hold a pointer to a texturing class in the GS variable
-	But... anyway you do it is fine
-
-Creep.GetBestAngle()
-	This is what I want to spend most of my time (pathing and flock/crowd movement) making sure things dont collide and still move toward the hero...
-
+Level creation/ changing levels, setting up spawns, etc... 
+I would really like to figure out how all of this will work,
+	or at least split up some work so I know what I can do
 Animations? (walking/death)

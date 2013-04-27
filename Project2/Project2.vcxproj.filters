@@ -36,13 +36,7 @@
     <ClCompile Include="Util.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="CreepSpawner.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="Creep.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="Bullet.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="level.cpp">
@@ -52,6 +46,21 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="texture_manager.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="creep_spawner.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Weapon.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="creep_manager.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="weapon_manager.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Projectile.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
@@ -74,13 +83,7 @@
     <ClInclude Include="Util.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="CreepSpawner.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="Creep.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Bullet.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="exceptions.h">
@@ -95,12 +98,30 @@
     <ClInclude Include="texture_manager.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="creep_spawner.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Weapon.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="weapon_manager.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="creep_manager.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Projectile.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Image Include="Spider.bmp">
       <Filter>Resource Files</Filter>
     </Image>
     <Image Include="Level1.bmp">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="Flame.bmp">
       <Filter>Resource Files</Filter>
     </Image>
   </ItemGroup>

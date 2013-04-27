@@ -1,5 +1,8 @@
 #pragma once
 #include "Drawable.h"
+#include "Weapon.h"
+#include <map>
+#include <string>
 
 class Hero :
 	public Drawable
@@ -10,4 +13,5 @@ public:
 	UpdateResult update2(int ms, GlobalState &GS);
 protected:
 	float AnimationTime;
+
 };

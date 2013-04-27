@@ -30,7 +30,8 @@ int main(int argc, char **argv)
 -----------------------------------------------------------------------\n\
   Kill the Spiders!:\n\
   - Hold WASD to move character around\n\
-  - q/esc to quit\n\
+  - q to switch weapons \n\
+  - esc to quit\n\
 -----------------------------------------------------------------------\n";
 
 

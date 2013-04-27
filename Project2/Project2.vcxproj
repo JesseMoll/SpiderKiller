@@ -73,9 +73,10 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="Bullet.cpp" />
+    <ClCompile Include="Projectile.cpp" />
     <ClCompile Include="Creep.cpp" />
-    <ClCompile Include="CreepSpawner.cpp" />
+    <ClCompile Include="creep_spawner.cpp" />
+    <ClCompile Include="creep_manager.cpp" />
     <ClCompile Include="Drawable.cpp" />
     <ClCompile Include="level.cpp" />
     <ClCompile Include="main.cpp" />
@@ -86,11 +87,14 @@
     <ClCompile Include="texture_manager.cpp" />
     <ClCompile Include="Util.cpp" />
     <ClCompile Include="Vector2d.cpp" />
+    <ClCompile Include="Weapon.cpp" />
+    <ClCompile Include="weapon_manager.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="Bullet.h" />
+    <ClInclude Include="Projectile.h" />
     <ClInclude Include="Creep.h" />
-    <ClInclude Include="CreepSpawner.h" />
+    <ClInclude Include="creep_spawner.h" />
+    <ClInclude Include="creep_manager.h" />
     <ClInclude Include="Drawable.h" />
     <ClInclude Include="exceptions.h" />
     <ClInclude Include="GlobalState.h" />
@@ -101,8 +105,11 @@
     <ClInclude Include="texture_manager.h" />
     <ClInclude Include="Util.h" />
     <ClInclude Include="Vector2d.h" />
+    <ClInclude Include="Weapon.h" />
+    <ClInclude Include="weapon_manager.h" />
   </ItemGroup>
   <ItemGroup>
+    <Image Include="Flame.bmp" />
     <Image Include="Level1.bmp" />
     <Image Include="Spider.bmp" />
   </ItemGroup>

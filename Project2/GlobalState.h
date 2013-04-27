@@ -4,6 +4,7 @@
 #include "Util.h"
 #include <GL/glut.h>
 
+
 class Drawable;
 
 
@@ -43,6 +44,10 @@ public:
 	Drawable *TheHero;
 	//Root of the scene graph
 	Drawable *TheScene;	
+	//For accessing the creeps
+	Drawable *TheCreepManager;
+	Drawable *TheWeaponManager;
+
 	//Each key is represented by a bit, 1 means down, 0 means up
 	unsigned int KeyStates;	
 
@@ -50,6 +55,7 @@ public:
 
 	Vector2d HeroPos;
 
+	Vector2d WindowSize;
 
 	//Mouse Position on button down
 	Vector2d MousePos;

@@ -24,5 +24,8 @@ DEFINE_MESSAGE_EXCEPTION(file_open_error_exception, "Could not open file: ");
 DEFINE_MESSAGE_EXCEPTION(file_read_error_exception, "Error reading file: ");
 DEFINE_MESSAGE_EXCEPTION(texture_not_loaded_exception, "Texture not loaded: ");
 DEFINE_MESSAGE_EXCEPTION(texture_not_found, "Texture not found: ");
+DEFINE_MESSAGE_EXCEPTION(creep_not_found, "Creep not found: ");
+DEFINE_MESSAGE_EXCEPTION(projectile_not_found, "Projectile not found: ");
+
 
 #endif
