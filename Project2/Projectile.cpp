@@ -41,7 +41,7 @@ void Projectile::onDeath(GlobalState &GS)
 		{
 			Parent->AddChild (new Projectile(ProjectileToFireOnDeath, Pos, NewRotation));
 			//otherwise the first and last projectiles overlap on a radial weapon
-			if(SpreadOnDeath > 359)
+			if(SpreadOnDeath > 3)
 				NewRotation += SpreadOnDeath / (double)(NumToFireOnDeath);
 			else
 				NewRotation += SpreadOnDeath / (double)(NumToFireOnDeath - 1);
@@ -51,7 +51,7 @@ void Projectile::onDeath(GlobalState &GS)
 
 UpdateResult Projectile::update2(int ms, GlobalState &GS)
 {
-	Vector2d PosAdder(cos(DegToRad(Rot)), sin(DegToRad(Rot)));
+	Vector2d PosAdder(cos(Rot), sin(Rot));
 	PosAdder *= Speed * (ms / 1000.0);
 	//Will the new position be valid?
 	DistanceTravelled += PosAdder.length();
@@ -64,7 +64,7 @@ UpdateResult Projectile::update2(int ms, GlobalState &GS)
 	{
 		Pos += PosAdder;
 		Rect2d ProjectileRect = GetBoundingRect();
-		for (std::list<Drawable*>::iterator dPtr = GS.TheCreepManager->begin();dPtr != GS.TheCreepManager->end(); dPtr++) {
+		for (std::list<Drawable*>::iterator dPtr = GS.TheCreepManager->begin();dPtr != GS.TheCreepManager->end(); ++dPtr) {
 			Rect2d CreepRect = (*dPtr)->GetBoundingRect();
 			if(ProjectileRect.overlaps(CreepRect)) 
 			{

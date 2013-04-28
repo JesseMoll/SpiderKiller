@@ -32,7 +32,7 @@ UpdateResult Weapon::update2(int ms, GlobalState &GS)
 			{
 				FireTimer += FireRate;
 				Vector2d DirectionVector = GS.MousePos - GS.WindowSize * .5;
-				double ProjectileRot = RadToDeg(atan2(-DirectionVector.y, DirectionVector.x));
+				double ProjectileRot = atan2(-DirectionVector.y, DirectionVector.x);
 				Parent->AddChild(new Projectile(ProjectileToFire, GS.HeroPos,ProjectileRot));
 			}
 			else

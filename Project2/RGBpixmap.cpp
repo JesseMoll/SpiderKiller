@@ -54,7 +54,7 @@ typedef struct {                // bmp header (and info) structure
 //  Constructors
 //----------------------------------------------------------------------
 RGBpixmap::RGBpixmap()                  // default constructor
-    : nRows(0), nCols(0), pixel(NULL), bmpIn(NULL), bmpOut(NULL) { }
+    : nRows(0), nCols(0), pixel(NULL), bmpIn(NULL), bmpOut(NULL) {}
 
 RGBpixmap::RGBpixmap(int rows, int cols) // constructor given dimensions
     : nRows(rows), nCols(cols), bmpIn(NULL),  bmpOut(NULL)

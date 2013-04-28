@@ -17,7 +17,7 @@ Drawable::Drawable(Drawable* _Parent, GLuint _Texture, Vector2d _Pos, Vector2d _
 Drawable::~Drawable()
 {
 	//clean up all the children
-	for (std::list<Drawable*>::iterator dPtr = Children.begin();dPtr != Children.end(); dPtr++) {
+	for (std::list<Drawable*>::iterator dPtr = Children.begin();dPtr != Children.end(); ++dPtr) {
 		delete (*dPtr);
 	}
 }
@@ -63,7 +63,7 @@ Rect2d Drawable::GetBoundingRect()
 		RetVal += Parent->getPos();
 	}
 	//Go through all the children and perform a Union of all the bounding rects
-	for (std::list<Drawable*>::iterator dPtr = Children.begin();dPtr != Children.end(); dPtr++) {
+	for (std::list<Drawable*>::iterator dPtr = Children.begin();dPtr != Children.end(); ++dPtr) {
 		RetVal = mergeBounds(RetVal, (*dPtr)->GetBoundingRect());
 	}
 	//return a bounding rect encompasing all children
@@ -77,11 +77,11 @@ void Drawable::draw()
 		glPushMatrix();
 			//Draw the scaled object
 			glScaled(Scale.x, Scale.y, 1.0f);
-			glRotated(Rot, 0, 0, 1);
+			glRotated(RadToDeg(Rot), 0, 0, 1);
 			draw2();
 		glPopMatrix();
 		//Draw all the children
-		for (std::list<Drawable*>::iterator dPtr = Children.begin();dPtr != Children.end(); dPtr++) {
+		for (std::list<Drawable*>::iterator dPtr = Children.begin();dPtr != Children.end(); ++dPtr) {
 			(*dPtr)->draw();
 		}
 	glPopMatrix();
@@ -136,7 +136,7 @@ UpdateResult Drawable::update(int ms, GlobalState &GS)
 		{
 		case UPDATE_NONE:
 			//nothing special, just go to the next child
-			dPtr++;
+			++dPtr;
 			break;
 		case UPDATE_DELETE:
 			//The child needs to be erased, no need to increment the iterator, the erasing will
@@ -149,7 +149,7 @@ UpdateResult Drawable::update(int ms, GlobalState &GS)
 		case UPDATE_REDRAW:
 			//Child need to redraw, so pass the message back
 			RetVal = UPDATE_REDRAW;
-			dPtr++;
+			++dPtr;
 		}
 	}
 	return RetVal;

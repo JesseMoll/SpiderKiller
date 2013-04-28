@@ -1,5 +1,8 @@
+#include "creep_manager.h"
 #include "Creep.h"
+#include <algorithm>
 
+class creep_manager;
 Creep::Creep(Drawable* _Parent, GLuint _Texture, Vector2d _Pos, double _Health, double _Scale, double _Rot, double _Speed, double _TurnSpeed, Vector3d _Color):
 	Drawable(_Parent, _Texture, _Pos, Vector2d(_Scale,_Scale), _Color),
 	Health(_Health),
@@ -7,6 +10,7 @@ Creep::Creep(Drawable* _Parent, GLuint _Texture, Vector2d _Pos, double _Health, 
 	TurnSpeed(_TurnSpeed)
 {
 	Rot = _Rot;
+	
 }
 
 Creep::Creep(Creep * c, Vector2d _Pos, double _Rot):
@@ -33,43 +37,45 @@ UpdateResult Creep::update2(int ms, GlobalState &GS)
 	if(Health == 0)
 		return UPDATE_DELETE;
 
-	Vector2d WalkingDirection = GS.HeroPos - Pos;
-	WalkingDirection.normalize();
+	
+
 	Vector2d WallRepulsion = GetWallRepulsion(Pos);
 	Vector2d CreepRepulsion (0,0);
 	//Loop through all of the creeps (OMG THIS DOESNT WORK WELL... O(n^2) is bad...)
 	//Will fix in the future, for now, compiling as Release works for me
-	for (std::list<Drawable*>::iterator itr = Parent->begin(); itr != Parent->end(); itr++)
+	creep_manager* CM = static_cast<creep_manager*> (Parent);
+	auto NearbyCreep = CM->get_nearby_creep(Pos, 6);
+	for (auto itr = NearbyCreep.begin(); itr != NearbyCreep.end(); ++itr)
 	{
 		Vector2d VecToCreep = (*itr)->Pos - Pos;
-		const double PreferredDistance = (1.5 + 1.5 * (Scale.x + (*itr)->Scale.x));
-		//Creep is within range (twice the preferred distance) and is not itself
-		if (VecToCreep.length() < PreferredDistance * 2 && *itr != this)
-		{
-			double x = VecToCreep.length() / PreferredDistance;
-			//This just works, a function which is:
-				//infinite at 0 (to prevent collisions)
-				//0 at 1 (to maintain a preferred distance)
-				//negative greater than 1 (forces creeps to bunch up)
-				//0 at infinity (a creep far away will not move toward other creep)
-			//Should give a pretty smooth way to maintain distance
-			double Attractivity = tanh(1-x)/(x*x);
+		const double PreferredDistance = 1 + (Scale.x + (*itr)->Scale.x) * 2;
+		double CurrentDistance = VecToCreep.length();
+		double x = std::max(CurrentDistance, .1) / (PreferredDistance);
+		//This just works, a function which is:
+			//infinite at 0 (to prevent collisions)
+			//0 at 1 (to maintain a preferred distance)
+			//negative greater than 1 (forces creeps to bunch up)
+			//0 at infinity (a creep far away will not move toward other creep)
+		//Should give a pretty smooth way to maintain distance
+		double Attractivity = tanh(1-x)/(x*x);
 
-			//Big creeps are less influenced by smaller ones
-			Attractivity *= (*itr)->Scale.x / Scale.x;
-			Attractivity *= (*itr)->Scale.x / Scale.x;
-			CreepRepulsion -=  Vector2d::normalize(VecToCreep) * Attractivity;
-		}
+		//Big creeps are less influenced by smaller ones
+		double SizeRatio = (*itr)->Scale.x / Scale.x;
+		Attractivity *= SizeRatio * SizeRatio;
+		//Only affected by equal or bigger creep
+		//if ((*itr)->Scale.x >= Scale.x)
+		CreepRepulsion -=  VecToCreep * Attractivity;
 	}
 
+	Vector2d WalkingDirection = Vector2d::normalize(GS.HeroPos - Pos) * 10;
 	WalkingDirection += WallRepulsion * 10;
 	WalkingDirection += CreepRepulsion;
-	double NewAngle = RadToDeg(atan2(WalkingDirection.y,WalkingDirection.x));
+	double NewAngle = atan2(WalkingDirection.y,WalkingDirection.x);
 
 	//Turn toward the hero at the turn speed
 	TurnTo(Rot, NewAngle, TurnSpeed * (ms / 1000.0));
 	//Walk in the direction that he is facing
-	Vector2d PosAdder(cos(DegToRad(Rot)), sin(DegToRad(Rot)));
+	Vector2d PosAdder(cos(Rot), sin(Rot));
 	PosAdder *= Speed * (ms / 1000.0);
 	//Will the new position be valid?
 	if(GetWalkable(Pos + PosAdder))

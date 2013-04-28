@@ -51,6 +51,7 @@ Scene::Scene()
 
 void Scene::DestructGame()
 {
+	delete hud;
 }
 
 void Scene::InitGame()
@@ -61,17 +62,22 @@ void Scene::InitGame()
 	GS.TheCreepManager = AddChild(new creep_manager(this));
 	GS.TheWeaponManager = AddChild(new weapon_manager(this));
 	
+
+
+	//After we load the textures, init the hud
+	hud = new HUD;
+
 	//Get the weapon manager pointer as the correct type
 	weapon_manager* WM = static_cast<weapon_manager*>(GS.TheWeaponManager);
 	//Add some projectiles
-	WM->add_projectile("Bullet",	"", .2, 40, 100, 1e6);
+	WM->add_projectile("Bullet",	"", .2, 40, 50, 1e6);
 	WM->add_projectile("Pellet",	"", .2, 40, 20,  30); 
-	WM->add_projectile("Flame", "Flame.bmp", 2, 40, 3, 20);
+	WM->add_projectile("Flame", "Flame.bmp", 2, 40, 6, 20);
 
-	WM->add_projectile("Shell",		"",  0, 40, 100, 1,  "Pellet",	8,  40);
+	WM->add_projectile("Shell",		"",  .2, 20, 100, 3,  "Pellet",	8,  40);
 	WM->add_projectile("Fire",		"",  0, 20, 100, 3,  "Flame",	8,  60); 
-	WM->add_projectile("Fire Bomb",	"", .5, 30, 100, 15, "Fire",	16, 360); 
-	WM->add_projectile("Grenade",	"", .5, 20, 100, 15, "Pellet",	32, 360);
+	WM->add_projectile("Fire Bomb",	"", .5, 30, 100, 15, "Fire",	8, 360); 
+	WM->add_projectile("Grenade",	"", .5, 30, 100, 15, "Shell",	8, 360);
 	WM->add_projectile("Super Bomb","", .5, 80, 100, 30, "Fire Bomb", 10, 360);
 	//TODO ADD Weapons as we pick them up
 	//TODO Separate Weapons as left-click, right-click, and spacebar (super weapons which take energy gained from kills)
@@ -86,27 +92,31 @@ void Scene::InitGame()
 
 	//Get the creep manager pointer as the correct type
 	creep_manager* CM = static_cast<creep_manager*>(GS.TheCreepManager);
-	CM->add_creep("Tiny Spider", 5, "Spider.bmp", .75, 25);
-	CM->add_creep("Small Spider", 10, "Spider.bmp", 1.5, 25);
-	CM->add_creep("Huge Spider", 500, "Spider.bmp", 5, 10);
+	CM->add_creep("Tiny Spider", 5, "Spider.bmp", .75, 25, 5);
+	CM->add_creep("Small Spider", 10, "Spider.bmp", 1.5, 25, 4);
+	CM->add_creep("Huge Spider", 500, "Spider.bmp", 5, 10, 2);
 
 	//TODO - Move this code into the level class (on level init)
 	//TODO, add finite spawns (so we can beat a level)
-	CM->add_spawner(Vector2d(225,300), 2000, 20, "Tiny Spider",  270);
+	CM->add_spawner(Vector2d(225,300), 1000, 20, "Tiny Spider",  270);
 	CM->add_spawner(Vector2d(250,200), 1000, 20, "Small Spider",  90);
-	CM->add_spawner(Vector2d(250,200), 5000, 1, "Huge Spider",  90);
+	CM->add_spawner(Vector2d(250,200), 1000, 1, "Huge Spider",  90);
 }
 
 
 void Scene::draw()
 {
+	int w = static_cast<int>(GS.WindowSize.x);
+	int h = static_cast<int>(GS.WindowSize.y);
 
-
+	glViewport(0, 0, w, h); // set viewport (drawing area) to entire window
+	
     glMatrixMode(GL_PROJECTION); // projection matrix is active
 	glLoadIdentity(); // reset the projection
-	const int ViewSize = 60;
+	const int ViewSizeY = 60;
+	const int ViewSizeX = (60 * w) / h;
 
-	gluOrtho2D(GS.HeroPos.x - ViewSize, GS.HeroPos.x + ViewSize, GS.HeroPos.y - ViewSize, GS.HeroPos.y + ViewSize);
+	gluOrtho2D(GS.HeroPos.x - ViewSizeX, GS.HeroPos.x + ViewSizeX, GS.HeroPos.y - ViewSizeY, GS.HeroPos.y + ViewSizeY);
 	glMatrixMode(GL_MODELVIEW); // return to modelview mode
 
 
@@ -145,6 +155,10 @@ void Scene::draw()
 
 	//Draw the children... 
 	Drawable::draw();
+
+	//Draw the HUD over everything else
+	hud->draw(static_cast<int>(GS.WindowSize.x));
+
 	//Reenable the mouse callback (we only check the mouse at most once every frame)
 	GS.MouseSemaphore = false;
 }
@@ -247,10 +261,12 @@ UpdateResult Scene::update2(int ms, GlobalState &GS)
 			FirstTime = false;
 			glShadeModel(GL_SMOOTH);
 			
+			
 			//Load the Textures with the texture_manager
 			texture_manager::load_texture("Level1.bmp", 512, 512);
 			texture_manager::load_texture("Spider.bmp", 256, 256);
 			texture_manager::load_texture("Flame.bmp", 128, 128);
+			texture_manager::load_texture("HUD.bmp", 1024, 256);
 			
 			glTexEnvf (GL_TEXTURE_ENV,GL_TEXTURE_ENV_MODE,GL_REPLACE);
 			//Load the material (everything uses the same material)
@@ -270,14 +286,6 @@ UpdateResult Scene::update2(int ms, GlobalState &GS)
 		}
 
 		GS.WindowSize = Vector2d(w,h);
-		if(w > h)
-		{
-			glViewport((w-h)/2, 0, h, h); // set viewport (drawing area) to entire window
-		}
-		else
-		{
-			glViewport(0, (h-w)/2, w, w); // set viewport (drawing area) to entire window
-		}
 	}
 
 	void Scene::Idle()

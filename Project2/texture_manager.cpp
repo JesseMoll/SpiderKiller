@@ -9,14 +9,14 @@ void texture_manager::load_texture(const std::string& name, const int& width, co
 	if (texture_manager::textures.count(name) == 1)
 		return;
 
-	RGBpixmap rgb_pixmap(width, height);
+	RGBpixmap rgb_pixmap(height, width);
 	if (!rgb_pixmap.readBMPFile(name))
 		throw file_read_error_exception(name);
 
 	texture pixel_array;
-	for (int row = 0; row < width; ++row)
+	for (int row = 0; row < height; ++row)
 	{
-		for (int col = 0; col < height; ++col)
+		for (int col = 0; col < width; ++col)
 		{
 			RGBpixel pixel = rgb_pixmap.getPixel(col, row);
 			//Is the pixel transparent?

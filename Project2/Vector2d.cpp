@@ -67,6 +67,9 @@ Vector2d Vector2d::operator-() const
 Scalar Vector2d::length() const
 	{ return sqrt(x*x + y*y); }
 
+Scalar Vector2d::length_squared() const
+	{ return (x*x + y*y); }
+
 
 void Vector2d::normalize() {				// normalize to unit length
 	Scalar w = length(); 
@@ -95,6 +98,9 @@ Scalar Vector2d::dot(const Vector2d& v, const Vector2d& w)
 											// distance
 Scalar Vector2d::distance(const Vector2d& v, const Vector2d& w)
 	{ return (v - w).length(); }
+
+Scalar Vector2d::distance_squared(const Vector2d& v, const Vector2d& w)
+	{ return (v - w).length_squared(); }
 
 											// project v parallel to w
 Vector2d Vector2d::parProject(const Vector2d& v, const Vector2d& w)

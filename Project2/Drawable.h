@@ -36,6 +36,9 @@ class Drawable
 		//Accessor for the Position
 		Vector2d getPos();
 
+		//Accessor for the Position
+		inline Vector2d getLocalPos(){return Pos;};
+
 		//Accessor for the Rotation
 		double getRot(bool GlobalRot = false);
 

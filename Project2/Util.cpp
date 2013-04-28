@@ -21,7 +21,7 @@ void SetupWallRepulsionArray()
 		for (int y = -FilterWidth;y <= FilterWidth;y++)
 		{
 			Vector2d lpos(x, y);
-			Vector2d Mult = Vector2d::exp(-(lpos * lpos) / (2*FilterSigma*FilterSigma));
+			Vector2d Mult = Vector2d::exp(-(lpos * lpos) * (.5 / FilterSigma / FilterSigma));
 			GaussSum += Mult.x;
 			FilterArray[x + FilterWidth][y + FilterWidth] = Mult;
 		}
@@ -69,24 +69,30 @@ bool GetWalkable(Vector2d Pos)
 	return false;
 }
 
-double RadToDeg(double Rad)
-{
-	return Rad * (180.0 / 3.1415926535897932384626433832795);
-}
 
-double DegToRad(double Deg)
+void TurnTo(double & CurrentAngle, const double TargetAngle, const double TurnSpeed)
 {
-	return Deg / (180.0 / 3.1415926535897932384626433832795);
-}
-
-void TurnTo(double & CurrentAngle, double TargetAngle, double TurnSpeed)
-{
+	/*
+	double curX = cos(CurrentAngle);
+	double curY = sin(CurrentAngle);
+	double tgtX = cos(TargetAngle);
+	double tgtY = sin(TargetAngle);
+	double nextX = curX * .8 + tgtX * .2;
+	double nextY = curY * .8 + tgtY * .2;
+	CurrentAngle = atan2(nextY, nextX);
+	return;
+	*/
+	
 	double AngleAdder = TurnSpeed;
 	double AngletoTurn = (TargetAngle - CurrentAngle);
-	while (AngletoTurn < -180)
-		AngletoTurn += 360;
-	while (AngletoTurn >  180)
-		AngletoTurn -= 360;
+	//std::cout << TargetAngle << " " << CurrentAngle << std::endl;
+	double X = cos(AngletoTurn);
+	double Y = sin(AngletoTurn);
+	AngletoTurn = atan2(Y, X);
+	//while (AngletoTurn < -PI)
+	//	AngletoTurn += 2*PI;
+	//while (AngletoTurn >  PI)
+	//	AngletoTurn -= PI;
 	if (fabs(AngletoTurn) < TurnSpeed)
 		AngleAdder = AngletoTurn;
 	else if (AngletoTurn > 0)
@@ -94,13 +100,12 @@ void TurnTo(double & CurrentAngle, double TargetAngle, double TurnSpeed)
 	else
 		AngleAdder = -TurnSpeed;
 	CurrentAngle += AngleAdder;
-	if (CurrentAngle < 0)
-		CurrentAngle += 360;
-	if (CurrentAngle >= 360)
-		CurrentAngle -= 360;
+	X = cos(CurrentAngle);
+	Y = sin(CurrentAngle);
+	CurrentAngle = atan2(Y, X);
 }
 
 double Random(double Max)
 {
-	return Max * ((double)rand() / (double)RAND_MAX);
+	return Max * ((double)rand() * (1 / (double)RAND_MAX));
 }

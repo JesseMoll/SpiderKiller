@@ -81,11 +81,13 @@ public:
 	Vector2d operator-() const;
 										// other vector operations
 	Scalar length() const;
+	Scalar length_squared() const;
 	void normalize();					// normalize to unit length
 	static Vector2d normalize(const Vector2d& v);
 	static Vector2d exp(const Vector2d& v);
 	static Scalar dot(const Vector2d& v, const Vector2d& w);
 	static Scalar distance(const Vector2d& v, const Vector2d& w);
+	static Scalar distance_squared(const Vector2d& v, const Vector2d& w);
 										// parallel and orthogonal projection
 	Vector2d parProject(const Vector2d& v, const Vector2d& w);
 	Vector2d orthProject(const Vector2d& v, const Vector2d& w);

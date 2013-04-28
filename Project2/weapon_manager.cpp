@@ -21,7 +21,7 @@ Projectile* weapon_manager::add_projectile(std::string projectile_name, std::str
 	Projectile* on_death_projectile = 0;
 	if(on_death_projectile_name != "")
 		on_death_projectile = get_projectile(on_death_projectile_name);
-	projectiles[projectile_name] = new Projectile(this, Tex, size, speed, damage, max_distance, on_death_projectile, on_death_number, on_death_spread);
+	projectiles[projectile_name] = new Projectile(this, Tex, size, speed, damage, max_distance, on_death_projectile, on_death_number, DegToRad(on_death_spread));
 	return projectiles[projectile_name];
 }
 
@@ -45,7 +45,7 @@ void weapon_manager::SwitchLeftWeapon()
 	(*LeftWeapon).second->Equip(Weapon::EQUIP_NONE);
 
 	//Go to the next weapon
-	LeftWeapon++;
+	++LeftWeapon;
 	//If there are no more weapons, go back to the begining of the container
 	if(LeftWeapon == weapons.end())
 	{

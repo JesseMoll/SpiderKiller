@@ -2,6 +2,7 @@
 
 #include "Drawable.h"
 #include <chrono>
+#include "HUD.h"
 
 class Scene : public Drawable
 {
@@ -31,6 +32,7 @@ class Scene : public Drawable
 	static void Timer(int value);
 
     protected:
+		HUD* hud;
     private:
 		static GlobalState GS;
 		static std::chrono::time_point<std::chrono::system_clock> LastUpdate;
