@@ -133,5 +133,29 @@
     <Image Include="HUD.bmp">
       <Filter>Resource Files</Filter>
     </Image>
+    <Image Include="AutoShotgun.bmp">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="BFG.bmp">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="FireBombGun.bmp">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="Flamethrower.bmp">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="GrenadeLauncher.bmp">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="MachineGun.bmp">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="Pistol.bmp">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="Shotgun.bmp">
+      <Filter>Resource Files</Filter>
+    </Image>
   </ItemGroup>
 </Project>

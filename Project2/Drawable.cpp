@@ -95,12 +95,11 @@ void Drawable::draw2()
 		glColor3d(Color.x, Color.y, Color.z); //Draw a 2x2 Colored square
 		glRectf(-1,-1,1,1);
 		glRectf(-.25f,-.25f,2,.25f);
+		glEnable(GL_TEXTURE_2D);
 	}
 	else
 	{
-		//std::LE Texture << std::endl;
 		glColor3d(Color.x, Color.y, Color.z);
-		glEnable(GL_TEXTURE_2D);
 		glBindTexture (GL_TEXTURE_2D, Texture);
 		
 		glBegin(GL_QUADS);

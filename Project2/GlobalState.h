@@ -54,18 +54,16 @@ public:
 	//Camera values
 
 	Vector2d HeroPos;
-
 	Vector2d WindowSize;
-
-	//Mouse Position on button down
 	Vector2d MousePos;
-
-	//To keep the mouse reposition from calling itself
-	volatile bool MouseSemaphore;
 
 	double MoveSpeed;
 
-	GLuint Tex;
+	//GLuint Tex;
+	GLuint LeftWeaponTex;
+	GLuint RightWeaponTex;
+	GLuint SuperWeaponTex;
+
 	
 
 };

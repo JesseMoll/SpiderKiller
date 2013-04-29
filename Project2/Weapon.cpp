@@ -1,8 +1,8 @@
 #include "Weapon.h"
 
 
-Weapon::Weapon(Drawable* _Parent, double _FireRate, Projectile* _ProjectileToFire):
-	Drawable(_Parent),
+Weapon::Weapon(Drawable* _Parent, GLuint _Texture, double _FireRate, Projectile* _ProjectileToFire):
+	Drawable(_Parent, _Texture),
 	FireRate(_FireRate),
 	FireTimer(0),
 	ProjectileToFire(_ProjectileToFire),

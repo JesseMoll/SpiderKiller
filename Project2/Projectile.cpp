@@ -1,4 +1,5 @@
 #include "Projectile.h"
+#include "creep_manager.h"
 #include "Creep.h"
 
 Projectile::Projectile(Drawable* _Parent, GLuint _Texture, double _Scale, double _Speed, double _Damage, double _MaxDistance, Projectile* _ProjectileToFireOnDeath, int _NumToFireOnDeath,  double _SpreadOnDeath, Vector3d _Color):
@@ -64,12 +65,13 @@ UpdateResult Projectile::update2(int ms, GlobalState &GS)
 	{
 		Pos += PosAdder;
 		Rect2d ProjectileRect = GetBoundingRect();
-		for (std::list<Drawable*>::iterator dPtr = GS.TheCreepManager->begin();dPtr != GS.TheCreepManager->end(); ++dPtr) {
-			Rect2d CreepRect = (*dPtr)->GetBoundingRect();
-			if(ProjectileRect.overlaps(CreepRect)) 
+		creep_manager* CM = static_cast<creep_manager*> (GS.TheCreepManager);
+		auto NearbyCreep = CM->get_nearby_creep(Pos, 8);
+		for (auto itr = NearbyCreep.begin(); itr != NearbyCreep.end(); ++itr){
+			if((*itr)->checkOverlap(Pos, Scale.x))
 			{
 				//deal damage to the creep based on the projectile's damage
-				Damage = ((Creep*)(*dPtr))->Damage(Damage);
+				Damage = ((Creep*)(*itr))->Damage(Damage);
 				if (Damage <= 0)
 				{
 					onDeath(GS);

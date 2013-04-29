@@ -41,35 +41,58 @@ UpdateResult Creep::update2(int ms, GlobalState &GS)
 
 	Vector2d WallRepulsion = GetWallRepulsion(Pos);
 	Vector2d CreepRepulsion (0,0);
+	Vector2d NearbyCreepVelocity (0,0);
 	//Loop through all of the creeps (OMG THIS DOESNT WORK WELL... O(n^2) is bad...)
 	//Will fix in the future, for now, compiling as Release works for me
 	creep_manager* CM = static_cast<creep_manager*> (Parent);
-	auto NearbyCreep = CM->get_nearby_creep(Pos, 6);
+
+	auto NearbyCreep = CM->get_nearby_creep(Pos, 8);
 	for (auto itr = NearbyCreep.begin(); itr != NearbyCreep.end(); ++itr)
 	{
 		Vector2d VecToCreep = (*itr)->Pos - Pos;
-		const double PreferredDistance = 1 + (Scale.x + (*itr)->Scale.x) * 2;
-		double CurrentDistance = VecToCreep.length();
-		double x = std::max(CurrentDistance, .1) / (PreferredDistance);
+		
+		double CurrentDistance = std::max(VecToCreep.length(), .1);
+		const double PreferredDistance = (Scale.x + (*itr)->Scale.x) * 2;
+
+		if((*itr) != this && CurrentDistance < PreferredDistance * 1.5 && (*itr)->Scale.x >= Scale.x)
+		{
+			Vector2d CreepVelocity (cos((*itr)->Rot),sin((*itr)->Rot));
+			NearbyCreepVelocity =  CreepVelocity;
+
+			double x = CurrentDistance / (PreferredDistance);
+			double Attractivity = tanh(1-x)/(x*x);
+			double SizeRatio = (*itr)->Scale.x / Scale.x;
+			Attractivity *= SizeRatio * SizeRatio;
+
+			NearbyCreepVelocity +=  CreepVelocity;
+			CreepRepulsion -=  (VecToCreep / CurrentDistance) * Attractivity;
+		}
+		
+		
+
+
+		
+
 		//This just works, a function which is:
 			//infinite at 0 (to prevent collisions)
 			//0 at 1 (to maintain a preferred distance)
 			//negative greater than 1 (forces creeps to bunch up)
 			//0 at infinity (a creep far away will not move toward other creep)
 		//Should give a pretty smooth way to maintain distance
-		double Attractivity = tanh(1-x)/(x*x);
+		//double Attractivity = tanh(1-x)/(x*x);
 
 		//Big creeps are less influenced by smaller ones
-		double SizeRatio = (*itr)->Scale.x / Scale.x;
-		Attractivity *= SizeRatio * SizeRatio;
+		//double SizeRatio = (*itr)->Scale.x / Scale.x;
+		//Attractivity *= SizeRatio * SizeRatio;
 		//Only affected by equal or bigger creep
 		//if ((*itr)->Scale.x >= Scale.x)
-		CreepRepulsion -=  VecToCreep * Attractivity;
+		//CreepRepulsion -=  VecToCreep * Attractivity;
 	}
 
-	Vector2d WalkingDirection = Vector2d::normalize(GS.HeroPos - Pos) * 10;
+	Vector2d WalkingDirection = Vector2d::normalize(GS.HeroPos - Pos) * .5;
 	WalkingDirection += WallRepulsion * 10;
 	WalkingDirection += CreepRepulsion;
+	WalkingDirection += NearbyCreepVelocity * .2;
 	double NewAngle = atan2(WalkingDirection.y,WalkingDirection.x);
 
 	//Turn toward the hero at the turn speed
@@ -77,6 +100,7 @@ UpdateResult Creep::update2(int ms, GlobalState &GS)
 	//Walk in the direction that he is facing
 	Vector2d PosAdder(cos(Rot), sin(Rot));
 	PosAdder *= Speed * (ms / 1000.0);
+	PosAdder *= .4 * (cos(Rot - NewAngle) + 1.5);
 	//Will the new position be valid?
 	if(GetWalkable(Pos + PosAdder))
 		Pos += PosAdder;

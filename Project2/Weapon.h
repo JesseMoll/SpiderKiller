@@ -17,7 +17,7 @@ public:
 		EQUIP_SPACE,
 	};
 
-	Weapon(Drawable* _Parent, double _FireRate = 1.0, Projectile* _ProjectileToFire = 0);
+	Weapon(Drawable* _Parent, GLuint _Texture = 0, double _FireRate = 1.0, Projectile* _ProjectileToFire = 0);
 	~Weapon(void);
 	void Equip(EquipStatus NewStatus);
 //Overridden Functions

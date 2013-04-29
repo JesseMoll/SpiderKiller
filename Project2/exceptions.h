@@ -26,6 +26,7 @@ DEFINE_MESSAGE_EXCEPTION(texture_not_loaded_exception, "Texture not loaded: ");
 DEFINE_MESSAGE_EXCEPTION(texture_not_found, "Texture not found: ");
 DEFINE_MESSAGE_EXCEPTION(creep_not_found, "Creep not found: ");
 DEFINE_MESSAGE_EXCEPTION(projectile_not_found, "Projectile not found: ");
+DEFINE_MESSAGE_EXCEPTION(weapon_not_found, "Weapon not found: ");
 
 
 #endif

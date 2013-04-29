@@ -111,9 +111,17 @@
     <ClInclude Include="weapon_manager.h" />
   </ItemGroup>
   <ItemGroup>
+    <Image Include="AutoShotgun.bmp" />
+    <Image Include="BFG.bmp" />
+    <Image Include="FireBombGun.bmp" />
     <Image Include="Flame.bmp" />
+    <Image Include="Flamethrower.bmp" />
+    <Image Include="GrenadeLauncher.bmp" />
     <Image Include="HUD.bmp" />
     <Image Include="Level1.bmp" />
+    <Image Include="MachineGun.bmp" />
+    <Image Include="Pistol.bmp" />
+    <Image Include="Shotgun.bmp" />
     <Image Include="Spider.bmp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

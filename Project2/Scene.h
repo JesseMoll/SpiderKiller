@@ -9,7 +9,7 @@ class Scene : public Drawable
     public:
         static Scene* Instance();
 		void draw();
-		void draw2(){}; // Draw Nothing
+		void draw2(); // Draw Nothing
 		void InitGame();
 		void DestructGame();
 		UpdateResult update2(int ms, GlobalState &GS);

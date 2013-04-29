@@ -39,6 +39,9 @@ class Drawable
 		//Accessor for the Position
 		inline Vector2d getLocalPos(){return Pos;};
 
+		//Accessor for the Position
+		inline GLuint getTexture(){return Texture;};
+
 		//Accessor for the Rotation
 		double getRot(bool GlobalRot = false);
 
