@@ -15,8 +15,9 @@ creep_spawner::creep_spawner(Drawable* _Parent, int _SpawnRate, int _SpawnAmount
 
 UpdateResult creep_spawner::update2(int ms, GlobalState &GS)
 {
+	const int MAX_CREEP = 1500;
 	SpawnTimer -= ms;
-	if(SpawnTimer < 0)
+	if(SpawnTimer < 0 && Parent->Children.size() < MAX_CREEP)
 	{
 		SpawnTimer += SpawnRate;
 		for(int n = 0; n != SpawnAmount; n++)

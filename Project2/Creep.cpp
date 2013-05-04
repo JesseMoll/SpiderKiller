@@ -35,39 +35,54 @@ UpdateResult Creep::update2(int ms, GlobalState &GS)
 {
 	//It's dead
 	if(Health == 0)
+	{
+		GS.HeroFocus = std::min(GS.HeroFocus + .1, GS.HeroMaxFocus);
 		return UPDATE_DELETE;
-
+	}
 	
 
-	Vector2d WallRepulsion = GetWallRepulsion(Pos);
+	Vector2d WallRepulsion(0,0);
 	Vector2d CreepRepulsion (0,0);
 	Vector2d NearbyCreepVelocity (0,0);
-	//Loop through all of the creeps (OMG THIS DOESNT WORK WELL... O(n^2) is bad...)
-	//Will fix in the future, for now, compiling as Release works for me
-	creep_manager* CM = static_cast<creep_manager*> (Parent);
+	Vector2d PathingVector(0,0);
 
-	auto NearbyCreep = CM->get_nearby_creep(Pos, 8);
-	for (auto itr = NearbyCreep.begin(); itr != NearbyCreep.end(); ++itr)
+	auto NearbyCells = GS.TheGrid->get_nearby_cells(Pos, 8);
+	int NumNearby = 0;
+	for (auto itr = NearbyCells.begin(); itr != NearbyCells.end(); ++itr)
 	{
-		Vector2d VecToCreep = (*itr)->Pos - Pos;
 		
-		double CurrentDistance = std::max(VecToCreep.length(), .1);
-		const double PreferredDistance = (Scale.x + (*itr)->Scale.x) * 2;
+		Vector2d VecToCell = ((*itr)->UnwalkableCenter - Pos);
+		double LengthToCell = std::max(VecToCell.length(), .1);
+		PathingVector += Vector2d(cos((*itr)->getRot()), sin((*itr)->getRot()))  / (LengthToCell * LengthToCell);
+		WallRepulsion -= VecToCell * (*itr)->UnwalkableWeight / (LengthToCell * LengthToCell * LengthToCell);
+		//std::cout << WallRepulsion << std::endl;
+		Cell* CurrentCell = *itr;
 
-		if((*itr) != this && CurrentDistance < PreferredDistance * 1.5 && (*itr)->Scale.x >= Scale.x)
-		{
-			Vector2d CreepVelocity (cos((*itr)->Rot),sin((*itr)->Rot));
-			NearbyCreepVelocity =  CreepVelocity;
+		for (auto itr2 = CurrentCell->CreepList.begin(); itr2 != CurrentCell->CreepList.end(); ++itr2)
+		{	
+			Creep* CurrentCreep = *itr2;
+			if(CurrentCreep == NULL)
+				break;
 
-			double x = CurrentDistance / (PreferredDistance);
-			double Attractivity = tanh(1-x)/(x*x);
-			double SizeRatio = (*itr)->Scale.x / Scale.x;
-			Attractivity *= SizeRatio * SizeRatio;
+			Vector2d VecToCreep = CurrentCreep->Pos - Pos;
+		
+			double CurrentDistance = std::max(VecToCreep.length(), .1);
+			const double PreferredDistance = (Scale.x + CurrentCreep->Scale.x) * 2;
+			
+			if(CurrentCreep != this && CurrentDistance < PreferredDistance * 1.5)
+			{
+				NumNearby++;
+				Vector2d CreepVelocity (cos(CurrentCreep->Rot),sin(CurrentCreep->Rot));
+				NearbyCreepVelocity +=  CreepVelocity;
 
-			NearbyCreepVelocity +=  CreepVelocity;
-			CreepRepulsion -=  (VecToCreep / CurrentDistance) * Attractivity;
+				double x = CurrentDistance / (PreferredDistance);
+				double Attractivity = tanh(1-x)/(x*x);
+				double SizeRatio = CurrentCreep->Scale.x / Scale.x;
+				Attractivity *= SizeRatio;
+
+				CreepRepulsion -=  (VecToCreep / CurrentDistance) * Attractivity;
+			}
 		}
-		
 		
 
 
@@ -89,10 +104,14 @@ UpdateResult Creep::update2(int ms, GlobalState &GS)
 		//CreepRepulsion -=  VecToCreep * Attractivity;
 	}
 
-	Vector2d WalkingDirection = Vector2d::normalize(GS.HeroPos - Pos) * .5;
-	WalkingDirection += WallRepulsion * 10;
-	WalkingDirection += CreepRepulsion;
-	WalkingDirection += NearbyCreepVelocity * .2;
+	Vector2d WalkingDirection = Vector2d::normalize(PathingVector);//Vector2d::normalize(GS.HeroPos - Pos) * .5;
+	WalkingDirection += WallRepulsion;
+	
+	if(NumNearby != 0)
+	{
+		WalkingDirection += CreepRepulsion;
+		WalkingDirection += NearbyCreepVelocity / NumNearby * .5;
+	}
 	double NewAngle = atan2(WalkingDirection.y,WalkingDirection.x);
 
 	//Turn toward the hero at the turn speed
@@ -100,7 +119,7 @@ UpdateResult Creep::update2(int ms, GlobalState &GS)
 	//Walk in the direction that he is facing
 	Vector2d PosAdder(cos(Rot), sin(Rot));
 	PosAdder *= Speed * (ms / 1000.0);
-	PosAdder *= .4 * (cos(Rot - NewAngle) + 1.5);
+	PosAdder *= .4 * (cos(Rot - NewAngle) + 1);
 	//Will the new position be valid?
 	if(GetWalkable(Pos + PosAdder))
 		Pos += PosAdder;
@@ -110,7 +129,7 @@ UpdateResult Creep::update2(int ms, GlobalState &GS)
 	Rect2d HeroRect = GS.TheHero->GetBoundingRect();
 	if(CreepRect.overlaps(HeroRect)) 
 	{
-		//TODO Damage the hero
+		GS.HeroHealth = std::max(0.0, GS.HeroHealth - Health);
 		return UPDATE_DELETE;
 	}
 	return UPDATE_REDRAW;

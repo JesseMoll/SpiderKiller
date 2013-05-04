@@ -3,8 +3,8 @@
 
 const double PI = 3.1415926535897932384626433832795;
 
-void SetupWallRepulsionArray();
-Vector2d GetWallRepulsion(Vector2d Pos);
+
+void SetupTexture();
 bool GetWalkable(Vector2d Pos);
 
 inline double RadToDeg(double Rad)

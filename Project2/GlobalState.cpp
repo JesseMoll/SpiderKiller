@@ -12,7 +12,12 @@ GlobalState::GlobalState(void):
 	TheHero(0),
 	TheScene(0),
 	TheCreepManager(0),
-	TheWeaponManager(0)
+	TheWeaponManager(0),	
+	HeroMaxHealth(1000),
+	HeroHealth(1000),
+	HeroFocus(0),
+	HeroMaxFocus(100),
+	HeroRegenPerSec(25.0)
 {
 	
 }

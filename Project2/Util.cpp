@@ -10,53 +10,10 @@ Vector2d WallRespulsionArray[TextureWidth][TextureWidth];
 const double FilterSigma = 1.5;
 texture Tex;
 
-
-void SetupWallRepulsionArray()
+void SetupTexture()
 {
 	Tex = texture_manager::get_texture("Level1.bmp");
-	Vector2d FilterArray[FilterWidth * 2 + 1][FilterWidth * 2 + 1];
-	double GaussSum = 0;
-	for (int x = -FilterWidth;x <= FilterWidth;x++)
-	{
-		for (int y = -FilterWidth;y <= FilterWidth;y++)
-		{
-			Vector2d lpos(x, y);
-			Vector2d Mult = Vector2d::exp(-(lpos * lpos) * (.5 / FilterSigma / FilterSigma));
-			GaussSum += Mult.x;
-			FilterArray[x + FilterWidth][y + FilterWidth] = Mult;
-		}
-	}
-	for (int i = FilterWidth;i < TextureWidth - FilterWidth;i++)
-	{
-		for (int j = FilterWidth; j < TextureWidth - FilterWidth;j++)
-		{
-			WallRespulsionArray[i][j] = Vector2d(0,0);
-			Vector2d gPos = Vector2d(i,j);
-			//only need to calculate for valid spots
-			if(GetWalkable(gPos))
-				for (int x = -FilterWidth;x <= FilterWidth;x++)
-				{
-					for (int y = -FilterWidth; y <= FilterWidth;y++)
-					{
-						Vector2d lpos(x, y);
-					 
-						Vector2d Mult = FilterArray[x + FilterWidth][y + FilterWidth];
-						if (!GetWalkable(gPos + lpos))
-							Mult = -Mult;
-						WallRespulsionArray[i][j] += Mult * lpos;
-					}
-				}
-			WallRespulsionArray[i][j] /= GaussSum;
-			
-		}
-	 }
 }
-
-Vector2d GetWallRepulsion(Vector2d Pos)
-{
-	return WallRespulsionArray[(int)Pos.x][(int)Pos.y];
-}
-
 bool GetWalkable(Vector2d Pos)
 {
 	//If transparent, we can't walk there, its a wall

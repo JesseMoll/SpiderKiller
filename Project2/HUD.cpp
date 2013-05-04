@@ -22,6 +22,7 @@ void DrawTexturedSquare()
 		glVertex2f  (0,1);
 	glEnd();
 }
+
 void HUD::draw(int window_width, GlobalState &GS)
 {
 	weapon_manager* WM = static_cast<weapon_manager*>(GS.TheWeaponManager);
@@ -32,6 +33,28 @@ void HUD::draw(int window_width, GlobalState &GS)
 	gluOrtho2D(0,1024 ,0,256);
 	glMatrixMode(GL_MODELVIEW); // return to modelview mode
 	glLoadIdentity(); // reset the modelview
+
+	//Draw the health bar
+	double HealthPct = GS.HeroHealth / GS.HeroMaxHealth;
+	glDisable(GL_TEXTURE_2D);
+	glPushMatrix();
+		glColor4f(0,.7,0,.7); //Semi-transparent green
+		glTranslatef(384,43,0);
+		glScaled(HealthPct * 256,14,0);
+		glRectd(0,0,1,1);
+	glPopMatrix();
+	glEnable(GL_TEXTURE_2D);
+
+	//Draw the focus bar
+	double FocusPct = GS.HeroFocus / GS.HeroMaxFocus;
+	glDisable(GL_TEXTURE_2D);
+	glPushMatrix();
+		glColor4f(0,0,.7,.7); //Semi-transparent blue
+		glTranslatef(384,70,0);
+		glScaled(FocusPct * 256,14,0);
+		glRectd(0,0,1,1);
+	glPopMatrix();
+	glEnable(GL_TEXTURE_2D);
 
 
 	glBindTexture (GL_TEXTURE_2D, Texture);	
@@ -47,6 +70,8 @@ void HUD::draw(int window_width, GlobalState &GS)
 		glScalef(64,64,1);
 		DrawTexturedSquare();
 	glPopMatrix();
+
+
 
 	/*
 	glBindTexture (GL_TEXTURE_2D, WM->getWeaponIcon(Weapon::EQUIP_RIGHT));		

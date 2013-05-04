@@ -1,6 +1,7 @@
 #include "Projectile.h"
 #include "creep_manager.h"
 #include "Creep.h"
+#include "Grid.h"
 
 Projectile::Projectile(Drawable* _Parent, GLuint _Texture, double _Scale, double _Speed, double _Damage, double _MaxDistance, Projectile* _ProjectileToFireOnDeath, int _NumToFireOnDeath,  double _SpreadOnDeath, Vector3d _Color):
 	Drawable(_Parent, _Texture, Vector2d(0,0), Vector2d(_Scale,_Scale), _Color),
@@ -66,16 +67,19 @@ UpdateResult Projectile::update2(int ms, GlobalState &GS)
 		Pos += PosAdder;
 		Rect2d ProjectileRect = GetBoundingRect();
 		creep_manager* CM = static_cast<creep_manager*> (GS.TheCreepManager);
-		auto NearbyCreep = CM->get_nearby_creep(Pos, 8);
-		for (auto itr = NearbyCreep.begin(); itr != NearbyCreep.end(); ++itr){
-			if((*itr)->checkOverlap(Pos, Scale.x))
-			{
-				//deal damage to the creep based on the projectile's damage
-				Damage = ((Creep*)(*itr))->Damage(Damage);
-				if (Damage <= 0)
+		Grid* G = GS.TheGrid;
+		auto NearbyCells = G->get_nearby_cells(Pos, 8);
+		for (auto itr = NearbyCells.begin(); itr != NearbyCells.end(); ++itr){
+			for (auto itr2 = (*itr)->CreepList.begin(); itr2 != (*itr)->CreepList.end(); ++itr2){
+				if((*itr2)->checkOverlap(Pos, Scale.x))
 				{
-					onDeath(GS);
-					return UPDATE_DELETE;
+					//deal damage to the creep based on the projectile's damage
+					Damage = ((Creep*)(*itr2))->Damage(Damage);
+					if (Damage <= 0)
+					{
+						onDeath(GS);
+						return UPDATE_DELETE;
+					}
 				}
 			}
 		}

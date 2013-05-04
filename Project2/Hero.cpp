@@ -8,9 +8,8 @@ Hero::Hero(Drawable* _Parent, GLuint _Texture, Vector2d _Pos):Drawable(_Parent, 
 }
 
 UpdateResult Hero::update2(int ms, GlobalState &GS)
-{
-
-	
+{ 
+	GS.HeroHealth = std::min(GS.HeroMaxHealth, GS.HeroHealth + GS.HeroRegenPerSec * (double(ms) / 1000.0));
 	Vector2d WalkingDirection(0,0);
 
 	//Set walking direction (forward/backward) and angle depending on which key is pressed

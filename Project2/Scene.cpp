@@ -3,6 +3,7 @@
 #include "creep_manager.h"
 #include "texture_manager.h"
 #include "weapon_manager.h"
+#include <sstream>
 
 const int TextureWidth = 512;
 // Texture is a WxWx4 array (rgba)
@@ -56,12 +57,12 @@ void Scene::DestructGame()
 
 void Scene::InitGame()
 {
-	SetupWallRepulsionArray();
+	SetupTexture();
 	new (&GS) GlobalState();
     GS.TheHero = AddChild(new Hero(this, 0, Vector2d(TextureWidth/2, TextureWidth/2)));	
 	GS.TheCreepManager = AddChild(new creep_manager(this));
 	GS.TheWeaponManager = AddChild(new weapon_manager(this));
-	
+	GS.TheGrid = static_cast<Grid*>(AddChild(new Grid));
 
 
 	//After we load the textures, init the hud
@@ -98,9 +99,9 @@ void Scene::InitGame()
 
 	//TODO - Move this code into the level class (on level init)
 	//TODO, add finite spawns (so we can beat a level)
-	CM->add_spawner(Vector2d(225,300), 5000, 50, "Tiny Spider",  270);
-	CM->add_spawner(Vector2d(250,200), 5000, 20, "Small Spider",  90);
-	CM->add_spawner(Vector2d(250,200), 10000, 1, "Huge Spider",  90);
+	CM->add_spawner(Vector2d(225,300), 500, 10, "Tiny Spider",  270);
+	CM->add_spawner(Vector2d(250,200), 500, 10, "Small Spider",  90);
+	//CM->add_spawner(Vector2d(250,200), 10000, 1, "Huge Spider",  90);
 }
 
 void Scene::draw2()
@@ -180,7 +181,15 @@ void Scene::Timer(int value){
 
     std::chrono::time_point<std::chrono::system_clock> CurrentTime = std::chrono::system_clock::now();
 	__int64 msSinceLastUpdate = std::chrono::duration_cast<std::chrono::milliseconds>(CurrentTime - LastUpdate).count();
+	__int64 microsecSinceLastUpdate = std::chrono::duration_cast<std::chrono::microseconds>(CurrentTime - LastUpdate).count();
 	LastUpdate = CurrentTime;
+
+	std::stringstream s;
+	s.unsetf ( std::ios::floatfield );
+	s.precision(3);
+	s << 1000000.0/microsecSinceLastUpdate << " FPS";
+
+	glutSetWindowTitle(s.str().c_str());
 
 	if(ptrInstance->update((int)msSinceLastUpdate, GS) != UPDATE_NONE) // update everything and if anything has changed...
 		glutPostRedisplay(); // redraw everything;
@@ -272,6 +281,8 @@ UpdateResult Scene::update2(int ms, GlobalState &GS)
 			texture_manager::load_texture("Spider.bmp", 256, 256);
 			texture_manager::load_texture("Flame.bmp", 128, 128);
 			texture_manager::load_texture("HUD.bmp", 1024, 256);
+
+			texture_manager::load_texture("Arrow.bmp", 64, 64);
 
 			texture_manager::load_texture("Pistol.bmp", 64, 64);
 			texture_manager::load_texture("MachineGun.bmp", 64, 64);

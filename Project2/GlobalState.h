@@ -4,7 +4,7 @@
 #include "Util.h"
 #include <GL/glut.h>
 
-
+class Grid;
 class Drawable;
 
 
@@ -28,7 +28,7 @@ const unsigned int A_KEY = 0x40;
 const unsigned int S_KEY = 0x80;
 const unsigned int D_KEY = 0x100;
 
-const unsigned int UPDATE_INTERVAL = 10;
+const unsigned int UPDATE_INTERVAL = 25;
 
 
 class GlobalState
@@ -47,13 +47,21 @@ public:
 	//For accessing the creeps
 	Drawable *TheCreepManager;
 	Drawable *TheWeaponManager;
-
+	Grid* TheGrid;
 	//Each key is represented by a bit, 1 means down, 0 means up
 	unsigned int KeyStates;	
 
 	//Camera values
 
+	//Hero Values
 	Vector2d HeroPos;
+	double HeroMaxHealth;
+	double HeroHealth;
+	double HeroFocus;
+	double HeroMaxFocus;
+	double HeroRegenPerSec;
+
+
 	Vector2d WindowSize;
 	Vector2d MousePos;
 
