@@ -102,7 +102,6 @@
     <ClCompile Include="RGBpixmap.cpp" />
     <ClCompile Include="Scene.cpp" />
     <ClCompile Include="GlobalState.cpp" />
-    <ClCompile Include="Source.cpp" />
     <ClCompile Include="texture_manager.cpp" />
     <ClCompile Include="Util.cpp" />
     <ClCompile Include="Vector2d.cpp" />

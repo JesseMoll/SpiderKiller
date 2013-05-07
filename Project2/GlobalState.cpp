@@ -20,7 +20,8 @@ GlobalState::GlobalState(void):
 	HeroRegenPerSec(25.0),
 	CameraOffset(0,0),
 	ViewSize(100),
-	Debug(false)
+	Debug(false),
+	GamePaused(false)
 {
 	
 }

@@ -234,6 +234,19 @@ void Scene::Timer(int value){
 		GS.Debug = !GS.Debug;
 		GS.KeyStates &= ~TILDE_KEY;
 	}
+
+	//Pause/unpause the game if the R key is pressed
+	if (GS.KeyDown(R_KEY))
+	{
+		GS.KeyStates &= ~R_KEY;
+		GS.GamePaused = !GS.GamePaused;
+	}
+
+	if (GS.GamePaused)
+	{
+		glutTimerFunc(UPDATE_INTERVAL, Timer, 0);
+		return;
+	}
 	if(ptrInstance->update((int)msSinceLastUpdate, GS) != UPDATE_NONE) // update everything and if anything has changed...
 		glutPostRedisplay(); // redraw everything;
     glutTimerFunc(UPDATE_INTERVAL, Timer, 0);
@@ -259,6 +272,8 @@ UpdateResult Scene::update2(int ms, GlobalState &GS)
 			GS.KeyStates |= D_KEY;
 		if(key == 'q' || key == 'Q')
 			GS.KeyStates |= Q_KEY;
+		if (key == 'r' || key == 'R')
+			GS.KeyStates |= R_KEY;
 		if(key == 27)
 			GS.KeyStates |= ESC;
 		if(key == '`')
@@ -280,6 +295,8 @@ UpdateResult Scene::update2(int ms, GlobalState &GS)
 			GS.KeyStates &= ~Q_KEY;
 		if(key == 27)
 			exit(0);
+		if (key == 'r' || key == 'R')
+			GS.KeyStates &= ~R_KEY;
 
 	}
 

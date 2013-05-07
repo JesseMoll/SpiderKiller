@@ -84,6 +84,6 @@ public:
 	GLuint RightWeaponTex;
 	GLuint SuperWeaponTex;
 
-	
+	bool GamePaused;
 
 };
