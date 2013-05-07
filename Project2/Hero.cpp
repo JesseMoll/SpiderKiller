@@ -1,7 +1,7 @@
 #include "Hero.h"
 #include "Projectile.h"
 
-Hero::Hero(Drawable* _Parent, GLuint _Texture, Vector2d _Pos):Drawable(_Parent, _Texture, _Pos),
+Hero::Hero(Drawable* _Parent, GLuint _Texture, Vector2d _Pos):Drawable(_Parent, _Texture, _Pos,Vector2d(4,4)),
 	AnimationTime(0)
 {
 	Color = Vector3d(0,1,0);

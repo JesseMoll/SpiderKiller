@@ -68,7 +68,7 @@ UpdateResult Projectile::update2(int ms, GlobalState &GS)
 		Rect2d ProjectileRect = GetBoundingRect();
 		creep_manager* CM = static_cast<creep_manager*> (GS.TheCreepManager);
 		Grid* G = GS.TheGrid;
-		auto NearbyCells = G->get_nearby_cells(Pos, 8);
+		auto NearbyCells = G->get_nearby_cells(Pos, CellSize * 2);
 		for (auto itr = NearbyCells.begin(); itr != NearbyCells.end(); ++itr){
 			for (auto itr2 = (*itr)->CreepList.begin(); itr2 != (*itr)->CreepList.end(); ++itr2){
 				if((*itr2)->checkOverlap(Pos, Scale.x))

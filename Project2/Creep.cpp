@@ -46,16 +46,17 @@ UpdateResult Creep::update2(int ms, GlobalState &GS)
 	Vector2d NearbyCreepVelocity (0,0);
 	Vector2d PathingVector(0,0);
 
-	auto NearbyCells = GS.TheGrid->get_nearby_cells(Pos, 8);
+	auto NearbyCells = GS.TheGrid->get_nearby_cells(Pos, CellSize * 2);
 	int NumNearby = 0;
 	for (auto itr = NearbyCells.begin(); itr != NearbyCells.end(); ++itr)
 	{
 		
-		Vector2d VecToCell = ((*itr)->UnwalkableCenter - Pos);
-		double LengthToCell = std::max(VecToCell.length(), .1);
-		PathingVector += Vector2d(cos((*itr)->getRot()), sin((*itr)->getRot()))  / (LengthToCell * LengthToCell);
-		WallRepulsion -= VecToCell * (*itr)->UnwalkableWeight / (LengthToCell * LengthToCell * LengthToCell);
-		//std::cout << WallRepulsion << std::endl;
+		Vector2d VecToCell = ((*itr)->Pos - Pos);
+		double LengthToCellSquared = std::max(VecToCell.length_squared(), .1);
+		PathingVector += Vector2d(cos((*itr)->getRot()), sin((*itr)->getRot()))  / (LengthToCellSquared);
+
+		WallRepulsion += GetForce((*itr)->UnwalkableCenter, Pos) * (*itr)->UnwalkableWeight;
+
 		Cell* CurrentCell = *itr;
 
 		for (auto itr2 = CurrentCell->CreepList.begin(); itr2 != CurrentCell->CreepList.end(); ++itr2)
@@ -66,21 +67,34 @@ UpdateResult Creep::update2(int ms, GlobalState &GS)
 
 			Vector2d VecToCreep = CurrentCreep->Pos - Pos;
 		
-			double CurrentDistance = std::max(VecToCreep.length(), .1);
-			const double PreferredDistance = (Scale.x + CurrentCreep->Scale.x) * 2;
+			double CombinedRadius = (Scale.x + CurrentCreep->Scale.x) * 1.2;
+			//Use distance squared so we don't need to calc the sqrt
+			double CurrentDistanceSquared = std::max(VecToCreep.length_squared(), .1);
+			const double PreferredDistanceSquared = (CombinedRadius + .5) * (CombinedRadius + .5);
 			
-			if(CurrentCreep != this && CurrentDistance < PreferredDistance * 1.5)
+			if(CurrentCreep != this && CurrentDistanceSquared < PreferredDistanceSquared * 2.5)
 			{
 				NumNearby++;
 				Vector2d CreepVelocity (cos(CurrentCreep->Rot),sin(CurrentCreep->Rot));
-				NearbyCreepVelocity +=  CreepVelocity;
+				NearbyCreepVelocity +=  CreepVelocity / (CurrentDistanceSquared);
 
-				double x = CurrentDistance / (PreferredDistance);
-				double Attractivity = tanh(1-x)/(x*x);
+				double x = CurrentDistanceSquared / (PreferredDistanceSquared);
+
+
+				//This just works, a function which is:
+					//infinite at 0 (to prevent collisions)
+					//0 at 1 (to maintain a preferred distance)
+					//negative greater than 1 (forces creeps to bunch up)
+					//0 at infinity (a creep far away will not move toward other creep)
+				//Should give a pretty smooth way to maintain distance
+				//http://www.wolframalpha.com/input/?i=tanh%281-x%29%2F%28e%5E%28x*x%29%29+from+0+to+2.5
+				double Attractivity = tanh(1-x)*(exp(-x*x));
+
 				double SizeRatio = CurrentCreep->Scale.x / Scale.x;
 				Attractivity *= SizeRatio;
+				//Attractivity *= SizeRatio;
 
-				CreepRepulsion -=  (VecToCreep / CurrentDistance) * Attractivity;
+				CreepRepulsion -=  Vector2d::normalize(VecToCreep) * Attractivity;
 			}
 		}
 		
@@ -88,30 +102,24 @@ UpdateResult Creep::update2(int ms, GlobalState &GS)
 
 		
 
-		//This just works, a function which is:
-			//infinite at 0 (to prevent collisions)
-			//0 at 1 (to maintain a preferred distance)
-			//negative greater than 1 (forces creeps to bunch up)
-			//0 at infinity (a creep far away will not move toward other creep)
-		//Should give a pretty smooth way to maintain distance
-		//double Attractivity = tanh(1-x)/(x*x);
-
-		//Big creeps are less influenced by smaller ones
-		//double SizeRatio = (*itr)->Scale.x / Scale.x;
-		//Attractivity *= SizeRatio * SizeRatio;
-		//Only affected by equal or bigger creep
-		//if ((*itr)->Scale.x >= Scale.x)
-		//CreepRepulsion -=  VecToCreep * Attractivity;
 	}
 
-	Vector2d WalkingDirection = Vector2d::normalize(PathingVector);//Vector2d::normalize(GS.HeroPos - Pos) * .5;
-	WalkingDirection += WallRepulsion;
+
+	PathingVector.normalize();
+	
+
+	Vector2d WalkingDirection = Vector2d(cos(Rot), sin(Rot)); //Our current velocity
+	WalkingDirection += PathingVector * PathingForceMult;
+	WalkingDirection += GetForce(Pos, GS.HeroPos) * HeroForceMult;
+	WalkingDirection += WallRepulsion * WallForceMult;
 	
 	if(NumNearby != 0)
 	{
-		WalkingDirection += CreepRepulsion;
-		WalkingDirection += NearbyCreepVelocity / NumNearby * .5;
+		WalkingDirection += CreepRepulsion * CreepDistanceForceMult;
+		NearbyCreepVelocity.normalize();
+		WalkingDirection += NearbyCreepVelocity * CreepVelocityForceMult;
 	}
+
 	double NewAngle = atan2(WalkingDirection.y,WalkingDirection.x);
 
 	//Turn toward the hero at the turn speed
@@ -119,7 +127,8 @@ UpdateResult Creep::update2(int ms, GlobalState &GS)
 	//Walk in the direction that he is facing
 	Vector2d PosAdder(cos(Rot), sin(Rot));
 	PosAdder *= Speed * (ms / 1000.0);
-	PosAdder *= .4 * (cos(Rot - NewAngle) + 1);
+	//slow down if we are going the wrong way
+	PosAdder *= .4 * (cos(Rot - NewAngle) + 1.5);
 	//Will the new position be valid?
 	if(GetWalkable(Pos + PosAdder))
 		Pos += PosAdder;

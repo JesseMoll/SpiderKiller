@@ -5,9 +5,6 @@
 #include "weapon_manager.h"
 #include <sstream>
 
-const int TextureWidth = 512;
-// Texture is a WxWx4 array (rgba)
-static GLubyte TexImage[TextureWidth][TextureWidth][4];
 
 //static class variables
 Scene* Scene::ptrInstance = NULL; 
@@ -59,7 +56,7 @@ void Scene::InitGame()
 {
 	SetupTexture();
 	new (&GS) GlobalState();
-    GS.TheHero = AddChild(new Hero(this, 0, Vector2d(TextureWidth/2, TextureWidth/2)));	
+    GS.TheHero = AddChild(new Hero(this, 0, Vector2d(584, LevelSize/2)));	
 	GS.TheCreepManager = AddChild(new creep_manager(this));
 	GS.TheWeaponManager = AddChild(new weapon_manager(this));
 	GS.TheGrid = static_cast<Grid*>(AddChild(new Grid));
@@ -71,49 +68,51 @@ void Scene::InitGame()
 	//Get the weapon manager pointer as the correct type
 	weapon_manager* WM = static_cast<weapon_manager*>(GS.TheWeaponManager);
 	//Add some projectiles
-	WM->add_projectile("Bullet",	"", .2, 40, 50, 1e6);
-	WM->add_projectile("Pellet",	"", .2, 40, 20,  30); 
-	WM->add_projectile("Flame", "Flame.bmp", 2, 40, 6, 20);
+	WM->add_projectile("Bullet",	"", .5, 100, 40, 1e6);
+	WM->add_projectile("Pellet",	"", .5, 100, 5,  80); 
+	WM->add_projectile("Flame", "Flame.bmp", 4, 100, 3, 50);
 
-	WM->add_projectile("Shell",		"",  .2, 20, 100, 3,  "Pellet",	8,  40);
-	WM->add_projectile("Fire",		"",  0, 20, 100, 3,  "Flame",	8,  60); 
-	WM->add_projectile("Fire Bomb",	"", .5, 30, 100, 15, "Fire",	8, 360); 
-	WM->add_projectile("Grenade",	"", .5, 30, 100, 15, "Shell",	8, 360);
-	WM->add_projectile("Super Bomb","", .5, 80, 100, 30, "Fire Bomb", 10, 360);
+	WM->add_projectile("Shell",		"",  .2, 40, 10, 3,  "Pellet",	12,  60);
+	WM->add_projectile("Fire",		"",  0, 40, 10, 3,  "Flame",	8,  60); 
+	WM->add_projectile("Fire Bomb",	"", .5, 100, 30, 75, "Fire",	8, 360); 
+	WM->add_projectile("Grenade",	"", .5, 100, 30, 75, "Shell",	8, 360);
+	WM->add_projectile("Mine",	"", .5, .01, 1, 1, "Shell",	8, 360);
+	WM->add_projectile("Super Bomb","", .5, 120, 30, 80, "Fire Bomb", 10, 360);
 	//TODO ADD Weapons as we pick them up
 	//TODO Separate Weapons as left-click, right-click, and spacebar (super weapons which take energy gained from kills)
 	WM->add_weapon("Machine Gun", "MachineGun.bmp", 100.0, "Bullet");
-	WM->add_weapon("Shotgun", "Shotgun.bmp",  750, "Shell");
+	WM->add_weapon("Shotgun", "Shotgun.bmp",  1000, "Shell");
 	WM->add_weapon("Auto Shotgun", "AutoShotgun.bmp",  300, "Shell");
 	WM->add_weapon("Flamethrower", "Flamethrower.bmp",  75.0, "Fire");
 	WM->add_weapon("Grenade Launcher",  "GrenadeLauncher.bmp", 1000.0, "Grenade");
 	WM->add_weapon("Fire Bomb Gun", "FireBombGun.bmp",  1000, "Fire Bomb");
 	WM->add_weapon("BFG", "BFG.bmp",  2000.0, "Super Bomb");
-	WM->add_weapon("Pistol",  "Pistol.bmp", 250.0, "Bullet");
+	WM->add_weapon("Pistol",  "Pistol.bmp", 500.0, "Bullet");
+	WM->add_weapon("Mine Layer",  "", 1000.0, "Mine");
 
 	//Get the creep manager pointer as the correct type
 	creep_manager* CM = static_cast<creep_manager*>(GS.TheCreepManager);
-	CM->add_creep("Tiny Spider", 5, "Spider.bmp", .75, 25, 5);
-	CM->add_creep("Small Spider", 10, "Spider.bmp", 1.5, 25, 4);
-	CM->add_creep("Huge Spider", 500, "Spider.bmp", 10, 10, 2);
+	CM->add_creep("Tiny Spider", 2, "Spider.bmp", 1.5, 50, 5);
+	CM->add_creep("Medium Spider", 10, "Spider.bmp", 4, 40, 4);
+	CM->add_creep("Huge Spider", 500, "Spider.bmp", 10, 20, 2);
 
 	//TODO - Move this code into the level class (on level init)
 	//TODO, add finite spawns (so we can beat a level)
-	CM->add_spawner(Vector2d(225,300), 500, 10, "Tiny Spider",  270);
-	CM->add_spawner(Vector2d(250,200), 500, 10, "Small Spider",  90);
-	//CM->add_spawner(Vector2d(250,200), 10000, 1, "Huge Spider",  90);
+	CM->add_spawner(Vector2d(400,674), 5000, 200, "Tiny Spider",  270);
+	CM->add_spawner(Vector2d(400,674), 5000, 10, "Medium Spider",  90);
+	CM->add_spawner(Vector2d(400,674), 10000, 1, "Huge Spider",  90);
 }
 
 void Scene::draw2()
 {	
 	//Turn Textures on for the ground
 	
-	glBindTexture (GL_TEXTURE_2D, texture_manager::get_texture_name("Level1.bmp"));
+	glBindTexture (GL_TEXTURE_2D, texture_manager::get_texture_name("Level2.bmp"));
 	//Draw the ground (10 squares x 10 squares)
 
 	const int NUM_QUADS = 10;
 	glPushMatrix();
-	glScaled(TextureWidth,TextureWidth,TextureWidth);
+	glScaled(LevelSize,LevelSize,LevelSize);
 	glBegin(GL_QUADS);
 		for(int x = 0; x != NUM_QUADS; x++)
 		{
@@ -145,13 +144,14 @@ void Scene::draw()
 
     
 	
-	const int ViewSizeY = 60;
-	const int ViewSizeX = (60 * w) / h;
+	const double ViewSizeY = GS.ViewSize;
+	const double ViewSizeX = (ViewSizeY * w) / h;
 
 	glViewport(0, 0, w, h); // set viewport (drawing area) to entire window
 	glMatrixMode(GL_PROJECTION); // projection matrix is active
 	glLoadIdentity(); // reset the projection
-	gluOrtho2D(GS.HeroPos.x - ViewSizeX, GS.HeroPos.x + ViewSizeX, GS.HeroPos.y - ViewSizeY, GS.HeroPos.y + ViewSizeY);
+	Vector2d CamPos = GS.HeroPos + GS.CameraOffset;
+	gluOrtho2D(CamPos.x - ViewSizeX, CamPos.x + ViewSizeX, CamPos.y - ViewSizeY, CamPos.y + ViewSizeY);
 	glMatrixMode(GL_MODELVIEW); // return to modelview mode
 	glLoadIdentity(); // reset the modelview
 
@@ -164,7 +164,7 @@ void Scene::draw()
 	glViewport(w - w/4, 0, w / 4, w / 4); // set viewport (drawing area) to entire window
 	glMatrixMode(GL_PROJECTION);
 	glLoadIdentity(); // reset the projection
-	gluOrtho2D(0, 512, 0, 512);
+	gluOrtho2D(0, LevelSize, 0, LevelSize);
 	glMatrixMode(GL_MODELVIEW); // return to modelview mode
 	glLoadIdentity(); // reset the modelview
 	draw2();
@@ -190,7 +190,40 @@ void Scene::Timer(int value){
 	s << 1000000.0/microsecSinceLastUpdate << " FPS";
 
 	glutSetWindowTitle(s.str().c_str());
+	if(GS.KeyStates & PG_DN_KEY)
+		GS.ViewSize = std::min(MaxView, exp(msSinceLastUpdate / 1000.0) * GS.ViewSize);
+	if(GS.KeyStates & PG_UP_KEY)
+		GS.ViewSize = std::max(MinView, exp(-msSinceLastUpdate / 1000.0) * GS.ViewSize);
 
+	if(GS.KeyStates & LEFT_KEY)
+		GS.CameraOffset.x -= CameraMoveSpeed * msSinceLastUpdate * GS.ViewSize;
+	if(GS.KeyStates & RIGHT_KEY)
+		GS.CameraOffset.x += CameraMoveSpeed * msSinceLastUpdate * GS.ViewSize;
+	if(GS.KeyStates & UP_KEY)
+		GS.CameraOffset.y += CameraMoveSpeed * msSinceLastUpdate * GS.ViewSize;
+	if(GS.KeyStates & DOWN_KEY)
+		GS.CameraOffset.y -= CameraMoveSpeed * msSinceLastUpdate * GS.ViewSize;
+	static __int64 msSinceLastArrowKey = 0;
+	//If none of the arrow keys are down, return 
+	if(!(GS.KeyStates & (LEFT_KEY | RIGHT_KEY | UP_KEY | DOWN_KEY)))
+	{
+		msSinceLastArrowKey += msSinceLastUpdate;
+		if(msSinceLastArrowKey > 1000)
+		{
+			GS.CameraOffset.x *= .9;
+			GS.CameraOffset.y *= .9;
+		}
+		
+	}
+	else
+	{
+		msSinceLastArrowKey = 0;
+	}
+	if(GS.KeyStates & TILDE_KEY)
+	{
+		GS.Debug = !GS.Debug;
+		GS.KeyStates &= ~TILDE_KEY;
+	}
 	if(ptrInstance->update((int)msSinceLastUpdate, GS) != UPDATE_NONE) // update everything and if anything has changed...
 		glutPostRedisplay(); // redraw everything;
     glutTimerFunc(UPDATE_INTERVAL, Timer, 0);
@@ -218,6 +251,8 @@ UpdateResult Scene::update2(int ms, GlobalState &GS)
 			GS.KeyStates |= Q_KEY;
 		if(key == 27)
 			GS.KeyStates |= ESC;
+		if(key == '`')
+			GS.KeyStates |= TILDE_KEY;
 	}
 
 	void Scene::releaseNormalKeys(unsigned char key, int xx, int yy){
@@ -235,11 +270,37 @@ UpdateResult Scene::update2(int ms, GlobalState &GS)
 			GS.KeyStates &= ~Q_KEY;
 		if(key == 27)
 			exit(0);
+
 	}
 
 	void Scene::pressSpecialKey(int key, int xx, int yy){
+		if(key == GLUT_KEY_PAGE_UP)
+			GS.KeyStates |= PG_UP_KEY;
+		if(key == GLUT_KEY_PAGE_DOWN)
+			GS.KeyStates |= PG_DN_KEY;
+		if(key == GLUT_KEY_LEFT)
+			GS.KeyStates |= LEFT_KEY;
+		if(key == GLUT_KEY_RIGHT)
+			GS.KeyStates |= RIGHT_KEY;
+		if(key == GLUT_KEY_UP)
+			GS.KeyStates |= UP_KEY;
+		if(key == GLUT_KEY_DOWN)
+			GS.KeyStates |= DOWN_KEY;
+
 	}
 	void Scene::releaseSpecialKey(int key, int xx, int yy){
+		if(key == GLUT_KEY_PAGE_UP)
+			GS.KeyStates &= ~PG_UP_KEY;
+		if(key == GLUT_KEY_PAGE_DOWN)
+			GS.KeyStates &= ~PG_DN_KEY;
+		if(key == GLUT_KEY_LEFT)
+			GS.KeyStates &= ~LEFT_KEY;
+		if(key == GLUT_KEY_RIGHT)
+			GS.KeyStates &= ~RIGHT_KEY;
+		if(key == GLUT_KEY_UP)
+			GS.KeyStates &= ~UP_KEY;
+		if(key == GLUT_KEY_DOWN)
+			GS.KeyStates &= ~DOWN_KEY;
 	}
 
 	void Scene::mouseMove(int xx, int yy){
@@ -278,6 +339,8 @@ UpdateResult Scene::update2(int ms, GlobalState &GS)
 			
 			//Load the Textures with the texture_manager
 			texture_manager::load_texture("Level1.bmp", 512, 512);
+			texture_manager::load_texture("Level2.bmp", 1024, 1024);
+			texture_manager::load_texture("Level3.bmp", 1024, 1024);
 			texture_manager::load_texture("Spider.bmp", 256, 256);
 			texture_manager::load_texture("Flame.bmp", 128, 128);
 			texture_manager::load_texture("HUD.bmp", 1024, 256);

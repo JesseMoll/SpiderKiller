@@ -3,42 +3,63 @@
 #include <queue>
 
 
-Grid::Grid(void)
+Grid::Grid(void):debug(false)
 {
-	const double SQRT2 = sqrt(2.0);
-	const double SQRT5 = sqrt(5.0);
+
+	cells.resize(GridSize);
 	for(int i = 0; i != GridSize; ++i)
 	{
+		cells[i].resize(GridSize);
 		for(int j = 0; j != GridSize; ++j)
 		{
 			cells[i][j].CreepList.reserve(8);
 			cells[i][j].setPos(Vector2d(i + .5,j + .5)*CellSize);
 			cells[i][j].SetupUnwalkable();
+		}
+	}
+
+	for(int i = 0; i != GridSize; ++i)
+	{
+		for(int j = 0; j != GridSize; ++j)
+		{	
 			if(cells[i][j].UnwalkableWeight != MaxWeight)
 			{
-				AddChild(&cells[i][j]);
-				cells[i][j].AddConnection(GetCell(i-1,j), 1.0);
-				cells[i][j].AddConnection(GetCell(i,j-1), 1.0);
-				cells[i][j].AddConnection(GetCell(i+1,j), 1.0);
-				cells[i][j].AddConnection(GetCell(i,j+1), 1.0);
-
-				cells[i][j].AddConnection(GetCell(i-1,j-1), SQRT2);
-				cells[i][j].AddConnection(GetCell(i+1,j-1), SQRT2);
-				cells[i][j].AddConnection(GetCell(i+1,j+1), SQRT2);
-				cells[i][j].AddConnection(GetCell(i-1,j+1), SQRT2);
-
-				cells[i][j].AddConnection(GetCell(i-2,j-1), SQRT5);
-				cells[i][j].AddConnection(GetCell(i+2,j-1), SQRT5);
-				cells[i][j].AddConnection(GetCell(i+2,j+1), SQRT5);
-				cells[i][j].AddConnection(GetCell(i-2,j+1), SQRT5);
-
-				cells[i][j].AddConnection(GetCell(i-1,j-2), SQRT5);
-				cells[i][j].AddConnection(GetCell(i+1,j-2), SQRT5);
-				cells[i][j].AddConnection(GetCell(i+1,j+2), SQRT5);
-				cells[i][j].AddConnection(GetCell(i-1,j+2), SQRT5);
+				Addconnections(i, j, 0, 1);
+				Addconnections(i, j, 1, 0);
+				Addconnections(i, j, 1, 1);
+				Addconnections(i, j, 2, 1);
+				Addconnections(i, j, 1, 2);
+				if(cells[i][j].Connections.size()!= 0)
+					AddChild(&cells[i][j]);
 			}
 		}
 	}
+}
+
+void Grid::Addconnections(const int i, const int j, const int iAdder, const int jAdder)
+{
+	//Centeri = i + 
+	double Dist = sqrt(iAdder * iAdder + jAdder * jAdder);
+	
+	Cell* c1 = GetCell(i,j);
+	Cell* c2 = GetCell(i+iAdder,j+jAdder);
+	Cell* c3 = GetCell(i-iAdder,j+jAdder);
+	Cell* c4 = GetCell(i+iAdder,j-jAdder);
+	Cell* c5 = GetCell(i-iAdder,j-jAdder);
+
+	if(c2 && CheckVisibility(c1->Pos,c2->Pos))
+		cells[i][j].AddConnection(GetCell(i+iAdder,j+jAdder), Dist);
+	if(iAdder != 0)
+		if(c3 && CheckVisibility(c1->Pos,c3->Pos))
+			cells[i][j].AddConnection(GetCell(i-iAdder,j+jAdder), Dist);
+	if(jAdder != 0)
+		if(c4 && CheckVisibility(c1->Pos,c4->Pos))
+			cells[i][j].AddConnection(GetCell(i+iAdder,j-jAdder), Dist);
+	if(iAdder != 0 && jAdder != 0)
+		if(c5 && CheckVisibility(c1->Pos,c5->Pos))
+			cells[i][j].AddConnection(GetCell(i-iAdder,j-jAdder), Dist);
+	
+
 }
 
 void Grid::UpdatePathing(Cell* Target)
@@ -84,8 +105,12 @@ Cell* Grid::GetCell(Vector2d &Pos)
 	return GetCell(static_cast<int>(Pos.x / CellSize), static_cast<int>(Pos.y / CellSize));
 }
 
-void Grid::draw2()
+void Grid::draw()
 {
+	if(debug)
+		for (auto dPtr = Children.begin();dPtr != Children.end(); ++dPtr) {
+			(*dPtr)->draw();
+		}
 }
 
 std::list<Cell*> Grid::get_nearby_cells(Vector2d creep_pos, double radius)
@@ -98,12 +123,12 @@ std::list<Cell*> Grid::get_nearby_cells(Vector2d creep_pos, double radius)
 	int x_max = std::min(GridSize - 1,x + CheckWidth);
 	int y_min = std::max(0,y - CheckWidth);
 	int y_max = std::min(GridSize - 1,y + CheckWidth);
-
+	double radius_squared = radius * radius;
 	for(int i = x_min; i <= x_max; ++i)
 	{
 		for(int j = y_min; j <= y_max; ++j)
 		{
-				//if(Vector2d::distance_squared(creep_pos, c->getLocalPos()) < radius_squared)
+			if(Vector2d::distance_squared(creep_pos, cells[i][j].Pos) < radius_squared)
 				RetVal.push_back(&cells[i][j]);
 		}
 	}
@@ -133,6 +158,7 @@ void Grid::UpdateGrid(std::list<Drawable*>* ChildList)
 
 UpdateResult Grid::update2(int ms, GlobalState &GS)
 {
+	debug = GS.Debug;
 	static Cell* LastTarget = NULL;
 	Cell* TargetCell = GetCell(GS.HeroPos);
 	if(TargetCell != LastTarget)

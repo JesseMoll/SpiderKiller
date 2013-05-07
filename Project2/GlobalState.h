@@ -19,7 +19,7 @@ enum UpdateResult
 
 
 const unsigned int LEFT_MOUSE = 0x1;
-const unsigned int RIGHTKEY = 0x2;
+const unsigned int RIGHT_MOUSE = 0x2;
 const unsigned int C_KEY = 0x4;
 const unsigned int Q_KEY = 0x8;
 const unsigned int W_KEY = 0x10;
@@ -27,8 +27,16 @@ const unsigned int ESC = 0x20;
 const unsigned int A_KEY = 0x40;
 const unsigned int S_KEY = 0x80;
 const unsigned int D_KEY = 0x100;
+const unsigned int PG_UP_KEY = 0x200;
+const unsigned int PG_DN_KEY = 0x400;
+const unsigned int RIGHT_KEY = 0x800;
+const unsigned int LEFT_KEY = 0x1000;
+const unsigned int UP_KEY = 0x2000;
+const unsigned int DOWN_KEY = 0x4000;
+const unsigned int TILDE_KEY = 0x8000;
 
-const unsigned int UPDATE_INTERVAL = 25;
+
+
 
 
 class GlobalState
@@ -52,6 +60,8 @@ public:
 	unsigned int KeyStates;	
 
 	//Camera values
+	Vector2d CameraOffset;
+	double ViewSize;
 
 	//Hero Values
 	Vector2d HeroPos;
@@ -66,6 +76,9 @@ public:
 	Vector2d MousePos;
 
 	double MoveSpeed;
+
+	//Generalized debug var
+	bool Debug;
 
 	//GLuint Tex;
 	GLuint LeftWeaponTex;

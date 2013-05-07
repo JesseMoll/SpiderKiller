@@ -2,8 +2,7 @@
 #include "Creep.h"
 #include <vector>
 
-const int CellSize = 8;
-const int MaxWeight = CellSize * CellSize;
+
 
 class Cell;
 class Node

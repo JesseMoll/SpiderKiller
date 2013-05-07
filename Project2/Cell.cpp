@@ -7,7 +7,7 @@
 Cell::Cell(void)
 {
 	Texture = texture_manager::get_texture_name("Arrow.bmp");
-	Scale = Vector2d(CellSize * .3, CellSize * .3);
+	Scale = Vector2d(CellSize * .4, CellSize * .4);
 }
 
 
@@ -39,7 +39,8 @@ UpdateResult Cell::update2(int ms, GlobalState &GS)
 
 void Cell::SetupUnwalkable()
 {
-	Vector2d Centroid(0,0);
+	Vector2d UnwalkableCentroid(0,0);
+	Vector2d WalkableCentroid(0,0);
 	double Weight = 0;
 	for(int i = 0; i != CellSize; ++i)
 	{
@@ -49,13 +50,24 @@ void Cell::SetupUnwalkable()
 			if (!GetWalkable(Pos + LocalPos))
 			{
 				Weight += 1.0;
-				Centroid += LocalPos;
+				UnwalkableCentroid += LocalPos;
+			}
+			else
+			{
+				WalkableCentroid += LocalPos;
 			}
 		}
 	}
-	UnwalkableCenter = Centroid;
+	UnwalkableCenter = UnwalkableCentroid;
 	if(Weight != 0)
 		UnwalkableCenter /= Weight;
+
 	UnwalkableCenter += Pos;
 	UnwalkableWeight = Weight;
+
+	
+	if(Weight != MaxWeight)
+		WalkableCentroid /= (MaxWeight - Weight);
+	Pos += WalkableCentroid;
+
 }

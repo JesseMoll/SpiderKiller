@@ -3,9 +3,7 @@
 #include "Cell.h"
 #include "Drawable.h"
 
-const int LevelSize = 512;
 
-const int GridSize = LevelSize / CellSize;
 
 
 class Grid: 
@@ -17,13 +15,18 @@ public:
 	
 	void UpdateGrid(std::list<Drawable*>* ChildList);
 	std::list<Cell*> get_nearby_cells(Vector2d creep_pos, double radius);
-	void draw2();
+	void draw2(){};
+	void draw();
 	Cell* GetCell(int x, int y);
 	Cell* GetCell(Vector2d &Pos);
 	void UpdatePathing(Cell* Target);
 protected:
 	void add_creep(Drawable* c);
+	void Addconnections(int i, int j, int iAdder, int jAdder);
 	UpdateResult update2(int ms, GlobalState &GS);
-	Cell cells[GridSize][GridSize];
+	std::vector< std::vector<Cell> > cells;
+	//Cell cells[GridSize][GridSize];
+	bool debug;
+	
 };
 
