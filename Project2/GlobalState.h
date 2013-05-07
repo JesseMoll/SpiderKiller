@@ -27,6 +27,7 @@ const unsigned int ESC = 0x20;
 const unsigned int A_KEY = 0x40;
 const unsigned int S_KEY = 0x80;
 const unsigned int D_KEY = 0x100;
+const unsigned int R_KEY = 0x200;
 
 const unsigned int UPDATE_INTERVAL = 25;
 
@@ -72,6 +73,6 @@ public:
 	GLuint RightWeaponTex;
 	GLuint SuperWeaponTex;
 
-	
+	bool GamePaused;
 
 };
