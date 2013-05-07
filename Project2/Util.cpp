@@ -121,7 +121,7 @@ double Random(double Max)
 
 Vector2d GetForce(Vector2d &p1, Vector2d &p2)
 {
-	double Distance = std::max(Vector2d::distance(p1, p2), .5);
+	double Distance = std::max(Vector2d::distance(p1, p2), .1);
 	//Return a vector in the direction of p2 which has magnitude 1/r^2
 	return (p2 - p1) / (Distance * Distance * Distance);
 }

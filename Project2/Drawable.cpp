@@ -9,7 +9,8 @@ Drawable::Drawable(Drawable* _Parent, GLuint _Texture, Vector2d _Pos, Vector2d _
 	Texture(_Texture),
 	Scale(_Scale),
 	Color(_Color),
-	Rot(0)
+	Rot(0),
+	ToBeDeleted(false)
 {
 }
 
@@ -121,6 +122,9 @@ void Drawable::draw2()
 
 UpdateResult Drawable::update(int ms, GlobalState &GS)
 {
+	//Drawable is flagged for deletion
+	if(ToBeDeleted)
+		return UPDATE_DELETE;
 	//Update the object itself
 	UpdateResult RetVal = update2(ms, GS);
 	//If the object is to be deleted, no need to handle children, just return

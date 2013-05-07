@@ -4,11 +4,13 @@
 using namespace std;
 
 
-creep_spawner::creep_spawner(Drawable* _Parent, int _SpawnRate, int _SpawnAmount, Creep* _CreepType):
+creep_spawner::creep_spawner(Drawable* _Parent, int _SpawnRate, int _SpawnAmount, int _SpawnLimit, Creep* _CreepType):
 	Drawable(_Parent),
 	SpawnRate(_SpawnRate),
 	SpawnAmount(_SpawnAmount),
 	SpawnTimer(_SpawnRate),
+	SpawnLimit(_SpawnLimit),
+	SpawnTotal(0),
 	CreepType(_CreepType)
 {
 }
@@ -21,7 +23,12 @@ UpdateResult creep_spawner::update2(int ms, GlobalState &GS)
 	{
 		SpawnTimer += SpawnRate;
 		for(int n = 0; n != SpawnAmount; n++)
+		{
+			SpawnTotal++;
+			if (SpawnLimit != 0 && SpawnTotal > SpawnLimit)
+				return UPDATE_DELETE;
 			Parent->AddChild(SpawnCreep());
+		}
 	}
 	return UPDATE_NONE;
 }

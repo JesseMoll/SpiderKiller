@@ -98,9 +98,19 @@ void Scene::InitGame()
 
 	//TODO - Move this code into the level class (on level init)
 	//TODO, add finite spawns (so we can beat a level)
-	CM->add_spawner(Vector2d(400,674), 5000, 200, "Tiny Spider",  270);
-	CM->add_spawner(Vector2d(400,674), 5000, 10, "Medium Spider",  90);
-	CM->add_spawner(Vector2d(400,674), 10000, 1, "Huge Spider",  90);
+
+	//Add some spawners 
+	creep_spawner* CS1 = CM->add_spawner(Vector2d(400,674), 5000, 200, 0, "Tiny Spider");
+	creep_spawner* CS2 = CM->add_spawner(Vector2d(400,674), 5000, 10, 0, "Medium Spider");
+	//remove the spawner
+	CS2->remove();
+	//change the spawn amount and spawn rate of the spawner
+	CS1->setSpawnAmount(20);
+	CS1->setSpawnRate(500);
+	//Will delete itself after spawning 200 more creep
+	CS1->setSpawnLimit(200);
+	//will only spawn 1 Huge spider
+	CM->add_spawner(Vector2d(400,674), 20000, 1, 1, "Huge Spider");
 }
 
 void Scene::draw2()

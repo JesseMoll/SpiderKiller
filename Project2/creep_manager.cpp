@@ -17,12 +17,14 @@ void creep_manager::add_creep(std::string creep_name, double health, std::string
 	creeps[creep_name] = new Creep(this,texture_manager::get_texture_name(texture_name), Vector2d(0,0), health, scale, 0, speed, turnSpeed, color);
 }
 
-void creep_manager::add_spawner(Vector2d pos, int spawn_rate, int spawn_amount, std::string creep_name, double rot)
+creep_spawner* creep_manager::add_spawner(Vector2d pos, int spawn_rate, int spawn_amount, int spawn_limit, std::string creep_name, double rot)
 {
+	creep_spawner* RetVal = 0;
 	if(creeps.count(creep_name) != 1)
 		throw(creep_not_found(creep_name));
 	Creep* new_creep = new Creep(creeps[creep_name], pos, DegToRad(rot)); 
-	AddChild(new creep_spawner(this, spawn_rate, spawn_amount, new_creep));
+	AddChild(RetVal = new creep_spawner(this, spawn_rate, spawn_amount, spawn_limit, new_creep));
+	return RetVal;
 }
 
 void creep_manager::draw2()

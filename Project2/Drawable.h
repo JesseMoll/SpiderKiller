@@ -61,9 +61,10 @@ class Drawable
 		std::list<Drawable*>::iterator begin(){return Children.begin();};
 		std::list<Drawable*>::iterator end(){return Children.end();};
 
-		
+		void remove(){ToBeDeleted = true;};
    // protected:
 
+		bool ToBeDeleted;
 		virtual void draw2(); // Draw the object (excluding parent-to-child transformation)
         Vector2d Pos;	// localized object Position
 		Vector2d Scale;	// Object's Scale
