@@ -39,7 +39,7 @@ creep_spawner::~creep_spawner(void)
 
 Creep* creep_spawner::SpawnCreep()
 {	
-	Creep* NewCreep = new Creep(CreepType);
+	Creep* NewCreep = CreepType->clone();
 	NewCreep->setPos(NewCreep->getPos() + Vector2d(Random(10.0) - 5.0, Random(10.0) - 5.0)); 
 	NewCreep->setRot(NewCreep->getRot() + Random(.2) - .1);
 	return NewCreep;

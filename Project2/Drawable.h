@@ -30,6 +30,9 @@ class Drawable
 		//Update function (position, state, etc...)
 		virtual UpdateResult update2(int ms, GlobalState &GS); 
 		
+		//returns a copy of the drawable
+		virtual Drawable* clone() const;
+
 		//Add a child to this drawable
 		Drawable* AddChild(Drawable* dPtr);
 

@@ -30,7 +30,10 @@ int main(int argc, char **argv)
 -----------------------------------------------------------------------\n\
   Kill the Spiders!:\n\
   - Hold WASD to move character around\n\
-  - q to switch weapons \n\
+  - q, e and f to switch weapons \n\
+  - Left mouse button for primary weapon \n\
+  - Right mouse button for secondary weapon \n\
+  - Space for super weapon \n\
   - Arrow keys to look around \n\
   - ~ to show debug information \n\
   - esc to quit\n\

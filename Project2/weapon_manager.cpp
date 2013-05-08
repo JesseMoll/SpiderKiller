@@ -5,10 +5,6 @@
 weapon_manager::weapon_manager(Drawable* _Parent):
 	Drawable(_Parent)
 {
-
-
-
-
 }
 
 GLuint weapon_manager::getWeaponIcon(Weapon::EquipStatus WeaponSlot)
@@ -19,18 +15,25 @@ GLuint weapon_manager::getWeaponIcon(Weapon::EquipStatus WeaponSlot)
 
 void weapon_manager::equip_weapon(std::string weapon_name)
 {
-	std::string CurWeaponName = equipped_weapons[Weapon::EQUIP_LEFT];
-	if(CurWeaponName != "")
-	{
-		weapons[CurWeaponName]->Equip(Weapon::EQUIP_NONE);
-	}
 	if(weapons.count(weapon_name) != 1)
 		throw(weapon_not_found(weapon_name));
-	weapons[weapon_name]->Equip(Weapon::EQUIP_LEFT);
-	equipped_weapons[Weapon::EQUIP_LEFT] = weapon_name;
+	Weapon::EquipStatus EquipSlot = weapons[weapon_name]->getEquipSlot();
 
+	std::string CurWeaponName = equipped_weapons[EquipSlot];
+	if(CurWeaponName != "")
+	{
+		weapons[CurWeaponName]->Unequip();
+	}
+
+	weapons[weapon_name]->Equip();
+	equipped_weapons[EquipSlot] = weapon_name;
 }
 
+Projectile* weapon_manager::add_projectile(std::string projectile_name, Projectile* new_projectile)
+{
+	projectiles[projectile_name] = new_projectile;
+	return new_projectile;
+}
 Projectile* weapon_manager::add_projectile(std::string projectile_name, std::string texture_name, double size, double speed, double damage, double max_distance, std::string on_death_projectile_name, int on_death_number, double on_death_spread)
 {
 	
@@ -44,13 +47,13 @@ Projectile* weapon_manager::add_projectile(std::string projectile_name, std::str
 	return projectiles[projectile_name];
 }
 
-Weapon* weapon_manager::add_weapon(std::string weapon_name, std::string texture_name, double fire_rate, std::string projectile_name)
+Weapon* weapon_manager::add_weapon(std::string weapon_name, std::string texture_name, double fire_rate, std::string projectile_name, Weapon::EquipStatus EquipSlot)
 {
 	GLuint Tex = 0;
 	if(texture_name != "")
 		Tex = texture_manager::get_texture_name(texture_name);
 
-	weapons[weapon_name] = new Weapon(this, Tex, fire_rate, projectiles[projectile_name]);
+	weapons[weapon_name] = new Weapon(this, Tex, fire_rate, projectiles[projectile_name],EquipSlot);
 	equip_weapon(weapon_name);
 
 	AddChild(weapons[weapon_name]);
@@ -58,21 +61,23 @@ Weapon* weapon_manager::add_weapon(std::string weapon_name, std::string texture_
 	return weapons[weapon_name];
 }
 
-void weapon_manager::SwitchLeftWeapon(GlobalState &GS)
+void weapon_manager::SwitchWeapon(Weapon::EquipStatus EquipSlot)
 {
-
-	std::string CurrentWeaponName = equipped_weapons[Weapon::EQUIP_LEFT];
+	
+	std::string CurrentWeaponName = equipped_weapons[EquipSlot];
 	auto CurrentWeaponItr = weapons.find(CurrentWeaponName);
 	//Go to the next weapon
-	++CurrentWeaponItr;
-	//If there are no more weapons, go back to the begining of the container
-	if(CurrentWeaponItr == weapons.end())
+	do
 	{
-		CurrentWeaponItr = weapons.begin();
-	}
+		++CurrentWeaponItr;
+		//If there are no more weapons, go back to the begining of the container
+		if(CurrentWeaponItr == weapons.end())
+		{
+			CurrentWeaponItr = weapons.begin();
+		}
+	} while(CurrentWeaponItr->second->getEquipSlot() != EquipSlot);
 	//Equip the new weapon
 	equip_weapon(CurrentWeaponItr->first);
-	GS.LeftWeaponTex = ((*CurrentWeaponItr).second)->getTexture();
 	std::cout << "Equipping: " << (*CurrentWeaponItr).first << std::endl;
 }
 
@@ -82,8 +87,18 @@ UpdateResult weapon_manager::update2(int ms, GlobalState &GS)
 {
 	if (GS.KeyDown(Q_KEY))
 	{
-		SwitchLeftWeapon(GS);
+		SwitchWeapon(Weapon::EQUIP_LEFT);
 		GS.KeyStates &= ~Q_KEY;
+	}
+	if (GS.KeyDown(E_KEY))
+	{
+		SwitchWeapon(Weapon::EQUIP_RIGHT);
+		GS.KeyStates &= ~E_KEY;
+	}
+	if (GS.KeyDown(F_KEY))
+	{
+		SwitchWeapon(Weapon::EQUIP_SPACE);
+		GS.KeyStates &= ~F_KEY;
 	}
 	return UPDATE_NONE;
 }

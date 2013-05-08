@@ -22,7 +22,9 @@ creep_spawner* creep_manager::add_spawner(Vector2d pos, int spawn_rate, int spaw
 	creep_spawner* RetVal = 0;
 	if(creeps.count(creep_name) != 1)
 		throw(creep_not_found(creep_name));
-	Creep* new_creep = new Creep(creeps[creep_name], pos, DegToRad(rot)); 
+	Creep* new_creep = creeps[creep_name]->clone();
+	new_creep->setPos(pos);
+	new_creep->setRot(DegToRad(rot));
 	AddChild(RetVal = new creep_spawner(this, spawn_rate, spawn_amount, spawn_limit, new_creep));
 	return RetVal;
 }

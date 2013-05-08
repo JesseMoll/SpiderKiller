@@ -17,9 +17,11 @@ public:
 		EQUIP_SPACE,
 	};
 
-	Weapon(Drawable* _Parent, GLuint _Texture = 0, double _FireRate = 1.0, Projectile* _ProjectileToFire = 0);
+	Weapon(Drawable* _Parent, GLuint _Texture = 0, double _FireRate = 1.0, Projectile* _ProjectileToFire = 0, EquipStatus EquipSlot = EQUIP_LEFT);
 	~Weapon(void);
-	void Equip(EquipStatus NewStatus);
+	void Equip();
+	void Unequip();
+	EquipStatus getEquipSlot(){return EquipSlot;};
 //Overridden Functions
 	//Dont draw the weapon
 	void draw2(){};
@@ -28,6 +30,7 @@ protected:
 	double FireRate;
 	double FireTimer;
 	Projectile* ProjectileToFire;
-	EquipStatus Equipped;
+	bool Equipped;
+	EquipStatus EquipSlot;
 };
 

@@ -98,6 +98,7 @@
     <ClCompile Include="Drawable.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="Hero.cpp" />
+    <ClCompile Include="RegenPack.cpp" />
     <ClCompile Include="RGBpixmap.cpp" />
     <ClCompile Include="Scene.cpp" />
     <ClCompile Include="GlobalState.cpp" />
@@ -119,6 +120,7 @@
     <ClInclude Include="exceptions.h" />
     <ClInclude Include="GlobalState.h" />
     <ClInclude Include="Hero.h" />
+    <ClInclude Include="RegenPack.h" />
     <ClInclude Include="RGBpixmap.h" />
     <ClInclude Include="Scene.h" />
     <ClInclude Include="texture_manager.h" />

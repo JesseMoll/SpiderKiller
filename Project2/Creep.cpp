@@ -13,17 +13,9 @@ Creep::Creep(Drawable* _Parent, GLuint _Texture, Vector2d _Pos, double _Health, 
 	
 }
 
-Creep::Creep(Creep * c, Vector2d _Pos, double _Rot):
-	Drawable(c->Parent, c->Texture, _Pos, c->Scale, c->Color),
-	Speed(c->Speed),
-	TurnSpeed(c->TurnSpeed),
-	Health(c->Health)
+Creep* Creep::clone() const
 {
-	if(_Pos.x == 0 && _Pos.y == 0)
-		Pos = c->Pos;
-	if(_Rot > 10000)
-		Rot = c->Rot;
-	Rot = _Rot;
+	return new Creep(*this);
 }
 
 Creep::~Creep(void)
@@ -36,7 +28,8 @@ UpdateResult Creep::update2(int ms, GlobalState &GS)
 	//It's dead
 	if(Health == 0)
 	{
-		GS.HeroFocus = std::min(GS.HeroFocus + .1, GS.HeroMaxFocus);
+		//Gain focus based on how big of a bug we just killed;
+		GS.HeroFocus = std::min(GS.HeroFocus + Scale.x * Scale.x * Scale.x * FocusGainMult, GS.HeroMaxFocus);
 		return UPDATE_DELETE;
 	}
 	
@@ -97,13 +90,7 @@ UpdateResult Creep::update2(int ms, GlobalState &GS)
 				CreepRepulsion -=  Vector2d::normalize(VecToCreep) * Attractivity;
 			}
 		}
-		
-
-
-		
-
 	}
-
 
 	PathingVector.normalize();
 	

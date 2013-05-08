@@ -14,6 +14,10 @@ Drawable::Drawable(Drawable* _Parent, GLuint _Texture, Vector2d _Pos, Vector2d _
 {
 }
 
+Drawable* Drawable::clone() const
+{
+	return new Drawable(*this);
+}
 
 Drawable::~Drawable()
 {

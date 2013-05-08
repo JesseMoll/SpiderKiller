@@ -4,7 +4,7 @@
 #include "texture_manager.h"
 #include "weapon_manager.h"
 #include <sstream>
-
+#include "RegenPack.h"
 
 //static class variables
 Scene* Scene::ptrInstance = NULL; 
@@ -76,20 +76,28 @@ void Scene::InitGame()
 	WM->add_projectile("Fire",		"",  0, 40, 10, 3,  "Flame",	8,  60); 
 	WM->add_projectile("Fire Bomb",	"", .5, 100, 30, 75, "Fire",	8, 360); 
 	WM->add_projectile("Grenade",	"", .5, 100, 30, 75, "Shell",	8, 360);
-	WM->add_projectile("Mine",	"", .5, .01, 1, 1, "Shell",	8, 360);
+	WM->add_projectile("Mine",	"Mine.bmp", 4, .01, 1, 1, "Shell",	8, 360);
 	WM->add_projectile("Super Bomb","", .5, 120, 30, 80, "Fire Bomb", 10, 360);
+
+	//Special Weapons can be initialized like this (specialized for each weapon)
+	//Regen 50 health per second for 15 seconds
+	WM->add_projectile("Regen", new RegenPack(this,50, 15000));
 	//TODO ADD Weapons as we pick them up
 	//TODO Separate Weapons as left-click, right-click, and spacebar (super weapons which take energy gained from kills)
+	
+	
 	WM->add_weapon("Machine Gun", "MachineGun.bmp", 100.0, "Bullet");
 	WM->add_weapon("Shotgun", "Shotgun.bmp",  1000, "Shell");
 	WM->add_weapon("Auto Shotgun", "AutoShotgun.bmp",  300, "Shell");
 	WM->add_weapon("Flamethrower", "Flamethrower.bmp",  75.0, "Fire");
-	WM->add_weapon("Grenade Launcher",  "GrenadeLauncher.bmp", 1000.0, "Grenade");
-	WM->add_weapon("Fire Bomb Gun", "FireBombGun.bmp",  1000, "Fire Bomb");
-	WM->add_weapon("BFG", "BFG.bmp",  2000.0, "Super Bomb");
 	WM->add_weapon("Pistol",  "Pistol.bmp", 500.0, "Bullet");
-	WM->add_weapon("Mine Layer",  "", 1000.0, "Mine");
 
+	WM->add_weapon("Grenade Launcher",  "GrenadeLauncher.bmp", 1000.0, "Grenade", Weapon::EQUIP_RIGHT);
+	WM->add_weapon("Fire Bomb Gun", "FireBombGun.bmp",  1000, "Fire Bomb", Weapon::EQUIP_RIGHT);
+	WM->add_weapon("BFG", "BFG.bmp",  2000.0, "Super Bomb", Weapon::EQUIP_RIGHT);
+	WM->add_weapon("Mine Layer",  "Mine.bmp", 1000.0, "Mine", Weapon::EQUIP_RIGHT);
+
+	WM->add_weapon("Regen Pack", "RegenPack.bmp", 1000.0, "Regen", Weapon::EQUIP_SPACE);
 	NextLevel();
 }
 
@@ -252,12 +260,18 @@ UpdateResult Scene::update2(int ms, GlobalState &GS)
 			GS.KeyStates |= D_KEY;
 		if(key == 'q' || key == 'Q')
 			GS.KeyStates |= Q_KEY;
+		if(key == 'e' || key == 'E')
+			GS.KeyStates |= E_KEY;
+		if(key == 'f' || key == 'F')
+			GS.KeyStates |= F_KEY;
 		if (key == 'r' || key == 'R')
 			GS.KeyStates |= R_KEY;
 		if(key == 27)
 			GS.KeyStates |= ESC;
 		if(key == '`')
 			GS.KeyStates |= TILDE_KEY;
+		if (key == ' ' || key == ' ')
+			GS.KeyStates |= SPACE_KEY;
 	}
 
 	void Scene::releaseNormalKeys(unsigned char key, int xx, int yy){
@@ -273,10 +287,16 @@ UpdateResult Scene::update2(int ms, GlobalState &GS)
 			GS.KeyStates &= ~D_KEY;
 		if(key == 'q' || key == 'Q')
 			GS.KeyStates &= ~Q_KEY;
+		if(key == 'e' || key == 'E')
+			GS.KeyStates &= ~E_KEY;
+		if(key == 'f' || key == 'F')
+			GS.KeyStates &= ~F_KEY;
 		if(key == 27)
 			exit(0);
 		if (key == 'r' || key == 'R')
 			GS.KeyStates &= ~R_KEY;
+		if (key == ' ' || key == ' ')
+			GS.KeyStates &= ~SPACE_KEY;
 
 	}
 
@@ -323,6 +343,13 @@ UpdateResult Scene::update2(int ms, GlobalState &GS)
 			else
 				GS.KeyStates &= ~LEFT_MOUSE;
 		}
+		if(button == 2)
+		{
+			if(!state)
+				GS.KeyStates |= RIGHT_MOUSE;
+			else
+				GS.KeyStates &= ~RIGHT_MOUSE;
+		}
 		GS.MousePos = Vector2d(xx,yy);
 	}
 	
@@ -353,6 +380,7 @@ UpdateResult Scene::update2(int ms, GlobalState &GS)
 			texture_manager::load_texture("HUD.bmp", 1024, 256);
 
 			texture_manager::load_texture("Arrow.bmp", 64, 64);
+			texture_manager::load_texture("Mine.bmp", 64, 64);
 
 			texture_manager::load_texture("Pistol.bmp", 64, 64);
 			texture_manager::load_texture("MachineGun.bmp", 64, 64);
@@ -362,6 +390,7 @@ UpdateResult Scene::update2(int ms, GlobalState &GS)
 			texture_manager::load_texture("GrenadeLauncher.bmp", 64, 64);
 			texture_manager::load_texture("BFG.bmp", 64, 64);
 			texture_manager::load_texture("FireBombGun.bmp", 64, 64);
+			texture_manager::load_texture("RegenPack.bmp", 64, 64);
 			
 			glTexEnvf (GL_TEXTURE_ENV,GL_TEXTURE_ENV_MODE,GL_REPLACE);
 			//Load the material (everything uses the same material)
@@ -408,9 +437,9 @@ UpdateResult Scene::update2(int ms, GlobalState &GS)
 
 			//Add some spawners 
 			creep_spawner* CS1 = CM->add_spawner(Vector2d(400,674), 5000, 200, 0, "Tiny Spider");
-			creep_spawner* CS2 = CM->add_spawner(Vector2d(400,674), 5000, 10, 0, "Medium Spider");
+			creep_spawner* CS2 = CM->add_spawner(Vector2d(400,674), 5000, 10, 200, "Medium Spider");
 			//remove the spawner
-			CS2->remove();
+			//CS2->remove();
 			//change the spawn amount and spawn rate of the spawner
 			CS1->setSpawnAmount(20);
 			CS1->setSpawnRate(500);

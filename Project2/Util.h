@@ -12,6 +12,7 @@ extern const double MaxView;
 extern const double CameraMoveSpeed;
 extern const int MaxCreep;
 extern const unsigned int UPDATE_INTERVAL;
+extern const double FocusGainMult;
 
 //Flocking force multipliers
 extern const double WallForceMult;

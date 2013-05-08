@@ -13,11 +13,11 @@ public:
 	~weapon_manager(void);
 	Projectile* get_projectile(std::string projectile_name);
 	void equip_weapon(std::string weapon_name);
-
+	Projectile* add_projectile(std::string projectile_name, Projectile* new_projectile);
 	Projectile* add_projectile(std::string projectile_name, std::string texture_name = "", double size = .2, double speed = 40, double damage = 100, double max_distance = 1e6, std::string on_death_projectile_name = "", int on_death_number = 0, double on_death_spread = 0);
-	Weapon* add_weapon(std::string weapon_name, std::string texture_name, double fire_rate, std::string projectile_name);
+	Weapon* add_weapon(std::string weapon_name, std::string texture_name, double fire_rate, std::string projectile_name, Weapon::EquipStatus EquipSlot = Weapon::EQUIP_LEFT);
 	GLuint getWeaponIcon(Weapon::EquipStatus WeaponSlot);
-	void SwitchLeftWeapon(GlobalState &GS);
+	void SwitchWeapon(Weapon::EquipStatus EquipSlot = Weapon::EQUIP_LEFT);
 
 //Overridden Functions
 	void draw2(){};

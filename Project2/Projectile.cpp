@@ -15,18 +15,9 @@ Projectile::Projectile(Drawable* _Parent, GLuint _Texture, double _Scale, double
 {
 }
 
-Projectile::Projectile(Projectile * c, Vector2d _Pos, double _Rot):
-	Drawable(c->Parent, c->Texture, _Pos, c->Scale, c->Color),
-	Speed(c->Speed),
-	Damage(c->Damage),
-	MaxDistance(c->MaxDistance),
-	ProjectileToFireOnDeath(c->ProjectileToFireOnDeath),
-	NumToFireOnDeath(c->NumToFireOnDeath),
-	SpreadOnDeath(c->SpreadOnDeath),
-	DistanceTravelled(0)
+Projectile* Projectile::clone() const
 {
-	Speed = Speed * (.8 + Random(.4));
-	Rot = _Rot;
+	return new Projectile(*this);
 }
 
 Projectile::~Projectile(void)
@@ -41,7 +32,13 @@ void Projectile::onDeath(GlobalState &GS)
 		NewRotation -= (double)SpreadOnDeath / 2;
 		for(int n = 0; n != NumToFireOnDeath; n++)
 		{
-			Parent->AddChild (new Projectile(ProjectileToFireOnDeath, Pos, NewRotation));
+			Projectile* new_projectile = ProjectileToFireOnDeath->clone();
+			new_projectile->setPos(Pos);
+			new_projectile->setRot(NewRotation);
+			//Randomly slow down the bullets (so they don't look so fake)
+			new_projectile->Speed *= (Random(.2) + .8);
+
+			Parent->AddChild (new_projectile);
 			//otherwise the first and last projectiles overlap on a radial weapon
 			if(SpreadOnDeath > 3)
 				NewRotation += SpreadOnDeath / (double)(NumToFireOnDeath);

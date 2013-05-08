@@ -56,7 +56,7 @@ void HUD::draw(int window_width, GlobalState &GS)
 	glPopMatrix();
 	glEnable(GL_TEXTURE_2D);
 
-
+	//Draw HUD background
 	glBindTexture (GL_TEXTURE_2D, Texture);	
 	glPushMatrix();
 		glScalef(1024,256,1);
@@ -64,6 +64,7 @@ void HUD::draw(int window_width, GlobalState &GS)
 		DrawTexturedSquare();
 	glPopMatrix();
 
+	//Draw LEFT weapon icon
 	glBindTexture (GL_TEXTURE_2D, WM->getWeaponIcon(Weapon::EQUIP_LEFT));	
 	glPushMatrix();
 		glTranslatef(288, 48, 0);
@@ -71,23 +72,22 @@ void HUD::draw(int window_width, GlobalState &GS)
 		DrawTexturedSquare();
 	glPopMatrix();
 
-
-
-	/*
+	//Draw Right weapon icon
 	glBindTexture (GL_TEXTURE_2D, WM->getWeaponIcon(Weapon::EQUIP_RIGHT));		
 	glPushMatrix();
 		glTranslatef(672, 48, 0);
 		glScalef(64,64,1);
 		DrawTexturedSquare();
 	glPopMatrix();
-
+	
+	//Draw Super weapon icon
 	glBindTexture (GL_TEXTURE_2D, WM->getWeaponIcon(Weapon::EQUIP_SPACE));	
 	glPushMatrix();
 		glTranslatef(32,64,0);
 		glScalef(64,64,1);
 		DrawTexturedSquare();
 	glPopMatrix();
-	*/
+	
 }
 
 HUD::~HUD(void)
