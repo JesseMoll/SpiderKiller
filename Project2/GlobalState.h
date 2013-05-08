@@ -85,5 +85,5 @@ public:
 	GLuint SuperWeaponTex;
 
 	bool GamePaused;
-
+	int CurrentLevel;
 };

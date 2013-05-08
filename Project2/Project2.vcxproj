@@ -96,7 +96,6 @@
     <ClCompile Include="creep_spawner.cpp" />
     <ClCompile Include="creep_manager.cpp" />
     <ClCompile Include="Drawable.cpp" />
-    <ClCompile Include="level.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="Hero.cpp" />
     <ClCompile Include="RGBpixmap.cpp" />
@@ -120,7 +119,6 @@
     <ClInclude Include="exceptions.h" />
     <ClInclude Include="GlobalState.h" />
     <ClInclude Include="Hero.h" />
-    <ClInclude Include="level.h" />
     <ClInclude Include="RGBpixmap.h" />
     <ClInclude Include="Scene.h" />
     <ClInclude Include="texture_manager.h" />

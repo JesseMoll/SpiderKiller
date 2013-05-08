@@ -17,11 +17,12 @@ GlobalState::GlobalState(void):
 	HeroHealth(1000),
 	HeroFocus(0),
 	HeroMaxFocus(100),
-	HeroRegenPerSec(25.0),
+	HeroRegenPerSec(0.0),
 	CameraOffset(0,0),
 	ViewSize(100),
 	Debug(false),
-	GamePaused(false)
+	GamePaused(false),
+	CurrentLevel(0)
 {
 	
 }

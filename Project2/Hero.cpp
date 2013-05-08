@@ -10,6 +10,11 @@ Hero::Hero(Drawable* _Parent, GLuint _Texture, Vector2d _Pos):Drawable(_Parent, 
 UpdateResult Hero::update2(int ms, GlobalState &GS)
 { 
 	GS.HeroHealth = std::min(GS.HeroMaxHealth, GS.HeroHealth + GS.HeroRegenPerSec * (double(ms) / 1000.0));
+
+	//Check to see if health has reached 0, meaning game over
+	//TODO:  go back to title screen.  May want to move this check to another place.
+	if (GS.HeroHealth <= 0)
+		std::cout<<"Game over!"<<std::endl;
 	Vector2d WalkingDirection(0,0);
 
 	//Set walking direction (forward/backward) and angle depending on which key is pressed
@@ -36,9 +41,9 @@ UpdateResult Hero::update2(int ms, GlobalState &GS)
 		double NewAngle = (atan2(WalkingDirection.y,WalkingDirection.x));
 
 		//Man turns at 720 degrees per second
-		TurnTo(Rot, NewAngle, 12 * (ms / 1000.0));
+		TurnTo(Rot, NewAngle, 20 * (ms / 1000.0));
 		//Walk in the direction that he is facing
-		Vector2d PosAdder(cos(Rot), sin(Rot));
+		Vector2d PosAdder(cos(NewAngle), sin(NewAngle));
 		PosAdder *= (ms / 1000.0) * GS.MoveSpeed;
 		//Will the new position be valid?
 		if(GetWalkable(Pos + PosAdder))

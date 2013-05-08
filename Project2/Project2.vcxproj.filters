@@ -39,9 +39,6 @@
     <ClCompile Include="Creep.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="level.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="RGBpixmap.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -99,9 +96,6 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="exceptions.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="level.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="RGBpixmap.h">

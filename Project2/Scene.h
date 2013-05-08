@@ -12,6 +12,7 @@ class Scene : public Drawable
 		void draw2(); // Draw Nothing
 		void InitGame();
 		void DestructGame();
+		void NextLevel(); //End the current level and move to the next one
 		UpdateResult update2(int ms, GlobalState &GS);
 //----------------------------------------------------------------------
 // User-input callbacks

@@ -90,27 +90,7 @@ void Scene::InitGame()
 	WM->add_weapon("Pistol",  "Pistol.bmp", 500.0, "Bullet");
 	WM->add_weapon("Mine Layer",  "", 1000.0, "Mine");
 
-	//Get the creep manager pointer as the correct type
-	creep_manager* CM = static_cast<creep_manager*>(GS.TheCreepManager);
-	CM->add_creep("Tiny Spider", 2, "Spider.bmp", 1.5, 50, 5);
-	CM->add_creep("Medium Spider", 10, "Spider.bmp", 4, 40, 4);
-	CM->add_creep("Huge Spider", 500, "Spider.bmp", 10, 20, 2);
-
-	//TODO - Move this code into the level class (on level init)
-	//TODO, add finite spawns (so we can beat a level)
-
-	//Add some spawners 
-	creep_spawner* CS1 = CM->add_spawner(Vector2d(400,674), 5000, 200, 0, "Tiny Spider");
-	creep_spawner* CS2 = CM->add_spawner(Vector2d(400,674), 5000, 10, 0, "Medium Spider");
-	//remove the spawner
-	CS2->remove();
-	//change the spawn amount and spawn rate of the spawner
-	CS1->setSpawnAmount(20);
-	CS1->setSpawnRate(500);
-	//Will delete itself after spawning 200 more creep
-	CS1->setSpawnLimit(200);
-	//will only spawn 1 Huge spider
-	CM->add_spawner(Vector2d(400,674), 20000, 1, 1, "Huge Spider");
+	NextLevel();
 }
 
 void Scene::draw2()
@@ -406,4 +386,37 @@ UpdateResult Scene::update2(int ms, GlobalState &GS)
 	void Scene::Idle()
 	{
 		
+	}
+
+	void Scene::NextLevel()
+	{
+		GS.CurrentLevel++;
+		if (GS.CurrentLevel == 6)
+			GS.CurrentLevel = 1;
+
+		switch (GS.CurrentLevel)
+		{
+		case 1:
+			//Get the creep manager pointer as the correct type
+			creep_manager* CM = static_cast<creep_manager*>(GS.TheCreepManager);
+			CM->add_creep("Tiny Spider", 2, "Spider.bmp", 1.5, 50, 5);
+			CM->add_creep("Medium Spider", 10, "Spider.bmp", 4, 40, 4);
+			CM->add_creep("Huge Spider", 500, "Spider.bmp", 10, 20, 2);
+
+			//TODO - Move this code into the level class (on level init)
+			//TODO, add finite spawns (so we can beat a level)
+
+			//Add some spawners 
+			creep_spawner* CS1 = CM->add_spawner(Vector2d(400,674), 5000, 200, 0, "Tiny Spider");
+			creep_spawner* CS2 = CM->add_spawner(Vector2d(400,674), 5000, 10, 0, "Medium Spider");
+			//remove the spawner
+			CS2->remove();
+			//change the spawn amount and spawn rate of the spawner
+			CS1->setSpawnAmount(20);
+			CS1->setSpawnRate(500);
+			//Will delete itself after spawning 200 more creep
+			CS1->setSpawnLimit(200);
+			
+			CM->add_spawner(Vector2d(400,674), 20000, 1, 2, "Huge Spider");
+		}
 	}
