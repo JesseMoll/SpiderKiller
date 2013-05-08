@@ -4,15 +4,16 @@
 std::map<std::string, texture> texture_manager::textures;
 std::map<std::string, GLuint> texture_manager::texture_names;
 
-void texture_manager::load_texture(const std::string& name, const int& width, const int& height)
+void texture_manager::load_texture(const std::string& name)
 {
 	if (texture_manager::textures.count(name) == 1)
 		return;
 
-	RGBpixmap rgb_pixmap(height, width);
+	RGBpixmap rgb_pixmap;
 	if (!rgb_pixmap.readBMPFile(name))
 		throw file_read_error_exception(name);
-
+	int width = rgb_pixmap.nCols;
+	int height = rgb_pixmap.nRows;
 	texture pixel_array;
 	for (int row = 0; row < height; ++row)
 	{
@@ -62,11 +63,15 @@ void texture_manager::delete_texture(const std::string& name)
 
 GLuint texture_manager::get_texture_name(const std::string& name)
 {
+	if(textures.count(name) != 1 && name != "")
+		load_texture(name);
 	return texture_names[name];
 }
 
 texture texture_manager::get_texture(const std::string& name)
 {
+	if(textures.count(name) != 1)
+		load_texture(name);
 	if(textures.count(name) != 1)
 		throw(texture_not_found(name));
 	return textures[name];

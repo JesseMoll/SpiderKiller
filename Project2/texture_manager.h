@@ -17,7 +17,7 @@ public:
 //sorry for butting in, but I really like seeing something tangible
 	static std::map<std::string, GLuint> texture_names;
 public:
-	static void load_texture(const std::string& name, const int& width, const int& height);
+	static void load_texture(const std::string& name);
 	static void delete_texture(const std::string& name);
 	static void render_texture(const std::string& name);
 	static GLuint get_texture_name(const std::string& name);

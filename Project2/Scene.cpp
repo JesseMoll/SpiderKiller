@@ -138,10 +138,6 @@ void Scene::draw()
 	int w = static_cast<int>(GS.WindowSize.x);
 	int h = static_cast<int>(GS.WindowSize.y);
 
-	
-
-    
-	
 	const double ViewSizeY = GS.ViewSize;
 	const double ViewSizeX = (ViewSizeY * w) / h;
 
@@ -357,7 +353,6 @@ UpdateResult Scene::update2(int ms, GlobalState &GS)
 	{
 		glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
 		glClear(GL_COLOR_BUFFER_BIT); // clear buffers
-		glLoadIdentity(); // reset modelview transformation
 		ptrInstance->draw(); // draw the world
 		glutSwapBuffers(); // make it all visible
 	}
@@ -368,42 +363,11 @@ UpdateResult Scene::update2(int ms, GlobalState &GS)
 		if(FirstTime)
 		{
 			FirstTime = false;
-			glShadeModel(GL_SMOOTH);
-			
-			
-			//Load the Textures with the texture_manager
-			texture_manager::load_texture("Level1.bmp", 512, 512);
-			texture_manager::load_texture("Level2.bmp", 1024, 1024);
-			texture_manager::load_texture("Level3.bmp", 1024, 1024);
-			texture_manager::load_texture("Spider.bmp", 256, 256);
-			texture_manager::load_texture("Flame.bmp", 128, 128);
-			texture_manager::load_texture("HUD.bmp", 1024, 256);
-
-			texture_manager::load_texture("Arrow.bmp", 64, 64);
-			texture_manager::load_texture("Mine.bmp", 64, 64);
-
-			texture_manager::load_texture("Pistol.bmp", 64, 64);
-			texture_manager::load_texture("MachineGun.bmp", 64, 64);
-			texture_manager::load_texture("Shotgun.bmp", 64, 64);
-			texture_manager::load_texture("AutoShotgun.bmp", 64, 64);
-			texture_manager::load_texture("Flamethrower.bmp", 64, 64);
-			texture_manager::load_texture("GrenadeLauncher.bmp", 64, 64);
-			texture_manager::load_texture("BFG.bmp", 64, 64);
-			texture_manager::load_texture("FireBombGun.bmp", 64, 64);
-			texture_manager::load_texture("RegenPack.bmp", 64, 64);
-			
-			glTexEnvf (GL_TEXTURE_ENV,GL_TEXTURE_ENV_MODE,GL_REPLACE);
-			//Load the material (everything uses the same material)
-			const GLfloat MatColor[] = {1, 1, 1, 1.0};
-			const GLfloat Shininess[] = {10};
 
 			//Allow transparency in textures
 			glEnable (GL_BLEND);
 			glBlendFunc(GL_SRC_ALPHA,GL_ONE_MINUS_SRC_ALPHA);
-
-			glMaterialfv( GL_FRONT_AND_BACK, GL_DIFFUSE, MatColor );
-			glMaterialfv( GL_FRONT_AND_BACK, GL_SPECULAR, MatColor );
-			glMaterialfv( GL_FRONT_AND_BACK, GL_SHININESS, Shininess );
+			glTexEnvf (GL_TEXTURE_ENV,GL_TEXTURE_ENV_MODE,GL_REPLACE);
 
 			//Init everything after textures and whatnot are setup
 			ptrInstance->InitGame();
