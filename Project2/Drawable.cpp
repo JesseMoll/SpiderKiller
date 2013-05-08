@@ -10,7 +10,8 @@ Drawable::Drawable(Drawable* _Parent, GLuint _Texture, Vector2d _Pos, Vector2d _
 	Scale(_Scale),
 	Color(_Color),
 	Rot(0),
-	ToBeDeleted(false)
+	ToBeDeleted(false),
+	DrawColoredRect(true)
 {
 }
 
@@ -96,6 +97,9 @@ void Drawable::draw2()
 {
 	if(Texture == 0)
 	{
+		if (!DrawColoredRect)
+			return;
+
 		glDisable(GL_TEXTURE_2D);
 		glColor3d(Color.x, Color.y, Color.z); //Draw a 2x2 Colored square
 		glRectf(-1,-1,1,1);

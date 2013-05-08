@@ -5,6 +5,7 @@
 #include "weapon_manager.h"
 #include <sstream>
 #include "RegenPack.h"
+#include "Health.h"
 
 //static class variables
 Scene* Scene::ptrInstance = NULL; 
@@ -56,7 +57,7 @@ void Scene::InitGame()
 {
 	SetupTexture();
 	new (&GS) GlobalState();
-    GS.TheHero = AddChild(new Hero(this, 0, Vector2d(584, LevelSize/2)));	
+	GS.TheHero = AddChild(new Hero(this, 0, Vector2d(584, LevelSize/2)));	
 	GS.TheCreepManager = AddChild(new creep_manager(this));
 	GS.TheWeaponManager = AddChild(new weapon_manager(this));
 	GS.TheGrid = static_cast<Grid*>(AddChild(new Grid));
@@ -411,5 +412,8 @@ UpdateResult Scene::update2(int ms, GlobalState &GS)
 			CS1->setSpawnLimit(200);
 			
 			CM->add_spawner(Vector2d(400,674), 20000, 1, 2, "Huge Spider");
+
+			//Add a health pack
+			AddChild(new Health(this, Vector2d(595, LevelSize/2)));
 		}
 	}

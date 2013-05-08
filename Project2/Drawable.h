@@ -68,6 +68,7 @@ class Drawable
    // protected:
 
 		bool ToBeDeleted;
+		bool DrawColoredRect;
 		virtual void draw2(); // Draw the object (excluding parent-to-child transformation)
         Vector2d Pos;	// localized object Position
 		Vector2d Scale;	// Object's Scale
