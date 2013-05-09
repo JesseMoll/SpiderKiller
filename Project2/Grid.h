@@ -14,7 +14,7 @@ public:
 	~Grid(void);
 	
 	void UpdateGrid(std::list<Drawable*>* ChildList);
-	std::list<Cell*> get_nearby_cells(Vector2d creep_pos, double radius);
+	void get_nearby_cells(std::list<Cell*> &CellList, const Vector2d &creep_pos, const double &radius);
 	void draw2(){};
 	void draw();
 	Cell* GetCell(int x, int y);

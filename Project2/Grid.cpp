@@ -113,9 +113,8 @@ void Grid::draw()
 		}
 }
 
-std::list<Cell*> Grid::get_nearby_cells(Vector2d creep_pos, double radius)
+void Grid::get_nearby_cells(std::list<Cell*> &CellList, const Vector2d &creep_pos, const double &radius)
 {
-	std::list<Cell*> RetVal;
 	int CheckWidth = static_cast<int>(radius / CellSize);
 	int x = static_cast<int>(creep_pos.x / CellSize);
 	int y = static_cast<int>(creep_pos.y / CellSize);
@@ -129,10 +128,9 @@ std::list<Cell*> Grid::get_nearby_cells(Vector2d creep_pos, double radius)
 		for(int j = y_min; j <= y_max; ++j)
 		{
 			if(Vector2d::distance_squared(creep_pos, cells[i][j].Pos) < radius_squared)
-				RetVal.push_back(&cells[i][j]);
+				CellList.push_back(&cells[i][j]);
 		}
 	}
-	return RetVal;
 }
 
 void Grid::add_creep(Drawable* c)

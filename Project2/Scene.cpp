@@ -4,6 +4,7 @@
 #include "texture_manager.h"
 #include "weapon_manager.h"
 #include <sstream>
+#include "Turret.h"
 #include "RegenPack.h"
 #include "Shield.h"
 #include "Health.h"
@@ -36,6 +37,7 @@ Scene::Scene()
 	glutIgnoreKeyRepeat(1); // ignore key repeat when holding key down
 	glutMouseFunc(mouseButton); // process mouse button push/release
 	glutMotionFunc(mouseMove); // process mouse dragging motion
+	glutPassiveMotionFunc(mouseMove); //process movement when no buttons are pressed
 	glutKeyboardFunc(pressNormalKeys); // process standard key pressed
 	glutKeyboardUpFunc(releaseNormalKeys); //process standard key release
 	glutSpecialFunc(pressSpecialKey); // process special key pressed
@@ -74,8 +76,8 @@ void Scene::InitGame()
 	WM->add_projectile("Pellet",	"", .5, 100, 5,  80); 
 	WM->add_projectile("Flame", "Flame.bmp", 4, 100, 3, 50);
 
-	WM->add_projectile("Shell",		"",  .2, 40, 10, 3,  "Pellet",	12,  60);
-	WM->add_projectile("Fire",		"",  0, 40, 10, 3,  "Flame",	8,  60); 
+	WM->add_projectile("Shell",		"",  .2, 400, 10, 6,  "Pellet",	12,  60);
+	WM->add_projectile("Fire",		"",  0, 400, 10, 6,  "Flame",	8,  60); 
 	WM->add_projectile("Fire Bomb",	"", .5, 100, 30, 75, "Fire",	8, 360); 
 	WM->add_projectile("Grenade",	"", .5, 100, 30, 75, "Shell",	8, 360);
 	WM->add_projectile("Mine",	"Mine.bmp", 4, .01, 1, 1, "Shell",	8, 360);
@@ -85,8 +87,9 @@ void Scene::InitGame()
 	//Regen 50 health per second for 15 seconds
 	WM->add_projectile("Regen", new RegenPack(this,50, 15000));
 	WM->add_projectile("Shield", new Shield(this,500, 10));
+	WM->add_projectile("Turret", new Turret(this, WM->get_projectile("Bullet"), 200, 100));
+	WM->add_projectile("Fire Turret", new Turret(this, WM->get_projectile("Fire"), 100, 200));
 	//TODO ADD Weapons as we pick them up
-	//TODO Separate Weapons as left-click, right-click, and spacebar (super weapons which take energy gained from kills)
 	
 	
 	WM->add_weapon("Machine Gun", "MachineGun.bmp", 100.0, "Bullet");
@@ -102,6 +105,8 @@ void Scene::InitGame()
 
 	WM->add_weapon("Regen Pack", "RegenPack.bmp", 1000.0, "Regen", Weapon::EQUIP_SPACE);
 	WM->add_weapon("Shield Creator", "Shield.bmp", 1000.0, "Shield", Weapon::EQUIP_SPACE);
+	WM->add_weapon("Turret Creator", "MachineGunTurret.bmp", 1000.0, "Turret", Weapon::EQUIP_SPACE);
+	WM->add_weapon("Fire Turret Creator", "FlameTurret.bmp", 1000.0, "Fire Turret", Weapon::EQUIP_SPACE);
 	NextLevel();
 }
 
