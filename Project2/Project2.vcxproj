@@ -105,6 +105,7 @@
     <ClCompile Include="GlobalState.cpp" />
     <ClCompile Include="Shield.cpp" />
     <ClCompile Include="texture_manager.cpp" />
+    <ClCompile Include="Turret.cpp" />
     <ClCompile Include="Util.cpp" />
     <ClCompile Include="Vector2d.cpp" />
     <ClCompile Include="Weapon.cpp" />
@@ -128,6 +129,7 @@
     <ClInclude Include="Scene.h" />
     <ClInclude Include="Shield.h" />
     <ClInclude Include="texture_manager.h" />
+    <ClInclude Include="Turret.h" />
     <ClInclude Include="Util.h" />
     <ClInclude Include="Vector2d.h" />
     <ClInclude Include="Weapon.h" />
