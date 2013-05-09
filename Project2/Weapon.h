@@ -22,6 +22,7 @@ public:
 	void Equip();
 	void Unequip();
 	EquipStatus getEquipSlot(){return EquipSlot;};
+	double getCoolDown(){return FireTimer / FireRate;};
 //Overridden Functions
 	//Dont draw the weapon
 	void draw2(){};

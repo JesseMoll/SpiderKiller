@@ -3,7 +3,7 @@
 
 
 
-Drawable::Drawable(Drawable* _Parent, GLuint _Texture, Vector2d _Pos, Vector2d _Scale, Vector3d _Color):
+Drawable::Drawable(Drawable* _Parent, GLuint _Texture, Vector2d _Pos, Vector2d _Scale, Vector4d _Color):
 	Pos(_Pos),
 	Parent(_Parent),
 	Texture(_Texture),
@@ -101,14 +101,14 @@ void Drawable::draw2()
 			return;
 
 		glDisable(GL_TEXTURE_2D);
-		glColor3d(Color.x, Color.y, Color.z); //Draw a 2x2 Colored square
+		glColor4d(Color.x, Color.y, Color.z, Color.w); //Draw a 2x2 Colored square
 		glRectf(-1,-1,1,1);
 		glRectf(-.25f,-.25f,2,.25f);
 		glEnable(GL_TEXTURE_2D);
 	}
 	else
 	{
-		glColor3d(Color.x, Color.y, Color.z);
+		glColor4d(Color.x, Color.y, Color.z, Color.w);
 		glBindTexture (GL_TEXTURE_2D, Texture);
 		
 		glBegin(GL_QUADS);

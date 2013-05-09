@@ -34,6 +34,11 @@ void HUD::draw(int window_width, GlobalState &GS)
 	glMatrixMode(GL_MODELVIEW); // return to modelview mode
 	glLoadIdentity(); // reset the modelview
 
+
+	Weapon* LeftWeapon = WM->getEquippedWeapon(Weapon::EQUIP_LEFT);
+	Weapon* RightWeapon = WM->getEquippedWeapon(Weapon::EQUIP_RIGHT);
+	Weapon* SuperWeapon = WM->getEquippedWeapon(Weapon::EQUIP_SPACE);
+
 	//Draw the health bar
 	double HealthPct = GS.HeroHealth / GS.HeroMaxHealth;
 	glDisable(GL_TEXTURE_2D);
@@ -65,7 +70,7 @@ void HUD::draw(int window_width, GlobalState &GS)
 	glPopMatrix();
 
 	//Draw LEFT weapon icon
-	glBindTexture (GL_TEXTURE_2D, WM->getWeaponIcon(Weapon::EQUIP_LEFT));	
+	glBindTexture (GL_TEXTURE_2D, LeftWeapon->getTexture());	
 	glPushMatrix();
 		glTranslatef(288, 48, 0);
 		glScalef(64,64,1);
@@ -73,21 +78,30 @@ void HUD::draw(int window_width, GlobalState &GS)
 	glPopMatrix();
 
 	//Draw Right weapon icon
-	glBindTexture (GL_TEXTURE_2D, WM->getWeaponIcon(Weapon::EQUIP_RIGHT));		
+	glBindTexture (GL_TEXTURE_2D, RightWeapon->getTexture());		
 	glPushMatrix();
 		glTranslatef(672, 48, 0);
 		glScalef(64,64,1);
 		DrawTexturedSquare();
 	glPopMatrix();
+
+	double CoolDownPct = RightWeapon->getCoolDown();	
+	glDisable(GL_TEXTURE_2D);
+	glPushMatrix();
+		glColor4f(0,.3,.3,.3); //Semi-transparent blue
+		glTranslatef(672,48,0);
+		glScaled(64,CoolDownPct * 64,0);
+		glRectd(0,0,1,1);
+	glPopMatrix();
+	glEnable(GL_TEXTURE_2D);
 	
 	//Draw Super weapon icon
-	glBindTexture (GL_TEXTURE_2D, WM->getWeaponIcon(Weapon::EQUIP_SPACE));	
+	glBindTexture (GL_TEXTURE_2D, SuperWeapon->getTexture());	
 	glPushMatrix();
 		glTranslatef(32,64,0);
 		glScalef(64,64,1);
 		DrawTexturedSquare();
 	glPopMatrix();
-	
 }
 
 HUD::~HUD(void)

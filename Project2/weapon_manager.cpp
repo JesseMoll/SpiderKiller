@@ -7,11 +7,10 @@ weapon_manager::weapon_manager(Drawable* _Parent):
 {
 }
 
-GLuint weapon_manager::getWeaponIcon(Weapon::EquipStatus WeaponSlot)
+Weapon* weapon_manager::getEquippedWeapon(Weapon::EquipStatus WeaponSlot)
 {
-	return weapons[equipped_weapons[WeaponSlot]]->getTexture();
+	return weapons[equipped_weapons[WeaponSlot]];
 }
-
 
 void weapon_manager::equip_weapon(std::string weapon_name)
 {

@@ -5,6 +5,7 @@
 #include "weapon_manager.h"
 #include <sstream>
 #include "RegenPack.h"
+#include "Shield.h"
 #include "Health.h"
 
 //static class variables
@@ -57,7 +58,7 @@ void Scene::InitGame()
 {
 	SetupTexture();
 	new (&GS) GlobalState();
-	GS.TheHero = AddChild(new Hero(this, 0, Vector2d(584, LevelSize/2)));	
+    GS.TheHero = AddChild(new Hero(this, 0, Vector2d(584, LevelSize/2)));	
 	GS.TheCreepManager = AddChild(new creep_manager(this));
 	GS.TheWeaponManager = AddChild(new weapon_manager(this));
 	GS.TheGrid = static_cast<Grid*>(AddChild(new Grid));
@@ -83,6 +84,7 @@ void Scene::InitGame()
 	//Special Weapons can be initialized like this (specialized for each weapon)
 	//Regen 50 health per second for 15 seconds
 	WM->add_projectile("Regen", new RegenPack(this,50, 15000));
+	WM->add_projectile("Shield", new Shield(this,500, 10));
 	//TODO ADD Weapons as we pick them up
 	//TODO Separate Weapons as left-click, right-click, and spacebar (super weapons which take energy gained from kills)
 	
@@ -99,6 +101,7 @@ void Scene::InitGame()
 	WM->add_weapon("Mine Layer",  "Mine.bmp", 1000.0, "Mine", Weapon::EQUIP_RIGHT);
 
 	WM->add_weapon("Regen Pack", "RegenPack.bmp", 1000.0, "Regen", Weapon::EQUIP_SPACE);
+	WM->add_weapon("Shield Creator", "Shield.bmp", 1000.0, "Shield", Weapon::EQUIP_SPACE);
 	NextLevel();
 }
 

@@ -191,3 +191,16 @@ Vector3d& Vector3d::operator+=(const Vector3d& v)
 
 Vector3d Vector3d::operator+(const Vector3d& v) const 
 	{ return Vector3d(x + v.x, y + v.y, z + v.z); }
+
+
+Vector4d::Vector4d(Scalar _x, Scalar _y, Scalar _z, Scalar _w):
+	x(_x),
+	y(_y),
+	z(_z),
+	w(_w)
+{
+}
+
+Vector4d::Vector4d(Vector3d v):x(v.x), y(v.y), z(v.z), w(1)
+{
+}

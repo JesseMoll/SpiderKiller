@@ -15,7 +15,7 @@ GlobalState::GlobalState(void):
 	TheWeaponManager(0),	
 	HeroMaxHealth(500),
 	HeroHealth(500),
-	HeroFocus(0),
+	HeroFocus(50),
 	HeroMaxFocus(100),
 	HeroRegenPerSec(0.0),
 	CameraOffset(0,0),

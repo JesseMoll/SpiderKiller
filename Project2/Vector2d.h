@@ -109,6 +109,16 @@ public:
 								// output operator
 std::ostream& operator<<(std::ostream& out, const Vector2d& v);
 
+
+class Vector4d {
+public:
+	Vector4d(Scalar x = 0, Scalar y = 0, Scalar z = 0, Scalar w = 0);
+	Vector4d(Vector3d v);
+public:
+	Scalar x, y, z, w;						// variables made public for ease of use
+};
+
+
 typedef Vector2d Point2d;				// Point2d is alias for Vector2d
 
 //----------------------------------------------------------------------

@@ -39,7 +39,7 @@ UpdateResult Creep::update2(int ms, GlobalState &GS)
 	Vector2d NearbyCreepVelocity (0,0);
 	Vector2d PathingVector(0,0);
 
-	auto NearbyCells = GS.TheGrid->get_nearby_cells(Pos, CellSize * 2);
+	std::list<Cell*> NearbyCells = GS.TheGrid->get_nearby_cells(Pos, CellSize * 2);
 	int NumNearby = 0;
 	for (auto itr = NearbyCells.begin(); itr != NearbyCells.end(); ++itr)
 	{

@@ -18,7 +18,6 @@ creep_spawner::creep_spawner(Drawable* _Parent, int _SpawnRate, int _SpawnAmount
 UpdateResult creep_spawner::update2(int ms, GlobalState &GS)
 {
 	SpawnTimer -= ms;
-	//std::cout << Parent->Children.size() << std::endl;
 	if(SpawnTimer < 0 && Parent->Children.size() < MaxCreep)
 	{
 		SpawnTimer += SpawnRate;
@@ -27,7 +26,7 @@ UpdateResult creep_spawner::update2(int ms, GlobalState &GS)
 			SpawnTotal++;
 			if (SpawnLimit != 0 && SpawnTotal > SpawnLimit)
 				return UPDATE_DELETE;
-			Parent->AddChild(SpawnCreep());
+			GS.TheCreepManager->AddChild(SpawnCreep());
 		}
 	}
 	return UPDATE_NONE;

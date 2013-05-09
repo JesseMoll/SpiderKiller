@@ -75,7 +75,11 @@
     <ClCompile Include="RegenPack.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+<<<<<<< HEAD
+    <ClCompile Include="Shield.cpp">
+=======
     <ClCompile Include="Health.cpp">
+>>>>>>> 4ee0b9e18efc0284bd78be549a233fdd2104dedf
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
@@ -137,7 +141,11 @@
     <ClInclude Include="RegenPack.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+<<<<<<< HEAD
+    <ClInclude Include="Shield.h">
+=======
     <ClInclude Include="Health.h">
+>>>>>>> 4ee0b9e18efc0284bd78be549a233fdd2104dedf
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
