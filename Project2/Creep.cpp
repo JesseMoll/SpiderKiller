@@ -3,11 +3,17 @@
 #include <algorithm>
 
 class creep_manager;
-Creep::Creep(Drawable* _Parent, GLuint _Texture, Vector2d _Pos, double _Health, double _Scale, double _Rot, double _Speed, double _TurnSpeed, Vector3d _Color):
+Creep::Creep(Drawable* _Parent, GLuint _Texture, Vector2d _Pos, double _Health, double _Scale, double _Rot, double _Speed, double _TurnSpeed, Vector4d _Color, Creep* _SpawnOnDeath, Creep* _SpawnPeriodic, double _PeriodicSpawnRate, double _PeriodicSpawnNum, double _OnDeathSpawnNum):
 	Drawable(_Parent, _Texture, _Pos, Vector2d(_Scale,_Scale), _Color),
 	Health(_Health),
 	Speed(_Speed),
-	TurnSpeed(_TurnSpeed)
+	TurnSpeed(_TurnSpeed),
+	SpawnOnDeath(_SpawnOnDeath),
+	SpawnPeriodic(_SpawnPeriodic),
+	PeriodicSpawnRate(_PeriodicSpawnRate),
+	PeriodicSpawnTimer(_PeriodicSpawnRate),
+	PeriodicSpawnNum(_PeriodicSpawnNum),
+	OnDeathSpawnNum(_OnDeathSpawnNum)
 {
 	Rot = _Rot;
 	
@@ -20,6 +26,7 @@ Creep* Creep::clone() const
 
 Creep::~Creep(void)
 {
+
 }
 
 
@@ -28,11 +35,35 @@ UpdateResult Creep::update2(int ms, GlobalState &GS)
 	//It's dead
 	if(Health == 0)
 	{
+
+		if(Parent->Children.size() < MaxCreep && SpawnOnDeath != NULL)
+		{
+			for(int n = 0; n != OnDeathSpawnNum; n++)
+			{
+				Creep* NewCreep = SpawnOnDeath->clone();
+				NewCreep->setPos(Pos + Vector2d(Random(10.0) - 5.0, Random(10.0) - 5.0)); 
+				NewCreep->setRot(Rot + Random(.4) - .2);
+				GS.TheCreepManager->AddChild(NewCreep);
+			}
+		}
+
 		//Gain focus based on how big of a bug we just killed;
 		GS.HeroFocus = std::min(GS.HeroFocus + Scale.x * Scale.x * Scale.x * FocusGainMult, GS.HeroMaxFocus);
 		return UPDATE_DELETE;
 	}
 	
+	PeriodicSpawnTimer -= ms;
+	if(PeriodicSpawnTimer < 0 && Parent->Children.size() < MaxCreep && SpawnPeriodic != NULL)
+	{
+		PeriodicSpawnTimer = PeriodicSpawnRate;
+		for(int n = 0; n != PeriodicSpawnNum; n++)
+		{
+			Creep* NewCreep = SpawnPeriodic->clone();
+			NewCreep->setPos(Pos + Vector2d(Random(10.0) - 5.0, Random(10.0) - 5.0)); 
+			NewCreep->setRot(Rot + Random(.4) - .2);
+			GS.TheCreepManager->AddChild(NewCreep);
+		}
+	}
 
 	Vector2d WallRepulsion(0,0);
 	Vector2d CreepRepulsion (0,0);

@@ -89,6 +89,7 @@
   <ItemGroup>
     <ClCompile Include="Cell.cpp" />
     <ClCompile Include="Constants.cpp" />
+    <ClCompile Include="CreepProjectile.cpp" />
     <ClCompile Include="Grid.cpp" />
     <ClCompile Include="Health.cpp" />
     <ClCompile Include="HUD.cpp" />
@@ -113,6 +114,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Cell.h" />
+    <ClInclude Include="CreepProjectile.h" />
     <ClInclude Include="Grid.h" />
     <ClInclude Include="Health.h" />
     <ClInclude Include="HUD.h" />

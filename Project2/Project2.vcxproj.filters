@@ -24,6 +24,7 @@
     <ClCompile Include="Weapon.cpp" />
     <ClCompile Include="weapon_manager.cpp" />
     <ClCompile Include="Turret.cpp" />
+    <ClCompile Include="CreepProjectile.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Cell.h" />
@@ -48,6 +49,7 @@
     <ClInclude Include="Weapon.h" />
     <ClInclude Include="weapon_manager.h" />
     <ClInclude Include="Turret.h" />
+    <ClInclude Include="CreepProjectile.h" />
   </ItemGroup>
   <ItemGroup>
     <Image Include="AutoShotgun.bmp" />

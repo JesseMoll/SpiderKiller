@@ -8,6 +8,7 @@
 #include "RegenPack.h"
 #include "Shield.h"
 #include "Health.h"
+#include "CreepProjectile.h"
 
 //static class variables
 Scene* Scene::ptrInstance = NULL; 
@@ -401,10 +402,14 @@ UpdateResult Scene::update2(int ms, GlobalState &GS)
 		case 1:
 			//Get the creep manager pointer as the correct type
 			creep_manager* CM = static_cast<creep_manager*>(GS.TheCreepManager);
+
+			CM->add_creep("Bug Bullet", new CreepProjectile(this));
+
+
 			CM->add_creep("Tiny Spider", 2, "Spider.bmp", 1.5, 50, 5);
 			CM->add_creep("Medium Spider", 10, "Spider.bmp", 4, 40, 4);
-			CM->add_creep("Huge Spider", 500, "Spider.bmp", 10, 20, 2);
-
+			CM->add_creep("Huge Spider", 500, "Spider.bmp", 10, 20, 2,Vector3d(1,1,1),"Tiny Spider", "Bug Bullet", 1000, 10, 40);
+			
 			//TODO - Move this code into the level class (on level init)
 			//TODO, add finite spawns (so we can beat a level)
 

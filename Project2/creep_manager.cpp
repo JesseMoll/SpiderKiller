@@ -12,9 +12,20 @@ creep_manager::~creep_manager(void)
 {
 }
 
-void creep_manager::add_creep(std::string creep_name, double health, std::string texture_name, double scale, double speed, double turnSpeed, Vector3d color)
+void creep_manager::add_creep(std::string creep_name, double health, std::string texture_name, double scale, double speed, double turnSpeed, Vector3d color,std::string _SpawnOnDeath, std::string _SpawnPeriodic, double _PeriodicSpawnRate, double _PeriodicSpawnNum, double _OnDeathSpawnNum)
 {
-	creeps[creep_name] = new Creep(this,texture_manager::get_texture_name(texture_name), Vector2d(0,0), health, scale, 0, speed, turnSpeed, color);
+	Creep* SpawnOnDeath = NULL;
+	Creep* SpawnPeriodic = NULL;
+	if (_SpawnOnDeath != "")
+		SpawnOnDeath = creeps[_SpawnOnDeath];
+	if (_SpawnPeriodic != "")
+		SpawnPeriodic = creeps[_SpawnPeriodic];
+	creeps[creep_name] = new Creep(this,texture_manager::get_texture_name(texture_name), Vector2d(0,0), health, scale, 0, speed, turnSpeed, color,SpawnOnDeath, SpawnPeriodic, _PeriodicSpawnRate, _PeriodicSpawnNum, _OnDeathSpawnNum);
+}
+
+void creep_manager::add_creep(std::string creep_name, Creep* NewCreep)
+{
+	creeps[creep_name] = NewCreep;
 }
 
 creep_spawner* creep_manager::add_spawner(Vector2d pos, int spawn_rate, int spawn_amount, int spawn_limit, std::string creep_name, double rot)
