@@ -21,6 +21,8 @@ extern const double HeroForceMult;
 extern const double CreepDistanceForceMult;
 extern const double CreepVelocityForceMult;
 
+extern std::string LevelName;
+
 void SetupTexture();
 bool GetWalkable(Vector2d Pos);
 bool CheckVisibility(Vector2d &p1, Vector2d &p2);

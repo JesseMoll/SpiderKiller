@@ -6,13 +6,16 @@
 
 
 texture Tex;
+std::string LevelName;
 
 void SetupTexture()
 {
-	Tex = texture_manager::get_texture("Level2.bmp");
+	Tex = texture_manager::get_texture(LevelName);
 }
 bool GetWalkable(Vector2d Pos)
 {
+	if(Tex.size() == 0)
+		return false;
 	//If transparent, we can't walk there, its a wall
 	//We need a better func than this (built into the level class)
 	//I just really like seeing things work

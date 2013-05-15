@@ -48,7 +48,7 @@ Scene::Scene()
 
 	GS.TheScene = this;
     
-	glutTimerFunc(0, Timer, 0);
+	
 
 }
 
@@ -59,7 +59,6 @@ void Scene::DestructGame()
 
 void Scene::InitGame()
 {
-	SetupTexture();
 	new (&GS) GlobalState();
     GS.TheHero = AddChild(new Hero(this, 0, Vector2d(584, LevelSize/2)));	
 	GS.TheCreepManager = AddChild(new creep_manager(this));
@@ -108,6 +107,19 @@ void Scene::InitGame()
 	WM->add_weapon("Shield Creator", "Shield.bmp", 1000.0, "Shield", Weapon::EQUIP_SPACE);
 	WM->add_weapon("Turret Creator", "MachineGunTurret.bmp", 1000.0, "Turret", Weapon::EQUIP_SPACE);
 	WM->add_weapon("Fire Turret Creator", "FlameTurret.bmp", 1000.0, "Fire Turret", Weapon::EQUIP_SPACE);
+
+	creep_manager* CM = static_cast<creep_manager*>(GS.TheCreepManager);
+
+
+	CM->add_creep("Bug Bullet", new CreepProjectile(this));
+
+
+	CM->add_creep("Tiny Spider", 2, "Spider.bmp", 1.5, 50, 5);
+	CM->add_creep("Medium Spider", 10, "Spider.bmp", 4, 40, 4);
+	CM->add_creep("Huge Spider", 500, "Spider.bmp", 10, 20, 2,Vector3d(1,0,0),"Tiny Spider", "Bug Bullet", 1000, 15, 200);
+	CM->add_creep("Boss1", 200, "Spider.bmp", 6, 15, 2,Vector3d(1,0,0),"Tiny Spider", "Bug Bullet", 2000, 5, 20);
+			
+
 	NextLevel();
 }
 
@@ -115,7 +127,7 @@ void Scene::draw2()
 {	
 	//Turn Textures on for the ground
 	
-	glBindTexture (GL_TEXTURE_2D, texture_manager::get_texture_name("Level2.bmp"));
+	glBindTexture (GL_TEXTURE_2D, texture_manager::get_texture_name(LevelName));
 	//Draw the ground (10 squares x 10 squares)
 
 	const int NUM_QUADS = 10;
@@ -243,6 +255,10 @@ void Scene::Timer(int value){
 	}
 	if(ptrInstance->update((int)msSinceLastUpdate, GS) != UPDATE_NONE) // update everything and if anything has changed...
 		glutPostRedisplay(); // redraw everything;
+	//No creeps left, we Won!
+	if(GS.TheCreepManager != NULL)
+		if(GS.TheCreepManager->begin() == GS.TheCreepManager->end())
+			ptrInstance->NextLevel();
     glutTimerFunc(UPDATE_INTERVAL, Timer, 0);
 }
 
@@ -381,6 +397,8 @@ UpdateResult Scene::update2(int ms, GlobalState &GS)
 
 			//Init everything after textures and whatnot are setup
 			ptrInstance->InitGame();
+			//We gotta update the game before we start the timer
+			glutTimerFunc(0, Timer, 0);
 		}
 
 		GS.WindowSize = Vector2d(w,h);
@@ -393,34 +411,58 @@ UpdateResult Scene::update2(int ms, GlobalState &GS)
 
 	void Scene::NextLevel()
 	{
+		//TODO: DELETE HEALTH PACKS BETWEEN LEVELS
+		//TODO: DELETE STUCK CREEP
 		GS.CurrentLevel++;
-		if (GS.CurrentLevel == 6)
+		if (GS.CurrentLevel == 4)
 			GS.CurrentLevel = 1;
+
+		//Get the creep manager pointer as the correct type
+		creep_manager* CM = static_cast<creep_manager*>(GS.TheCreepManager);
 
 		switch (GS.CurrentLevel)
 		{
 		case 1:
-			//Get the creep manager pointer as the correct type
-			creep_manager* CM = static_cast<creep_manager*>(GS.TheCreepManager);
-
-			CM->add_creep("Bug Bullet", new CreepProjectile(this));
-
-
-			CM->add_creep("Tiny Spider", 2, "Spider.bmp", 1.5, 50, 5);
-			CM->add_creep("Medium Spider", 10, "Spider.bmp", 4, 40, 4);
-			Creep* HugeSpider = CM->add_creep("Huge Spider", 500, "Spider.bmp", 10, 20, 2,Vector3d(1,0,0),"Tiny Spider", "Bug Bullet", 1000, 15, 200);
-			
-			//TODO - Move this code into the level class (on level init)
-			//TODO, add finite spawns (so we can beat a level)
-
-			//Add some spawners 
+		{
+			GS.TheHero->setPos(Vector2d(288, 1024-488));
+			LevelName = "Level1.bmp";
+			creep_spawner* CS1 = CM->add_spawner(Vector2d(504,1024-236), 10000, 10, 0, "Medium Spider");
+			creep_spawner* CS2 = CM->add_spawner(Vector2d(516,1024-728), 10000, 10, 0, "Medium Spider");
+			Creep* Boss = CM->get_creep("Boss1");
+			CS1->setOnDeath(Boss,1);
+			CS2->setOnDeath(Boss,1);
+			AddChild(new Health(this, Vector2d(768, 1024-460)));
+			break;
+		}
+		case 2:
+		{
+			LevelName = "Level2.bmp";
+			GS.TheHero->setPos(Vector2d(898, 1024-856));
 			creep_spawner* CS1 = CM->add_spawner(Vector2d(380,685), 10000, 200, 0, "Tiny Spider");
 			creep_spawner* CS2 = CM->add_spawner(Vector2d(400,665), 10000, 10, 0, "Medium Spider");
-			CS1->setOnDeath(HugeSpider,1);
-			CS2->setOnDeath(HugeSpider,1);
-
+			Creep* Boss = CM->get_creep("Huge Spider");
+			CS1->setOnDeath(Boss,1);
+			CS2->setOnDeath(Boss,1);
 
 			//Add a health pack
-			AddChild(new Health(this, Vector2d(595, LevelSize/2)));
+			AddChild(new Health(this, Vector2d(692, 1024-520)));
+			break;
 		}
+		case 3:
+		{
+			LevelName = "Level3.bmp";
+			GS.TheHero->setPos(Vector2d(268, 710));
+			creep_spawner* CS1 = CM->add_spawner(Vector2d(152,1024-870), 10000, 10, 0, "Medium Spider");
+			creep_spawner* CS2 = CM->add_spawner(Vector2d(774,1024-914), 10000, 200, 0, "Tiny Spider");
+			creep_spawner* CS3 = CM->add_spawner(Vector2d(830,1024-310), 10000, 200, 0, "Tiny Spider");
+			Creep* Boss = CM->get_creep("Huge Spider");
+			CS1->setOnDeath(Boss,1);
+			CS2->setOnDeath(Boss,1);
+			CS3->setOnDeath(Boss,1);
+			break;
+		}
+
+		}
+		SetupTexture();
+		GS.TheGrid->Init();
 	}

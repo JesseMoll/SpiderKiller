@@ -12,6 +12,11 @@ creep_manager::~creep_manager(void)
 {
 }
 
+Creep* creep_manager::get_creep(std::string creep_name)
+{
+	return creeps[creep_name];
+}
+
 Creep* creep_manager::add_creep(std::string creep_name, double health, std::string texture_name, double scale, double speed, double turnSpeed, Vector3d color,std::string _SpawnOnDeath, std::string _SpawnPeriodic, double _PeriodicSpawnRate, double _PeriodicSpawnNum, double _OnDeathSpawnNum)
 {
 	Creep* SpawnOnDeath = NULL;

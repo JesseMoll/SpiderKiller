@@ -3,10 +3,9 @@
 #include <queue>
 
 
-Grid::Grid(void):debug(false)
+void Grid::Init()
 {
-
-	cells.resize(GridSize);
+		cells.resize(GridSize);
 	for(int i = 0; i != GridSize; ++i)
 	{
 		cells[i].resize(GridSize);
@@ -34,6 +33,10 @@ Grid::Grid(void):debug(false)
 			}
 		}
 	}
+}
+Grid::Grid(void):debug(false)
+{
+	Init();
 }
 
 void Grid::Addconnections(const int i, const int j, const int iAdder, const int jAdder)

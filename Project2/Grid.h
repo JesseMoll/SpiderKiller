@@ -12,7 +12,7 @@ class Grid:
 public:
 	Grid(void);
 	~Grid(void);
-	
+	void Init();
 	void UpdateGrid(std::list<Drawable*>* ChildList);
 	void get_nearby_cells(std::list<Cell*> &CellList, const Vector2d &creep_pos, const double &radius);
 	void draw2(){};
