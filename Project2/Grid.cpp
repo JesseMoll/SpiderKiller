@@ -5,7 +5,8 @@
 
 void Grid::Init()
 {
-		cells.resize(GridSize);
+	Children.clear();
+	cells.resize(GridSize);
 	for(int i = 0; i != GridSize; ++i)
 	{
 		cells[i].resize(GridSize);

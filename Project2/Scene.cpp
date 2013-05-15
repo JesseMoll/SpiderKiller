@@ -78,8 +78,8 @@ void Scene::InitGame()
 
 	WM->add_projectile("Shell",		"",  .2, 400, 10, 6,  "Pellet",	12,  60);
 	WM->add_projectile("Fire",		"",  0, 400, 10, 6,  "Flame",	8,  60); 
-	WM->add_projectile("Fire Bomb",	"", .5, 100, 30, 75, "Fire",	8, 360); 
-	WM->add_projectile("Grenade",	"", .5, 100, 30, 75, "Shell",	8, 360);
+	WM->add_projectile("Fire Bomb",	"", .5, 100, 5, 75, "Fire",	8, 360); 
+	WM->add_projectile("Grenade",	"", .5, 100, 5, 75, "Shell",	8, 360);
 	WM->add_projectile("Mine",	"Mine.bmp", 4, .01, 1, 1, "Shell",	8, 360);
 	WM->add_projectile("Super Bomb","", .5, 120, 30, 80, "Fire Bomb", 10, 360);
 

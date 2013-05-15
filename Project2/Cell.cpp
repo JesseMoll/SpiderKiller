@@ -39,6 +39,7 @@ UpdateResult Cell::update2(int ms, GlobalState &GS)
 
 void Cell::SetupUnwalkable()
 {
+	Connections.clear();
 	Vector2d UnwalkableCentroid(0,0);
 	Vector2d WalkableCentroid(0,0);
 	double Weight = 0;
