@@ -408,23 +408,17 @@ UpdateResult Scene::update2(int ms, GlobalState &GS)
 
 			CM->add_creep("Tiny Spider", 2, "Spider.bmp", 1.5, 50, 5);
 			CM->add_creep("Medium Spider", 10, "Spider.bmp", 4, 40, 4);
-			CM->add_creep("Huge Spider", 500, "Spider.bmp", 10, 20, 2,Vector3d(1,1,1),"Tiny Spider", "Bug Bullet", 1000, 10, 40);
+			Creep* HugeSpider = CM->add_creep("Huge Spider", 500, "Spider.bmp", 10, 20, 2,Vector3d(1,0,0),"Tiny Spider", "Bug Bullet", 1000, 15, 200);
 			
 			//TODO - Move this code into the level class (on level init)
 			//TODO, add finite spawns (so we can beat a level)
 
 			//Add some spawners 
-			creep_spawner* CS1 = CM->add_spawner(Vector2d(400,674), 5000, 200, 0, "Tiny Spider");
-			creep_spawner* CS2 = CM->add_spawner(Vector2d(400,674), 5000, 10, 200, "Medium Spider");
-			//remove the spawner
-			//CS2->remove();
-			//change the spawn amount and spawn rate of the spawner
-			CS1->setSpawnAmount(20);
-			CS1->setSpawnRate(500);
-			//Will delete itself after spawning 200 more creep
-			CS1->setSpawnLimit(200);
-			
-			CM->add_spawner(Vector2d(400,674), 20000, 1, 2, "Huge Spider");
+			creep_spawner* CS1 = CM->add_spawner(Vector2d(380,685), 10000, 200, 0, "Tiny Spider");
+			creep_spawner* CS2 = CM->add_spawner(Vector2d(400,665), 10000, 10, 0, "Medium Spider");
+			CS1->setOnDeath(HugeSpider,1);
+			CS2->setOnDeath(HugeSpider,1);
+
 
 			//Add a health pack
 			AddChild(new Health(this, Vector2d(595, LevelSize/2)));

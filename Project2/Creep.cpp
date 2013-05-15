@@ -19,6 +19,12 @@ Creep::Creep(Drawable* _Parent, GLuint _Texture, Vector2d _Pos, double _Health, 
 	
 }
 
+void Creep::setOnDeath(Creep* _SpawnOnDeath, unsigned int _OnDeathSpawnNum)
+{
+	SpawnOnDeath = _SpawnOnDeath;
+	OnDeathSpawnNum = _OnDeathSpawnNum;
+}
+
 Creep* Creep::clone() const
 {
 	return new Creep(*this);
@@ -29,26 +35,30 @@ Creep::~Creep(void)
 
 }
 
+void Creep::OnDeath(GlobalState &GS)
+{
+	if(Parent->Children.size() < MaxCreep && SpawnOnDeath != NULL)
+	{
+		for(int n = 0; n != OnDeathSpawnNum; n++)
+		{
+			Creep* NewCreep = SpawnOnDeath->clone();
+			NewCreep->setPos(Pos + Vector2d(Random(10.0) - 5.0, Random(10.0) - 5.0)); 
+			NewCreep->setRot(Rot + Random(.4) - .2);
+			GS.TheCreepManager->AddChild(NewCreep);
+		}
+	}
+
+	//Gain focus based on how big of a bug we just killed;
+	GS.HeroFocus = std::min(GS.HeroFocus + Scale.x * Scale.x * Scale.x * FocusGainMult, GS.HeroMaxFocus);
+	
+}
 
 UpdateResult Creep::update2(int ms, GlobalState &GS)
 {
 	//It's dead
 	if(Health == 0)
 	{
-
-		if(Parent->Children.size() < MaxCreep && SpawnOnDeath != NULL)
-		{
-			for(int n = 0; n != OnDeathSpawnNum; n++)
-			{
-				Creep* NewCreep = SpawnOnDeath->clone();
-				NewCreep->setPos(Pos + Vector2d(Random(10.0) - 5.0, Random(10.0) - 5.0)); 
-				NewCreep->setRot(Rot + Random(.4) - .2);
-				GS.TheCreepManager->AddChild(NewCreep);
-			}
-		}
-
-		//Gain focus based on how big of a bug we just killed;
-		GS.HeroFocus = std::min(GS.HeroFocus + Scale.x * Scale.x * Scale.x * FocusGainMult, GS.HeroMaxFocus);
+		OnDeath(GS);
 		return UPDATE_DELETE;
 	}
 	

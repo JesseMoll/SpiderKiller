@@ -12,7 +12,7 @@ creep_manager::~creep_manager(void)
 {
 }
 
-void creep_manager::add_creep(std::string creep_name, double health, std::string texture_name, double scale, double speed, double turnSpeed, Vector3d color,std::string _SpawnOnDeath, std::string _SpawnPeriodic, double _PeriodicSpawnRate, double _PeriodicSpawnNum, double _OnDeathSpawnNum)
+Creep* creep_manager::add_creep(std::string creep_name, double health, std::string texture_name, double scale, double speed, double turnSpeed, Vector3d color,std::string _SpawnOnDeath, std::string _SpawnPeriodic, double _PeriodicSpawnRate, double _PeriodicSpawnNum, double _OnDeathSpawnNum)
 {
 	Creep* SpawnOnDeath = NULL;
 	Creep* SpawnPeriodic = NULL;
@@ -20,12 +20,12 @@ void creep_manager::add_creep(std::string creep_name, double health, std::string
 		SpawnOnDeath = creeps[_SpawnOnDeath];
 	if (_SpawnPeriodic != "")
 		SpawnPeriodic = creeps[_SpawnPeriodic];
-	creeps[creep_name] = new Creep(this,texture_manager::get_texture_name(texture_name), Vector2d(0,0), health, scale, 0, speed, turnSpeed, color,SpawnOnDeath, SpawnPeriodic, _PeriodicSpawnRate, _PeriodicSpawnNum, _OnDeathSpawnNum);
+	return creeps[creep_name] = new Creep(this,texture_manager::get_texture_name(texture_name), Vector2d(0,0), health, scale, 0, speed, turnSpeed, color,SpawnOnDeath, SpawnPeriodic, _PeriodicSpawnRate, _PeriodicSpawnNum, _OnDeathSpawnNum);
 }
 
-void creep_manager::add_creep(std::string creep_name, Creep* NewCreep)
+Creep* creep_manager::add_creep(std::string creep_name, Creep* NewCreep)
 {
-	creeps[creep_name] = NewCreep;
+	return creeps[creep_name] = NewCreep;
 }
 
 creep_spawner* creep_manager::add_spawner(Vector2d pos, int spawn_rate, int spawn_amount, int spawn_limit, std::string creep_name, double rot)
@@ -36,7 +36,9 @@ creep_spawner* creep_manager::add_spawner(Vector2d pos, int spawn_rate, int spaw
 	Creep* new_creep = creeps[creep_name]->clone();
 	new_creep->setPos(pos);
 	new_creep->setRot(DegToRad(rot));
-	Parent->AddChild(RetVal = new creep_spawner(this, spawn_rate, spawn_amount, spawn_limit, new_creep, pos));
+	//Add the spawners to the same place as the rest of the creep
+	//only problem I see is running into the spawn with the hero will most likely kill him (so don't run into them)
+	AddChild(RetVal = new creep_spawner(this, spawn_rate, spawn_amount, spawn_limit, new_creep, pos));
 	return RetVal;
 }
 

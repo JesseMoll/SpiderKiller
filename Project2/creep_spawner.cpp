@@ -5,7 +5,7 @@ using namespace std;
 
 
 creep_spawner::creep_spawner(Drawable* _Parent, int _SpawnRate, int _SpawnAmount, int _SpawnLimit, Creep* _CreepType, Vector2d _Pos):
-	Drawable(_Parent, texture_manager::get_texture_name("Spawn.bmp"), _Pos, Vector2d(7, 7)),
+	Creep(_Parent, texture_manager::get_texture_name("Spawn.bmp"), _Pos, /*HEALTH*/ 500, 7,0,0,0,/*COLOR*/Vector4d(1,0,1,1)),
 	SpawnRate(_SpawnRate),
 	SpawnAmount(_SpawnAmount),
 	SpawnTimer(_SpawnRate),
@@ -17,6 +17,12 @@ creep_spawner::creep_spawner(Drawable* _Parent, int _SpawnRate, int _SpawnAmount
 
 UpdateResult creep_spawner::update2(int ms, GlobalState &GS)
 {
+	//It's dead
+	if(Health == 0)
+	{
+		OnDeath(GS);
+		return UPDATE_DELETE;
+	}
 	SpawnTimer -= ms;
 	if(SpawnTimer < 0 && Parent->Children.size() < MaxCreep)
 	{

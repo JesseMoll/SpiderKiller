@@ -12,18 +12,21 @@ public:
 	{
 		return ((Pos-_Pos).length_squared() < (Radius + Scale.x) * (Radius + Scale.x));
 	}
+	void setOnDeath(Creep* _SpawnOnDeath, unsigned int _OnDeathSpawnNum);
 	double Damage(double dmg);
 
 //Inherited Functions
 	UpdateResult update2(int ms, GlobalState &GS);
 
 protected:
+	void OnDeath(GlobalState &GS);
+
 	Creep* SpawnOnDeath;
 	Creep* SpawnPeriodic;
 	double PeriodicSpawnRate;
 	double PeriodicSpawnTimer;
 	double PeriodicSpawnNum;
-	double OnDeathSpawnNum;
+	unsigned int OnDeathSpawnNum;
 
 	double Speed;
 	double TurnSpeed;

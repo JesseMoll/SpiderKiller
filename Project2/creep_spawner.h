@@ -1,10 +1,10 @@
 #pragma once
-#include "Drawable.h"
 #include "Creep.h"
 #include <map>
 #include <string>
 
-class creep_spawner : public Drawable
+//Lets make it a creep so damage/projectile collision is easy
+class creep_spawner : public Creep
 {
 public:
 	creep_spawner(Drawable* _Parent, int _SpawnRate = 1000, int _SpawnAmount = 20, int _SpawnLimit = 0, Creep* __CreepType = new Creep((Drawable*) (0)), Vector2d _Pos = Vector2d(0, 0));
