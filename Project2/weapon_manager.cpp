@@ -72,7 +72,6 @@ Weapon* weapon_manager::add_weapon(std::string weapon_name, std::string texture_
 
 void weapon_manager::SwitchWeapon(Weapon::EquipStatus EquipSlot)
 {
-	
 	std::string CurrentWeaponName = equipped_weapons[EquipSlot];
 	auto CurrentWeaponItr = weapons.find(CurrentWeaponName);
 	//Go to the next weapon

@@ -61,7 +61,7 @@ void Scene::DestructGame()
 void Scene::InitGame()
 {
 	new (&GS) GlobalState();
-    GS.TheHero = AddChild(new Hero(this, 0, Vector2d(584, LevelSize/2)));	
+    GS.TheHero = AddChild(new Hero(this, texture_manager::get_texture_name("Hero.bmp"), Vector2d(584, LevelSize/2)));	
 	GS.TheCreepManager = AddChild(new creep_manager(this));
 	GS.TheWeaponManager = AddChild(new weapon_manager(this));
 	GS.TheGrid = static_cast<Grid*>(AddChild(new Grid));
