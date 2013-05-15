@@ -81,6 +81,33 @@ UpdateResult Projectile::update2(int ms, GlobalState &GS)
 				}
 			}
 		}
+
+		//See if we damage any spawn points
+		//There should be few enough spawn points that iterating over all of them won't be a performance hit
+		for (auto itr = CM->spawner_list.begin(); itr != CM->spawner_list.end(); ++itr)
+		{
+			if ((*itr)->GetBoundingRect().overlaps(GetBoundingRect()))
+			{
+				Damage = ((creep_spawner*)(*itr))->Damage(Damage);
+				if (((creep_spawner*)(*itr))->Health == 0)
+				{
+					CM->spawner_list.erase(itr);
+					if (Damage <= 0)
+					{
+						onDeath(GS);
+						return UPDATE_DELETE;
+					}
+
+					break;
+				}
+
+				if (Damage <= 0)
+				{
+					onDeath(GS);
+					return UPDATE_DELETE;
+				}
+			}
+		}
 	}
 	else
 	{

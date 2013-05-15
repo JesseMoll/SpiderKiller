@@ -19,6 +19,9 @@ public:
 	void add_creep(std::string creep_name, Creep* NewCreep);
 
 	void add_creep_to_grid(Creep* c);
+
+	//So projectiles can see when they damage a spawn point
+	std::vector<creep_spawner*> spawner_list;
 	
 //Inherited Functions
 	void draw2(); 

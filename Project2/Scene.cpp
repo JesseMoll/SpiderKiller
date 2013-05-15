@@ -415,16 +415,16 @@ UpdateResult Scene::update2(int ms, GlobalState &GS)
 
 			//Add some spawners 
 			creep_spawner* CS1 = CM->add_spawner(Vector2d(400,674), 5000, 200, 0, "Tiny Spider");
-			creep_spawner* CS2 = CM->add_spawner(Vector2d(400,674), 5000, 10, 200, "Medium Spider");
+			//creep_spawner* CS2 = CM->add_spawner(Vector2d(400,674), 5000, 10, 200, "Medium Spider");
 			//remove the spawner
 			//CS2->remove();
 			//change the spawn amount and spawn rate of the spawner
 			CS1->setSpawnAmount(20);
 			CS1->setSpawnRate(500);
 			//Will delete itself after spawning 200 more creep
-			CS1->setSpawnLimit(200);
+			//CS1->setSpawnLimit(200);
 			
-			CM->add_spawner(Vector2d(400,674), 20000, 1, 2, "Huge Spider");
+			//CM->add_spawner(Vector2d(400,674), 20000, 1, 2, "Huge Spider");
 
 			//Add a health pack
 			AddChild(new Health(this, Vector2d(595, LevelSize/2)));

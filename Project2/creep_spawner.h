@@ -15,7 +15,8 @@ public:
 	void setSpawnRate(int _SpawnRate){SpawnRate = _SpawnRate;};
 	void setSpawnAmount(int _SpawnAmount){SpawnAmount = _SpawnAmount;};
 	void setSpawnLimit(int _SpawnLimit){SpawnTotal = 0; SpawnLimit = _SpawnLimit;};
-
+	double Damage(double dmg);
+	int Health;
 	
 protected:
 	int SpawnRate;
