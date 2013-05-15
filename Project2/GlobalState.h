@@ -38,6 +38,7 @@ const unsigned int R_KEY = 0x10000;
 const unsigned int E_KEY = 0x20000;
 const unsigned int F_KEY = 0x40000;
 const unsigned int SPACE_KEY = 0x80000;
+const unsigned int U_KEY = 0x100000;
 
 
 

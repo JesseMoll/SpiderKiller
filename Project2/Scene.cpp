@@ -32,7 +32,7 @@ Scene::Scene()
 	glutInitWindowSize(1024, 640);// Initial Window
 	
 	glutCreateWindow("Kill the Spiders!!!");
-	glutFullScreen();
+	//glutFullScreen();
 	glutReshapeFunc(Reshape); // window reshape callback
 	glutDisplayFunc(Display); // (re)display callback
 	glutIdleFunc(Idle); // incremental update
@@ -225,6 +225,9 @@ void Scene::Timer(int value){
 		GS.KeyStates &= ~TILDE_KEY;
 	}
 
+	if (GS.KeyDown(U_KEY))
+		glutFullScreen();
+
 	//Pause/unpause the game if the R key is pressed
 	if (GS.KeyDown(R_KEY))
 	{
@@ -278,6 +281,8 @@ UpdateResult Scene::update2(int ms, GlobalState &GS)
 			GS.KeyStates |= TILDE_KEY;
 		if (key == ' ' || key == ' ')
 			GS.KeyStates |= SPACE_KEY;
+		if (key == 'u' || key == 'U')
+			GS.KeyStates |= U_KEY;
 	}
 
 	void Scene::releaseNormalKeys(unsigned char key, int xx, int yy){
@@ -303,7 +308,8 @@ UpdateResult Scene::update2(int ms, GlobalState &GS)
 			GS.KeyStates &= ~R_KEY;
 		if (key == ' ' || key == ' ')
 			GS.KeyStates &= ~SPACE_KEY;
-
+		if (key == 'u' || key == 'U')
+			GS.KeyStates &= ~U_KEY;
 	}
 
 	void Scene::pressSpecialKey(int key, int xx, int yy){
