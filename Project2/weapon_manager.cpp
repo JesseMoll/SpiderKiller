@@ -72,7 +72,9 @@ Weapon* weapon_manager::add_weapon(std::string weapon_name, std::string texture_
 
 void weapon_manager::SwitchWeapon(Weapon::EquipStatus EquipSlot)
 {
-
+	//no weapon equipped (only happens when we have no weapons of that type)
+	if(equipped_weapons.count(EquipSlot) == 0)
+		return;
 	std::string CurrentWeaponName = equipped_weapons[EquipSlot];
 	auto CurrentWeaponItr = weapons.find(CurrentWeaponName);
 	//Go to the next weapon
