@@ -13,5 +13,6 @@ public:
 	UpdateResult update2(int ms, GlobalState &GS);
 protected:
 	float AnimationTime;
+	float ExplosionTimer;
 
 };
