@@ -3,7 +3,7 @@
 #include "texture_manager.h"
 #include "Scene.h"
 
-Hero::Hero(Drawable* _Parent, GLuint _Texture, Vector2d _Pos):Drawable(_Parent, _Texture, _Pos,Vector2d(4,4)),
+Hero::Hero(Drawable* _Parent, GLuint _Texture, Vector2d _Pos):Drawable(_Parent, _Texture, _Pos,Vector2d(6,6)),
 	AnimationTime(0), ExplosionTimer(1000)
 {
 	Color = Vector3d(0,1,0);
