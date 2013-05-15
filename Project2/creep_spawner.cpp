@@ -4,8 +4,8 @@
 using namespace std;
 
 
-creep_spawner::creep_spawner(Drawable* _Parent, int _SpawnRate, int _SpawnAmount, int _SpawnLimit, Creep* _CreepType):
-	Drawable(_Parent),
+creep_spawner::creep_spawner(Drawable* _Parent, int _SpawnRate, int _SpawnAmount, int _SpawnLimit, Creep* _CreepType, Vector2d _Pos):
+	Drawable(_Parent, texture_manager::get_texture_name("Spawn.bmp"), _Pos, Vector2d(7, 7)),
 	SpawnRate(_SpawnRate),
 	SpawnAmount(_SpawnAmount),
 	SpawnTimer(_SpawnRate),

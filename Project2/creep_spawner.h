@@ -7,9 +7,9 @@
 class creep_spawner : public Drawable
 {
 public:
-	creep_spawner(Drawable* _Parent, int _SpawnRate = 1000, int _SpawnAmount = 20, int _SpawnLimit = 0, Creep* __CreepType = new Creep((Drawable*) (0)));
+	creep_spawner(Drawable* _Parent, int _SpawnRate = 1000, int _SpawnAmount = 20, int _SpawnLimit = 0, Creep* __CreepType = new Creep((Drawable*) (0)), Vector2d _Pos = Vector2d(0, 0));
 	~creep_spawner();
-	void draw2(){}; // Doesn't need to be drawn
+	//void draw2(){}; // Doesn't need to be drawn
 	UpdateResult update2(int ms, GlobalState &GS);
 	Creep* SpawnCreep();
 	void setSpawnRate(int _SpawnRate){SpawnRate = _SpawnRate;};
