@@ -408,6 +408,7 @@ UpdateResult Scene::update2(int ms, GlobalState &GS)
 			GS.CurrentLevel = 1;
 
 		GS.HeroHealth = GS.HeroMaxHealth;
+		GS.CurrentSpawnAmount *= 2;
 
 		//Get the creep manager pointer as the correct type
 		creep_manager* CM = static_cast<creep_manager*>(GS.TheCreepManager);
@@ -419,8 +420,8 @@ UpdateResult Scene::update2(int ms, GlobalState &GS)
 
 			GS.TheHero->setPos(Vector2d(288, 1024-488));
 			LevelName = "Level1.bmp";
-			creep_spawner* CS1 = CM->add_spawner(Vector2d(504,1024-236), 10000, 10, 0, "Medium Spider");
-			creep_spawner* CS2 = CM->add_spawner(Vector2d(516,1024-728), 10000, 10, 0, "Medium Spider");
+			creep_spawner* CS1 = CM->add_spawner(Vector2d(504,1024-236), 1000, GS.CurrentSpawnAmount / 2, 0, "Medium Spider");
+			creep_spawner* CS2 = CM->add_spawner(Vector2d(516,1024-728), 1000, GS.CurrentSpawnAmount / 2, 0, "Medium Spider");
 			Creep* Boss = CM->get_creep("Boss1");
 			CS1->setOnDeath(Boss,1);
 			CS2->setOnDeath(Boss,1);
@@ -431,8 +432,8 @@ UpdateResult Scene::update2(int ms, GlobalState &GS)
 		{
 			LevelName = "Level2.bmp";
 			GS.TheHero->setPos(Vector2d(200, 300));
-			creep_spawner* CS1 = CM->add_spawner(Vector2d(380,685), 10000, 200, 0, "Tiny Spider");
-			creep_spawner* CS2 = CM->add_spawner(Vector2d(400,665), 10000, 10, 0, "Medium Spider");
+			creep_spawner* CS1 = CM->add_spawner(Vector2d(380,685), 1000, GS.CurrentSpawnAmount, 0, "Tiny Spider");
+			creep_spawner* CS2 = CM->add_spawner(Vector2d(400,665), 1000, GS.CurrentSpawnAmount / 2, 0, "Medium Spider");
 			Creep* Boss = CM->get_creep("Huge Spider");
 			CS1->setOnDeath(Boss,1);
 			CS2->setOnDeath(Boss,1);
@@ -445,9 +446,9 @@ UpdateResult Scene::update2(int ms, GlobalState &GS)
 		{
 			LevelName = "Level3.bmp";
 			GS.TheHero->setPos(Vector2d(268, 710));
-			creep_spawner* CS1 = CM->add_spawner(Vector2d(152,1024-870), 10000, 10, 0, "Medium Spider");
-			creep_spawner* CS2 = CM->add_spawner(Vector2d(774,1024-914), 10000, 200, 0, "Tiny Spider");
-			creep_spawner* CS3 = CM->add_spawner(Vector2d(830,1024-310), 10000, 200, 0, "Tiny Spider");
+			creep_spawner* CS1 = CM->add_spawner(Vector2d(152,1024-870), 1000, GS.CurrentSpawnAmount / 2, 0, "Medium Spider");
+			creep_spawner* CS2 = CM->add_spawner(Vector2d(774,1024-914), 1000, GS.CurrentSpawnAmount, 0, "Tiny Spider");
+			creep_spawner* CS3 = CM->add_spawner(Vector2d(830,1024-310), 1000, GS.CurrentSpawnAmount, 0, "Tiny Spider");
 			Creep* Boss = CM->get_creep("Huge Spider");
 			CS1->setOnDeath(Boss,1);
 			CS2->setOnDeath(Boss,1);
@@ -458,8 +459,8 @@ UpdateResult Scene::update2(int ms, GlobalState &GS)
 		{
 			LevelName = "Level4.bmp";
 			GS.TheHero->setPos(Vector2d(898, 1024-856));
-			creep_spawner* CS1 = CM->add_spawner(Vector2d(380,685), 10000, 200, 0, "Tiny Spider");
-			creep_spawner* CS2 = CM->add_spawner(Vector2d(400,665), 10000, 10, 0, "Medium Spider");
+			creep_spawner* CS1 = CM->add_spawner(Vector2d(380,685), 1000, GS.CurrentSpawnAmount, 0, "Tiny Spider");
+			creep_spawner* CS2 = CM->add_spawner(Vector2d(400,665), 1000, GS.CurrentSpawnAmount / 2, 0, "Medium Spider");
 			Creep* Boss = CM->get_creep("Huge Spider");
 			CS1->setOnDeath(Boss,1);
 			CS2->setOnDeath(Boss,1);

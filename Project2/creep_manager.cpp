@@ -25,7 +25,7 @@ Creep* creep_manager::add_creep(std::string creep_name, double health, std::stri
 		SpawnOnDeath = creeps[_SpawnOnDeath];
 	if (_SpawnPeriodic != "")
 		SpawnPeriodic = creeps[_SpawnPeriodic];
-	return creeps[creep_name] = new Creep(this,texture_manager::get_texture_name(texture_name), Vector2d(0,0), health, scale, 0, speed, turnSpeed, color,SpawnOnDeath, SpawnPeriodic, _PeriodicSpawnRate, _PeriodicSpawnNum, _OnDeathSpawnNum);
+	return creeps[creep_name] = new Creep(this,texture_manager::get_texture_name(texture_name), Vector2d(0,0), health, scale, 0, speed, turnSpeed, color,SpawnOnDeath, SpawnPeriodic, _PeriodicSpawnRate, _PeriodicSpawnNum, _OnDeathSpawnNum, creep_name);
 }
 
 Creep* creep_manager::add_creep(std::string creep_name, Creep* NewCreep)

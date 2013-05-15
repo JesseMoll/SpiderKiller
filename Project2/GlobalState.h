@@ -90,4 +90,5 @@ public:
 
 	bool GamePaused;
 	int CurrentLevel;
+	int CurrentSpawnAmount;
 };

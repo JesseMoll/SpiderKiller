@@ -22,7 +22,8 @@ GlobalState::GlobalState(void):
 	ViewSize(100),
 	Debug(false),
 	GamePaused(false),
-	CurrentLevel(0)
+	CurrentLevel(0),
+	CurrentSpawnAmount(1)
 {
 	
 }
