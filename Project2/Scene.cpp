@@ -404,8 +404,10 @@ UpdateResult Scene::update2(int ms, GlobalState &GS)
 		//TODO: DELETE HEALTH PACKS BETWEEN LEVELS
 		//TODO: DELETE STUCK CREEP
 		GS.CurrentLevel++;
-		if (GS.CurrentLevel == 4)
+		if (GS.CurrentLevel == 5)
 			GS.CurrentLevel = 1;
+
+		GS.HeroHealth = GS.HeroMaxHealth;
 
 		//Get the creep manager pointer as the correct type
 		creep_manager* CM = static_cast<creep_manager*>(GS.TheCreepManager);
@@ -428,7 +430,7 @@ UpdateResult Scene::update2(int ms, GlobalState &GS)
 		case 2:
 		{
 			LevelName = "Level2.bmp";
-			GS.TheHero->setPos(Vector2d(898, 1024-856));
+			GS.TheHero->setPos(Vector2d(200, 300));
 			creep_spawner* CS1 = CM->add_spawner(Vector2d(380,685), 10000, 200, 0, "Tiny Spider");
 			creep_spawner* CS2 = CM->add_spawner(Vector2d(400,665), 10000, 10, 0, "Medium Spider");
 			Creep* Boss = CM->get_creep("Huge Spider");
@@ -450,6 +452,20 @@ UpdateResult Scene::update2(int ms, GlobalState &GS)
 			CS1->setOnDeath(Boss,1);
 			CS2->setOnDeath(Boss,1);
 			CS3->setOnDeath(Boss,1);
+			break;
+		}
+		case 4:
+		{
+			LevelName = "Level4.bmp";
+			GS.TheHero->setPos(Vector2d(898, 1024-856));
+			creep_spawner* CS1 = CM->add_spawner(Vector2d(380,685), 10000, 200, 0, "Tiny Spider");
+			creep_spawner* CS2 = CM->add_spawner(Vector2d(400,665), 10000, 10, 0, "Medium Spider");
+			Creep* Boss = CM->get_creep("Huge Spider");
+			CS1->setOnDeath(Boss,1);
+			CS2->setOnDeath(Boss,1);
+
+			//Add a health pack
+			AddChild(new Health(this, Vector2d(692, 1024-520)));
 			break;
 		}
 		}
