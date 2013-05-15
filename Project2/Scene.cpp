@@ -28,10 +28,11 @@ Scene::Scene()
 
 
 	glutInitDisplayMode(GLUT_DOUBLE | GLUT_RGBA | GLUT_DEPTH);
-	glutInitWindowPosition(100, 100);
-	glutInitWindowSize(720, 720);// Initial Window
+	glutInitWindowPosition(50, 50);
+	glutInitWindowSize(1024, 640);// Initial Window
+	
 	glutCreateWindow("Kill the Spiders!!!");
-
+	glutFullScreen();
 	glutReshapeFunc(Reshape); // window reshape callback
 	glutDisplayFunc(Display); // (re)display callback
 	glutIdleFunc(Idle); // incremental update
@@ -89,24 +90,7 @@ void Scene::InitGame()
 	WM->add_projectile("Shield", new Shield(this,500, 10));
 	WM->add_projectile("Turret", new Turret(this, WM->get_projectile("Bullet"), 200, 100));
 	WM->add_projectile("Fire Turret", new Turret(this, WM->get_projectile("Fire"), 100, 200));
-	//TODO ADD Weapons as we pick them up
 	
-	
-	WM->add_weapon("Machine Gun", "MachineGun.bmp", 100.0, "Bullet");
-	WM->add_weapon("Shotgun", "Shotgun.bmp",  1000, "Shell");
-	WM->add_weapon("Auto Shotgun", "AutoShotgun.bmp",  300, "Shell");
-	WM->add_weapon("Flamethrower", "Flamethrower.bmp",  75.0, "Fire");
-	WM->add_weapon("Pistol",  "Pistol.bmp", 500.0, "Bullet");
-
-	WM->add_weapon("Grenade Launcher",  "GrenadeLauncher.bmp", 1000.0, "Grenade", Weapon::EQUIP_RIGHT);
-	WM->add_weapon("Fire Bomb Gun", "FireBombGun.bmp",  1000, "Fire Bomb", Weapon::EQUIP_RIGHT);
-	WM->add_weapon("BFG", "BFG.bmp",  2000.0, "Super Bomb", Weapon::EQUIP_RIGHT);
-	WM->add_weapon("Mine Layer",  "Mine.bmp", 1000.0, "Mine", Weapon::EQUIP_RIGHT);
-
-	WM->add_weapon("Regen Pack", "RegenPack.bmp", 1000.0, "Regen", Weapon::EQUIP_SPACE);
-	WM->add_weapon("Shield Creator", "Shield.bmp", 1000.0, "Shield", Weapon::EQUIP_SPACE);
-	WM->add_weapon("Turret Creator", "MachineGunTurret.bmp", 1000.0, "Turret", Weapon::EQUIP_SPACE);
-	WM->add_weapon("Fire Turret Creator", "FlameTurret.bmp", 1000.0, "Fire Turret", Weapon::EQUIP_SPACE);
 
 	creep_manager* CM = static_cast<creep_manager*>(GS.TheCreepManager);
 
@@ -424,6 +408,7 @@ UpdateResult Scene::update2(int ms, GlobalState &GS)
 		{
 		case 1:
 		{
+
 			GS.TheHero->setPos(Vector2d(288, 1024-488));
 			LevelName = "Level1.bmp";
 			creep_spawner* CS1 = CM->add_spawner(Vector2d(504,1024-236), 10000, 10, 0, "Medium Spider");
@@ -461,8 +446,37 @@ UpdateResult Scene::update2(int ms, GlobalState &GS)
 			CS3->setOnDeath(Boss,1);
 			break;
 		}
-
 		}
+
+
+		//Get the weapon manager pointer as the correct type
+	weapon_manager* WM = static_cast<weapon_manager*>(GS.TheWeaponManager);
+	WM->Clear();
+	switch (GS.CurrentLevel)
+	{
+	case 3:
+		WM->add_weapon("Machine Gun", "MachineGun.bmp", 100.0, "Bullet");
+		WM->add_weapon("Auto Shotgun", "AutoShotgun.bmp",  300, "Shell");
+		WM->add_weapon("Flamethrower", "Flamethrower.bmp",  75.0, "Fire");
+		WM->add_weapon("Fire Bomb Gun", "FireBombGun.bmp",  1000, "Fire Bomb", Weapon::EQUIP_RIGHT);
+		WM->add_weapon("BFG", "BFG.bmp",  2000.0, "Super Bomb", Weapon::EQUIP_RIGHT);
+
+		WM->add_weapon("Regen Pack", "RegenPack.bmp", 1000.0, "Regen", Weapon::EQUIP_SPACE);
+		WM->add_weapon("Shield Creator", "Shield.bmp", 1000.0, "Shield", Weapon::EQUIP_SPACE);
+		WM->add_weapon("Turret Creator", "MachineGunTurret.bmp", 1000.0, "Turret", Weapon::EQUIP_SPACE);
+		WM->add_weapon("Fire Turret Creator", "FlameTurret.bmp", 1000.0, "Fire Turret", Weapon::EQUIP_SPACE);
+
+	case 2:
+		WM->add_weapon("Shotgun", "Shotgun.bmp",  1000, "Shell");
+		WM->add_weapon("Grenade Launcher",  "GrenadeLauncher.bmp", 1000.0, "Grenade", Weapon::EQUIP_RIGHT);
+	case 1:
+		WM->add_weapon("Pistol",  "Pistol.bmp", 500.0, "Bullet");
+		WM->add_weapon("Mine Layer",  "Mine.bmp", 2000.0, "Mine", Weapon::EQUIP_RIGHT);
+	
+
+		
+	}
+
 		SetupTexture();
 		GS.TheGrid->Init();
 	}

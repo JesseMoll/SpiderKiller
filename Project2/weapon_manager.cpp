@@ -7,8 +7,18 @@ weapon_manager::weapon_manager(Drawable* _Parent):
 {
 }
 
+void weapon_manager::Clear()
+{
+	weapons.clear();
+	equipped_weapons.clear();
+	Drawable::Clear();
+}
+
+
 Weapon* weapon_manager::getEquippedWeapon(Weapon::EquipStatus WeaponSlot)
 {
+	if (equipped_weapons.count(WeaponSlot) == 0)
+		return NULL;
 	return weapons[equipped_weapons[WeaponSlot]];
 }
 

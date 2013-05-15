@@ -22,12 +22,17 @@ Drawable* Drawable::clone() const
 
 Drawable::~Drawable()
 {
+	Clear();
+}
+
+void Drawable::Clear()
+{
 	//clean up all the children
 	for (std::list<Drawable*>::iterator dPtr = Children.begin();dPtr != Children.end(); ++dPtr) {
 		delete (*dPtr);
 	}
+	Children.clear();
 }
-
 //Returns the actual (not relative to the parent) position of the object
 Vector2d Drawable::getPos()
 {

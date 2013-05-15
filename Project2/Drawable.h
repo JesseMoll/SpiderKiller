@@ -64,6 +64,7 @@ class Drawable
 		std::list<Drawable*>::iterator begin(){return Children.begin();};
 		std::list<Drawable*>::iterator end(){return Children.end();};
 
+		virtual void Clear();
 		void remove(){ToBeDeleted = true;};
    // protected:
 

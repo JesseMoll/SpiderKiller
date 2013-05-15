@@ -18,7 +18,7 @@ public:
 	Projectile* add_projectile(std::string projectile_name, std::string texture_name = "", double size = .2, double speed = 40, double damage = 100, double max_distance = 1e6, std::string on_death_projectile_name = "", int on_death_number = 0, double on_death_spread = 0);
 	Weapon* add_weapon(std::string weapon_name, std::string texture_name, double fire_rate, std::string projectile_name, Weapon::EquipStatus EquipSlot = Weapon::EQUIP_LEFT);
 	void SwitchWeapon(Weapon::EquipStatus EquipSlot = Weapon::EQUIP_LEFT);
-
+	virtual void Clear();
 //Overridden Functions
 	void draw2(){};
 	UpdateResult update2(int ms, GlobalState &GS);

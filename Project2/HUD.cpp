@@ -70,38 +70,48 @@ void HUD::draw(int window_width, GlobalState &GS)
 	glPopMatrix();
 
 	//Draw LEFT weapon icon
-	glBindTexture (GL_TEXTURE_2D, LeftWeapon->getTexture());	
-	glPushMatrix();
-		glTranslatef(288, 48, 0);
-		glScalef(64,64,1);
-		DrawTexturedSquare();
-	glPopMatrix();
+	if(LeftWeapon)
+	{
+		glBindTexture (GL_TEXTURE_2D, LeftWeapon->getTexture());	
+		glPushMatrix();
+			glTranslatef(288, 48, 0);
+			glScalef(64,64,1);
+			DrawTexturedSquare();
+		glPopMatrix();
+	}
 
 	//Draw Right weapon icon
-	glBindTexture (GL_TEXTURE_2D, RightWeapon->getTexture());		
-	glPushMatrix();
-		glTranslatef(672, 48, 0);
-		glScalef(64,64,1);
-		DrawTexturedSquare();
-	glPopMatrix();
-
-	double CoolDownPct = RightWeapon->getCoolDown();	
-	glDisable(GL_TEXTURE_2D);
-	glPushMatrix();
-		glColor4f(0,.3,.3,.3); //Semi-transparent blue
-		glTranslatef(672,48,0);
-		glScaled(64,CoolDownPct * 64,0);
-		glRectd(0,0,1,1);
-	glPopMatrix();
-	glEnable(GL_TEXTURE_2D);
+	if(RightWeapon)
+	{
+		glBindTexture (GL_TEXTURE_2D, RightWeapon->getTexture());		
+		glPushMatrix();
+			glTranslatef(672, 48, 0);
+			glScalef(64,64,1);
+			DrawTexturedSquare();
+		glPopMatrix();
 	
-	//Draw Super weapon icon
-	glBindTexture (GL_TEXTURE_2D, SuperWeapon->getTexture());	
-	glPushMatrix();
-		glTranslatef(32,64,0);
-		glScalef(64,64,1);
-		DrawTexturedSquare();
-	glPopMatrix();
+
+		double CoolDownPct = RightWeapon->getCoolDown();	
+		glDisable(GL_TEXTURE_2D);
+		glPushMatrix();
+			glColor4f(0,.3,.3,.3); //Semi-transparent blue
+			glTranslatef(672,48,0);
+			glScaled(64,CoolDownPct * 64,0);
+			glRectd(0,0,1,1);
+		glPopMatrix();
+		glEnable(GL_TEXTURE_2D);
+	}
+
+	if(SuperWeapon)
+	{
+		//Draw Super weapon icon
+		glBindTexture (GL_TEXTURE_2D, SuperWeapon->getTexture());	
+		glPushMatrix();
+			glTranslatef(32,64,0);
+			glScalef(64,64,1);
+			DrawTexturedSquare();
+		glPopMatrix();
+	}
 }
 
 HUD::~HUD(void)
