@@ -19,6 +19,8 @@ public:
 	Creep* add_creep(std::string creep_name, Creep* NewCreep);
 
 	void add_creep_to_grid(Creep* c);
+
+	//Projectiles are part of the creep list
 	
 //Inherited Functions
 	void draw2(); 

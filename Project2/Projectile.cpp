@@ -81,6 +81,8 @@ UpdateResult Projectile::update2(int ms, GlobalState &GS)
 				}
 			}
 		}
+
+		//Spawns are now creeps, so they are handled above
 	}
 	else
 	{

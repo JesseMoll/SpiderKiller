@@ -49,3 +49,5 @@ Creep* creep_spawner::SpawnCreep()
 	NewCreep->setRot(NewCreep->getRot() + Random(.2) - .1);
 	return NewCreep;
 }
+
+//Damage Function Is contained within Creep Class
