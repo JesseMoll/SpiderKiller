@@ -9,6 +9,7 @@
 #include "Shield.h"
 #include "Health.h"
 #include "CreepProjectile.h"
+#include "MessageScreen.h"
 
 //static class variables
 Scene* Scene::ptrInstance = NULL; 
@@ -62,6 +63,8 @@ void Scene::InitGame()
 {
 	new (&GS) GlobalState();
     GS.TheHero = AddChild(new Hero(this, texture_manager::get_texture_name("Hero.bmp"), Vector2d(584, LevelSize/2)));	
+	GS.TheMessageScreen = new MessageScreen(this);
+	((MessageScreen*)GS.TheMessageScreen)->setMessage("Game Paused\nPress R to continue");
 	GS.TheCreepManager = AddChild(new creep_manager(this));
 	GS.TheWeaponManager = AddChild(new weapon_manager(this));
 	GS.TheGrid = static_cast<Grid*>(AddChild(new Grid));
@@ -175,6 +178,19 @@ void Scene::draw()
 	glColor3d(0, 1, 0); //Draw a 2x2 Colored square
 	glRectf(-4,-4,4,4);
 	
+
+	if (GS.GamePaused)
+	{
+		
+		glViewport(0, 0, GS.WindowSize.x, GS.WindowSize.y); // set viewport (drawing area) to entire window
+		glMatrixMode(GL_PROJECTION); // projection matrix is active
+		glLoadIdentity(); // reset the projection
+		gluOrtho2D(0,100 ,0,100);
+		glMatrixMode(GL_MODELVIEW); // return to modelview mode
+		glLoadIdentity(); // reset the modelview
+		glTranslated(30,50, 0);
+		GS.TheMessageScreen->draw();
+	}
 }
 
 void Scene::Timer(int value){
@@ -233,11 +249,19 @@ void Scene::Timer(int value){
 	{
 		GS.KeyStates &= ~R_KEY;
 		GS.GamePaused = !GS.GamePaused;
+		if (GS.HeroHealth <= 0)
+		{
+			//todo add restart
+			exit(0);
+			ptrInstance->Clear();
+			ptrInstance->InitGame();
+		}
 	}
 
 	if (GS.GamePaused)
 	{
 		glutTimerFunc(UPDATE_INTERVAL, Timer, 0);
+		glutPostRedisplay(); // redraw everything;
 		return;
 	}
 	if(ptrInstance->update((int)msSinceLastUpdate, GS) != UPDATE_NONE) // update everything and if anything has changed...
@@ -245,7 +269,12 @@ void Scene::Timer(int value){
 	//No creeps left, we Won!
 	if(GS.TheCreepManager != NULL)
 		if(GS.TheCreepManager->begin() == GS.TheCreepManager->end())
+		{
+			((MessageScreen*)GS.TheMessageScreen)->setMessage("You beat the level\nPress R to continue");
 			ptrInstance->NextLevel();
+			
+			GS.GamePaused = true;
+		}
     glutTimerFunc(UPDATE_INTERVAL, Timer, 0);
 }
 
@@ -404,10 +433,18 @@ UpdateResult Scene::update2(int ms, GlobalState &GS)
 		//TODO: DELETE HEALTH PACKS BETWEEN LEVELS
 		//TODO: DELETE STUCK CREEP
 		GS.CurrentLevel++;
-		if (GS.CurrentLevel == 5)
-			GS.CurrentLevel = 1;
+		if (GS.CurrentLevel == 4)
+		{
+			GS.GamePaused = true;
+			((MessageScreen*)GS.TheMessageScreen)->setMessage("You Won!\nPress R to quit");
+			GS.HeroHealth = 0;
+			GS.CurrentLevel = 3;
+			return;
+		}
 
 		GS.HeroHealth = GS.HeroMaxHealth;
+		//Slowly increase Spawn Amount
+		GS.CurrentSpawnAmount *= 2;
 
 		//Get the creep manager pointer as the correct type
 		creep_manager* CM = static_cast<creep_manager*>(GS.TheCreepManager);
@@ -419,8 +456,8 @@ UpdateResult Scene::update2(int ms, GlobalState &GS)
 
 			GS.TheHero->setPos(Vector2d(288, 1024-488));
 			LevelName = "Level1.bmp";
-			creep_spawner* CS1 = CM->add_spawner(Vector2d(504,1024-236), 10000, 10, 0, "Medium Spider");
-			creep_spawner* CS2 = CM->add_spawner(Vector2d(516,1024-728), 10000, 10, 0, "Medium Spider");
+			creep_spawner* CS1 = CM->add_spawner(Vector2d(504,1024-236), 10000, GS.CurrentSpawnAmount * 10, 0, "Medium Spider");
+			creep_spawner* CS2 = CM->add_spawner(Vector2d(516,1024-728), 2000, GS.CurrentSpawnAmount * 2, 0, "Medium Spider");
 			Creep* Boss = CM->get_creep("Boss1");
 			CS1->setOnDeath(Boss,1);
 			CS2->setOnDeath(Boss,1);
@@ -430,11 +467,12 @@ UpdateResult Scene::update2(int ms, GlobalState &GS)
 		case 2:
 		{
 			LevelName = "Level2.bmp";
-			GS.TheHero->setPos(Vector2d(200, 300));
-			creep_spawner* CS1 = CM->add_spawner(Vector2d(380,685), 10000, 200, 0, "Tiny Spider");
-			creep_spawner* CS2 = CM->add_spawner(Vector2d(400,665), 10000, 10, 0, "Medium Spider");
-			Creep* Boss = CM->get_creep("Huge Spider");
-			CS1->setOnDeath(Boss,1);
+			GS.TheHero->setPos(Vector2d(714, 1024-702));
+			creep_spawner* CS1 = CM->add_spawner(Vector2d(932,1024-154), 10000, GS.CurrentSpawnAmount * 25, 0, "Tiny Spider");
+			creep_spawner* CS2 = CM->add_spawner(Vector2d(300,1024-350), 1000, GS.CurrentSpawnAmount, 0, "Medium Spider");
+			Creep* Boss = CM->get_creep("Boss1");
+			Creep* Boss2 = CM->get_creep("Huge Spider");
+			CS1->setOnDeath(Boss2,1);
 			CS2->setOnDeath(Boss,1);
 
 			//Add a health pack
@@ -445,12 +483,13 @@ UpdateResult Scene::update2(int ms, GlobalState &GS)
 		{
 			LevelName = "Level3.bmp";
 			GS.TheHero->setPos(Vector2d(268, 710));
-			creep_spawner* CS1 = CM->add_spawner(Vector2d(152,1024-870), 10000, 10, 0, "Medium Spider");
-			creep_spawner* CS2 = CM->add_spawner(Vector2d(774,1024-914), 10000, 200, 0, "Tiny Spider");
-			creep_spawner* CS3 = CM->add_spawner(Vector2d(830,1024-310), 10000, 200, 0, "Tiny Spider");
-			Creep* Boss = CM->get_creep("Huge Spider");
+			creep_spawner* CS1 = CM->add_spawner(Vector2d(152,1024-870), 10000, GS.CurrentSpawnAmount * 25, 0, "Medium Spider");
+			creep_spawner* CS2 = CM->add_spawner(Vector2d(774,1024-914), 1000, GS.CurrentSpawnAmount * 5, 0, "Tiny Spider");
+			creep_spawner* CS3 = CM->add_spawner(Vector2d(830,1024-310), 10000, GS.CurrentSpawnAmount * 50, 0, "Tiny Spider");
+			Creep* Boss = CM->get_creep("Boss1");
+			Creep* Boss2 = CM->get_creep("Huge Spider");
 			CS1->setOnDeath(Boss,1);
-			CS2->setOnDeath(Boss,1);
+			CS2->setOnDeath(Boss2,1);
 			CS3->setOnDeath(Boss,1);
 			break;
 		}
@@ -458,8 +497,8 @@ UpdateResult Scene::update2(int ms, GlobalState &GS)
 		{
 			LevelName = "Level4.bmp";
 			GS.TheHero->setPos(Vector2d(898, 1024-856));
-			creep_spawner* CS1 = CM->add_spawner(Vector2d(380,685), 10000, 200, 0, "Tiny Spider");
-			creep_spawner* CS2 = CM->add_spawner(Vector2d(400,665), 10000, 10, 0, "Medium Spider");
+			creep_spawner* CS1 = CM->add_spawner(Vector2d(380,685), 10000, GS.CurrentSpawnAmount * 50, 0, "Tiny Spider");
+			creep_spawner* CS2 = CM->add_spawner(Vector2d(400,665), 1000, GS.CurrentSpawnAmount * 2, 0, "Medium Spider");
 			Creep* Boss = CM->get_creep("Huge Spider");
 			CS1->setOnDeath(Boss,1);
 			CS2->setOnDeath(Boss,1);
@@ -476,24 +515,24 @@ UpdateResult Scene::update2(int ms, GlobalState &GS)
 	WM->Clear();
 	switch (GS.CurrentLevel)
 	{
+	case 4:
 	case 3:
-		WM->add_weapon("Machine Gun", "MachineGun.bmp", 100.0, "Bullet");
-		WM->add_weapon("Auto Shotgun", "AutoShotgun.bmp",  300, "Shell");
 		WM->add_weapon("Flamethrower", "Flamethrower.bmp",  75.0, "Fire");
-		WM->add_weapon("Fire Bomb Gun", "FireBombGun.bmp",  1000, "Fire Bomb", Weapon::EQUIP_RIGHT);
+		WM->add_weapon("Machine Gun", "MachineGun.bmp", 100.0, "Bullet");
 		WM->add_weapon("BFG", "BFG.bmp",  2000.0, "Super Bomb", Weapon::EQUIP_RIGHT);
-
-		WM->add_weapon("Regen Pack", "RegenPack.bmp", 1000.0, "Regen", Weapon::EQUIP_SPACE);
-		WM->add_weapon("Shield Creator", "Shield.bmp", 1000.0, "Shield", Weapon::EQUIP_SPACE);
 		WM->add_weapon("Turret Creator", "MachineGunTurret.bmp", 1000.0, "Turret", Weapon::EQUIP_SPACE);
 		WM->add_weapon("Fire Turret Creator", "FlameTurret.bmp", 1000.0, "Fire Turret", Weapon::EQUIP_SPACE);
-
+	//case 3:
+		WM->add_weapon("Auto Shotgun", "AutoShotgun.bmp",  300, "Shell");
+		WM->add_weapon("Fire Bomb Gun", "FireBombGun.bmp",  1000, "Fire Bomb", Weapon::EQUIP_RIGHT);
+		WM->add_weapon("Shield Creator", "Shield.bmp", 1000.0, "Shield", Weapon::EQUIP_SPACE);
 	case 2:
+		WM->add_weapon("Regen Pack", "RegenPack.bmp", 1000.0, "Regen", Weapon::EQUIP_SPACE);
 		WM->add_weapon("Shotgun", "Shotgun.bmp",  1000, "Shell");
-		WM->add_weapon("Grenade Launcher",  "GrenadeLauncher.bmp", 1000.0, "Grenade", Weapon::EQUIP_RIGHT);
+		WM->add_weapon("Grenade Launcher",  "GrenadeLauncher.bmp", 2000, "Grenade", Weapon::EQUIP_RIGHT);
 	case 1:
 		WM->add_weapon("Pistol",  "Pistol.bmp", 500.0, "Bullet");
-		WM->add_weapon("Mine Layer",  "Mine.bmp", 2000.0, "Mine", Weapon::EQUIP_RIGHT);
+		WM->add_weapon("Mine Layer",  "Mine.bmp", 4000, "Mine", Weapon::EQUIP_RIGHT);
 	
 
 		

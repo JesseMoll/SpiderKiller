@@ -93,6 +93,7 @@
     <ClCompile Include="Grid.cpp" />
     <ClCompile Include="Health.cpp" />
     <ClCompile Include="HUD.cpp" />
+    <ClCompile Include="MessageScreen.cpp" />
     <ClCompile Include="Projectile.cpp" />
     <ClCompile Include="Creep.cpp" />
     <ClCompile Include="creep_spawner.cpp" />
@@ -118,6 +119,7 @@
     <ClInclude Include="Grid.h" />
     <ClInclude Include="Health.h" />
     <ClInclude Include="HUD.h" />
+    <ClInclude Include="MessageScreen.h" />
     <ClInclude Include="Projectile.h" />
     <ClInclude Include="Creep.h" />
     <ClInclude Include="creep_spawner.h" />

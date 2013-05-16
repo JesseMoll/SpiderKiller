@@ -2,6 +2,7 @@
 #include "Projectile.h"
 #include "texture_manager.h"
 #include "Scene.h"
+#include "MessageScreen.h"
 
 Hero::Hero(Drawable* _Parent, GLuint _Texture, Vector2d _Pos):Drawable(_Parent, _Texture, _Pos,Vector2d(6,6)),
 	AnimationTime(0), ExplosionTimer(1000)
@@ -28,7 +29,9 @@ UpdateResult Hero::update2(int ms, GlobalState &GS)
 			Scale = Vector2d(12, 12);
 		if (ExplosionTimer <= -333)
 		{
-			exit(0); //TODO draw a game over screen
+			((MessageScreen*)GS.TheMessageScreen)->setMessage("You died\nPress R to quit");
+			GS.GamePaused = true;
+			//exit(0); //TODO draw a game over screen
 		}
 
 		return UPDATE_REDRAW;

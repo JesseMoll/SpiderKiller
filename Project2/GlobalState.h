@@ -58,6 +58,7 @@ public:
 	//For accessing the creeps
 	Drawable *TheCreepManager;
 	Drawable *TheWeaponManager;
+	Drawable *TheMessageScreen;
 	Grid* TheGrid;
 	//Each key is represented by a bit, 1 means down, 0 means up
 	unsigned int KeyStates;	
@@ -90,4 +91,5 @@ public:
 
 	bool GamePaused;
 	int CurrentLevel;
+	double CurrentSpawnAmount;
 };

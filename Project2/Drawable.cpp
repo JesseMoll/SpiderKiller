@@ -29,6 +29,7 @@ void Drawable::Clear()
 {
 	//clean up all the children
 	for (std::list<Drawable*>::iterator dPtr = Children.begin();dPtr != Children.end(); ++dPtr) {
+		(*dPtr)->Clear();
 		delete (*dPtr);
 	}
 	Children.clear();
