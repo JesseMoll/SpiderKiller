@@ -31,7 +31,6 @@ void texture_manager::load_texture(const std::string& name)
 			}
 			else
 			{
-				//Not sure, but the rgb order seems wrong... TODO
 				pixel_array.push_back(pixel.r);
 				pixel_array.push_back(pixel.g);
 				pixel_array.push_back(pixel.b);

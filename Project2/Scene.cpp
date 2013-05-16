@@ -12,7 +12,7 @@
 #include "MessageScreen.h"
 
 //static class variables
-Scene* Scene::ptrInstance = NULL; 
+Scene* Scene::ptrInstance = NULL;
 std::chrono::time_point<std::chrono::system_clock> Scene::LastUpdate;
 GlobalState Scene::GS;
 
@@ -31,7 +31,7 @@ Scene::Scene()
 	glutInitDisplayMode(GLUT_DOUBLE | GLUT_RGBA | GLUT_DEPTH);
 	glutInitWindowPosition(50, 50);
 	glutInitWindowSize(1024, 640);// Initial Window
-	
+
 	glutCreateWindow("Kill the Spiders!!!");
 	//glutFullScreen();
 	glutReshapeFunc(Reshape); // window reshape callback
@@ -45,12 +45,12 @@ Scene::Scene()
 	glutKeyboardUpFunc(releaseNormalKeys); //process standard key release
 	glutSpecialFunc(pressSpecialKey); // process special key pressed
 	glutSpecialUpFunc(releaseSpecialKey); // process special key release
-	
+
 	glutIgnoreKeyRepeat(1);
 
 	GS.TheScene = this;
-    
-	
+
+
 
 }
 
@@ -59,7 +59,7 @@ void Scene::DestructGame()
 	Clear();
 	delete hud;
 	delete GS.TheMessageScreen;
-	
+
 }
 
 void Scene::InitGame()
@@ -68,7 +68,7 @@ void Scene::InitGame()
 	//Get the initial window dimensions (in case we don't have a reshape() to update)
 	GS.WindowSize.x = glutGet(GLUT_WINDOW_WIDTH);
 	GS.WindowSize.y = glutGet(GLUT_WINDOW_HEIGHT);
-    GS.TheHero = AddChild(new Hero(this, texture_manager::get_texture_name("Hero.bmp"), Vector2d(584, LevelSize/2)));	
+    GS.TheHero = AddChild(new Hero(this, texture_manager::get_texture_name("Hero.bmp"), Vector2d(584, LevelSize/2)));
 	GS.TheMessageScreen = new MessageScreen(this);
 	((MessageScreen*)GS.TheMessageScreen)->setMessage("Game Paused\nPress R to continue");
 	GS.TheCreepManager = AddChild(new creep_manager(this));
@@ -83,12 +83,12 @@ void Scene::InitGame()
 	weapon_manager* WM = static_cast<weapon_manager*>(GS.TheWeaponManager);
 	//Add some projectiles
 	WM->add_projectile("Bullet",	"", .5, 100, 40, 1e6);
-	WM->add_projectile("Pellet",	"", .5, 100, 5,  80); 
+	WM->add_projectile("Pellet",	"", .5, 100, 5,  80);
 	WM->add_projectile("Flame", "Flame.bmp", 4, 100, 3, 50);
 
 	WM->add_projectile("Shell",		"",  .2, 400, 10, 6,  "Pellet",	12,  60);
-	WM->add_projectile("Fire",		"",  0, 400, 10, 6,  "Flame",	8,  60); 
-	WM->add_projectile("Fire Bomb",	"", .5, 100, 5, 75, "Fire",	8, 360); 
+	WM->add_projectile("Fire",		"",  0, 400, 10, 6,  "Flame",	8,  60);
+	WM->add_projectile("Fire Bomb",	"", .5, 100, 5, 75, "Fire",	8, 360);
 	WM->add_projectile("Grenade",	"", .5, 100, 5, 75, "Shell",	8, 360);
 	WM->add_projectile("Mine",	"Mine.bmp", 4, .01, 1, 1, "Shell",	8, 360);
 	WM->add_projectile("Super Bomb","", .5, 120, 30, 80, "Fire Bomb", 10, 360);
@@ -99,7 +99,7 @@ void Scene::InitGame()
 	WM->add_projectile("Shield", new Shield(this,500, 10));
 	WM->add_projectile("Turret", new Turret(this, WM->get_projectile("Bullet"), 200, 100));
 	WM->add_projectile("Fire Turret", new Turret(this, WM->get_projectile("Fire"), 100, 200));
-	
+
 
 	creep_manager* CM = static_cast<creep_manager*>(GS.TheCreepManager);
 
@@ -109,19 +109,19 @@ void Scene::InitGame()
 
 	CM->add_creep("Tiny Spider", 2, "Spider.bmp", 1.5, 50, 5);
 	CM->add_creep("Medium Spider", 10, "Spider.bmp", 3, 40, 4);
-	CM->add_creep("Large Spider", 20, "Spider.bmp", 6, 35, 3.5);
-	CM->add_creep("Huge Spider", 500, "Spider.bmp", 10, 20, 2,Vector3d(1,0,0),"Tiny Spider", "Bug Bullet", 1000, 15, 200);
-	CM->add_creep("Uber Spider", 10000, "Spider.bmp", 15, 20, 2,Vector3d(1,0,0),"Medium Spider", "Tiny Spider", 200, 50, 200);
+	CM->add_creep("Large Spider", 20, "Spider.bmp", 4, 35, 3.5);
+	CM->add_creep("Huge Spider", 500, "Spider.bmp", 8, 20, 2,Vector3d(1,0,0),"Tiny Spider", "Bug Bullet", 1000, 15, 200);
+	CM->add_creep("Uber Spider", 10000, "Spider.bmp", 10, 20, 2,Vector3d(1,0,0),"Medium Spider", "Tiny Spider", 200, 50, 200);
 	CM->add_creep("Boss1", 200, "Spider.bmp", 6, 15, 2,Vector3d(1,0,0),"Tiny Spider", "Bug Bullet", 2000, 5, 20);
-			
+
 
 	NextLevel();
 }
 
 void Scene::draw2()
-{	
+{
 	//Turn Textures on for the ground
-	
+
 	glBindTexture (GL_TEXTURE_2D, texture_manager::get_texture_name(LevelName));
 	//Draw the ground (10 squares x 10 squares)
 
@@ -185,11 +185,11 @@ void Scene::draw()
 	glTranslated(GS.HeroPos.x, GS.HeroPos.y, 0);
 	glColor3d(0, 1, 0); //Draw a 2x2 Colored square
 	glRectf(-4,-4,4,4);
-	
+
 
 	if (GS.GamePaused)
 	{
-		
+
 		glViewport(0, 0, GS.WindowSize.x, GS.WindowSize.y); // set viewport (drawing area) to entire window
 		glMatrixMode(GL_PROJECTION); // projection matrix is active
 		glLoadIdentity(); // reset the projection
@@ -228,7 +228,7 @@ void Scene::Timer(int value){
 	if(GS.KeyStates & DOWN_KEY)
 		GS.CameraOffset.y -= CameraMoveSpeed * msSinceLastUpdate * GS.ViewSize;
 	static __int64 msSinceLastArrowKey = 0;
-	//If none of the arrow keys are down, return 
+	//If none of the arrow keys are down, return
 	if(!(GS.KeyStates & (LEFT_KEY | RIGHT_KEY | UP_KEY | DOWN_KEY)))
 	{
 		msSinceLastArrowKey += msSinceLastUpdate;
@@ -237,7 +237,7 @@ void Scene::Timer(int value){
 			GS.CameraOffset.x *= .9;
 			GS.CameraOffset.y *= .9;
 		}
-		
+
 	}
 	else
 	{
@@ -410,7 +410,7 @@ UpdateResult Scene::update2(int ms, GlobalState &GS)
 		}
 		GS.MousePos = Vector2d(xx,yy);
 	}
-	
+
 	void Scene::Display()
 	{
 		glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
@@ -442,7 +442,7 @@ UpdateResult Scene::update2(int ms, GlobalState &GS)
 
 	void Scene::Idle()
 	{
-		
+
 	}
 
 	void Scene::NextLevel()
@@ -455,11 +455,13 @@ UpdateResult Scene::update2(int ms, GlobalState &GS)
 		GS.CurrentLevel++;
 		if (GS.CurrentLevel == 5)
 		{
-			//GS.GamePaused = true;
-			//((MessageScreen*)GS.TheMessageScreen)->setMessage("You Won!\nPress R to replay");
-			//GS.HeroHealth = 0;
+			//Unlimited levels is nice, but for the video we should be able to win
+			GS.GamePaused = true;
+			((MessageScreen*)GS.TheMessageScreen)->setMessage("You Won!\nPress R to replay");
+			GS.HeroHealth = 0;
+			return;
+
 			GS.CurrentLevel = 1;
-			//return;
 		}
 
 		GS.HeroHealth = GS.HeroMaxHealth;
@@ -488,15 +490,14 @@ UpdateResult Scene::update2(int ms, GlobalState &GS)
 		{
 			LevelName = "Level2.bmp";
 			GS.TheHero->setPos(Vector2d(714, 1024-702));
-			creep_spawner* CS1 = CM->add_spawner(Vector2d(932,1024-154), 10000, GS.CurrentSpawnAmount * 20, 0, "Tiny Spider");
-			creep_spawner* CS2 = CM->add_spawner(Vector2d(300,1024-350), 1000, GS.CurrentSpawnAmount, 0, "Medium Spider");
+			creep_spawner* CS1 = CM->add_spawner(Vector2d(932,1024-154), 10000, GS.CurrentSpawnAmount * 25, 0, "Tiny Spider");
+			creep_spawner* CS2 = CM->add_spawner(Vector2d(300,1024-350), 1000, GS.CurrentSpawnAmount * 2, 0, "Medium Spider");
 			Creep* Boss = CM->get_creep("Boss1");
 			Creep* Boss2 = CM->get_creep("Huge Spider");
 			CS1->setOnDeath(Boss2,1);
 			CS2->setOnDeath(Boss,1);
 
-			//Add a health pack
-			HP->setPos(Vector2d(692, 1024-520));
+			HP->setPos(Vector2d(111, 1024-600));
 			break;
 		}
 		case 3:
@@ -512,7 +513,7 @@ UpdateResult Scene::update2(int ms, GlobalState &GS)
 			CS2->setOnDeath(Boss2,1);
 			CS3->setOnDeath(Boss,1);
 
-			//HP->setPos(Vector2d(692, 1024-520));
+			HP->setPos(Vector2d(690, 1024-520));
 			break;
 		}
 		case 4:
@@ -528,7 +529,7 @@ UpdateResult Scene::update2(int ms, GlobalState &GS)
 			CS2->setOnDeath(Boss,1);
 			CS3->setOnDeath(Boss,1);
 
-			HP->setPos(Vector2d(692, 1024-520));
+			HP->setPos(Vector2d(760, 1024-600));
 			break;
 		}
 		}
@@ -539,6 +540,7 @@ UpdateResult Scene::update2(int ms, GlobalState &GS)
 	WM->Clear();
 	switch (GS.CurrentLevel)
 	{
+    default:
 	case 4:
 	case 3:
 		WM->add_weapon("Flamethrower", "Flamethrower.bmp",  75.0, "Fire");
@@ -557,9 +559,9 @@ UpdateResult Scene::update2(int ms, GlobalState &GS)
 	case 1:
 		WM->add_weapon("Pistol",  "Pistol.bmp", 500.0, "Bullet");
 		WM->add_weapon("Mine Layer",  "Mine.bmp", 4000, "Mine", Weapon::EQUIP_RIGHT);
-	
 
-		
+
+
 	}
 
 		SetupTexture();
