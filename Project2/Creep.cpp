@@ -3,7 +3,7 @@
 #include <algorithm>
 
 class creep_manager;
-Creep::Creep(Drawable* _Parent, GLuint _Texture, Vector2d _Pos, double _Health, double _Scale, double _Rot, double _Speed, double _TurnSpeed, Vector4d _Color, Creep* _SpawnOnDeath, Creep* _SpawnPeriodic, double _PeriodicSpawnRate, double _PeriodicSpawnNum, double _OnDeathSpawnNum):
+Creep::Creep(Drawable* _Parent, GLuint _Texture, Vector2d _Pos, double _Health, double _Scale, double _Rot, double _Speed, double _TurnSpeed, Vector4d _Color, Creep* _SpawnOnDeath, Creep* _SpawnPeriodic, double _PeriodicSpawnRate, double _PeriodicSpawnNum, double _OnDeathSpawnNum, std::string _MyName):
 	Drawable(_Parent, _Texture, _Pos, Vector2d(_Scale,_Scale), _Color),
 	Health(_Health),
 	Speed(_Speed),
@@ -13,7 +13,8 @@ Creep::Creep(Drawable* _Parent, GLuint _Texture, Vector2d _Pos, double _Health, 
 	PeriodicSpawnRate(_PeriodicSpawnRate),
 	PeriodicSpawnTimer(_PeriodicSpawnRate),
 	PeriodicSpawnNum(_PeriodicSpawnNum),
-	OnDeathSpawnNum(_OnDeathSpawnNum)
+	OnDeathSpawnNum(_OnDeathSpawnNum),
+	MyName(_MyName)
 {
 	Rot = _Rot;
 	
@@ -168,7 +169,8 @@ UpdateResult Creep::update2(int ms, GlobalState &GS)
 	if(CreepRect.overlaps(HeroRect)) 
 	{
 		GS.HeroHealth = std::max(0.0, GS.HeroHealth - Health);
-		return UPDATE_DELETE;
+		if ((MyName.compare("Huge Spider") != 0) && (MyName.compare("Boss1") != 0))
+			return UPDATE_DELETE;
 	}
 	return UPDATE_REDRAW;
 }
