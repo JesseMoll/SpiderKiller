@@ -116,10 +116,7 @@ UpdateResult weapon_manager::update2(int ms, GlobalState &GS)
 
 weapon_manager::~weapon_manager(void)
 {
-	for (std::pair<std::string, Weapon*> w : weapons) 
-	{
-		delete w.second;
-	}
+	//Nothing to do, drawable d'tor will delete everything
 }
 
 Projectile* weapon_manager::get_projectile(std::string projectile_name)

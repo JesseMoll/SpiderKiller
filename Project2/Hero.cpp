@@ -18,7 +18,6 @@ UpdateResult Hero::update2(int ms, GlobalState &GS)
 	Rot = atan2(-ViewDirection.y, ViewDirection.x);
 
 	//Check to see if health has reached 0, meaning game over
-	//TODO:  go back to title screen.  May want to move this check to another place.
 	if (GS.HeroHealth <= 0)
 	{
 		Texture = texture_manager::get_texture_name("Flame.bmp");
@@ -29,9 +28,8 @@ UpdateResult Hero::update2(int ms, GlobalState &GS)
 			Scale = Vector2d(12, 12);
 		if (ExplosionTimer <= -333)
 		{
-			((MessageScreen*)GS.TheMessageScreen)->setMessage("You died\nPress R to quit");
+			((MessageScreen*)GS.TheMessageScreen)->setMessage("You died\nPress R to restart");
 			GS.GamePaused = true;
-			//exit(0); //TODO draw a game over screen
 		}
 
 		return UPDATE_REDRAW;

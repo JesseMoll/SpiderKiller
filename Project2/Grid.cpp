@@ -35,6 +35,17 @@ void Grid::Init()
 		}
 	}
 }
+
+void Grid::Clear()
+{
+	//Children are not allocated, only referenced from the Cell Vector
+	//Zero all the pointers so ~Drawable doesn't try to delete them
+	for (std::list<Drawable*>::iterator dPtr = Children.begin();dPtr != Children.end(); ++dPtr) {
+		(*dPtr) = 0;
+	}
+	
+}
+
 Grid::Grid(void):debug(false)
 {
 	Init();
@@ -176,6 +187,7 @@ UpdateResult Grid::update2(int ms, GlobalState &GS)
 
 Grid::~Grid(void)
 {
+	Clear();
 }
 
 

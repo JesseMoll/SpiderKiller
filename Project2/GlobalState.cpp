@@ -26,7 +26,6 @@ GlobalState::GlobalState(void):
 	CurrentLevel(0),
 	CurrentSpawnAmount(1)
 {
-	
 }
 
 

@@ -20,6 +20,7 @@ public:
 	Cell* GetCell(int x, int y);
 	Cell* GetCell(Vector2d &Pos);
 	void UpdatePathing(Cell* Target);
+	virtual void Clear();
 protected:
 	void add_creep(Drawable* c);
 	void Addconnections(int i, int j, int iAdder, int jAdder);

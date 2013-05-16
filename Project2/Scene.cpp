@@ -56,12 +56,18 @@ Scene::Scene()
 
 void Scene::DestructGame()
 {
+	Clear();
 	delete hud;
+	delete GS.TheMessageScreen;
+	
 }
 
 void Scene::InitGame()
 {
 	new (&GS) GlobalState();
+	//Get the initial window dimensions (in case we don't have a reshape() to update)
+	GS.WindowSize.x = glutGet(GLUT_WINDOW_WIDTH);
+	GS.WindowSize.y = glutGet(GLUT_WINDOW_HEIGHT);
     GS.TheHero = AddChild(new Hero(this, texture_manager::get_texture_name("Hero.bmp"), Vector2d(584, LevelSize/2)));	
 	GS.TheMessageScreen = new MessageScreen(this);
 	((MessageScreen*)GS.TheMessageScreen)->setMessage("Game Paused\nPress R to continue");
@@ -102,8 +108,10 @@ void Scene::InitGame()
 
 
 	CM->add_creep("Tiny Spider", 2, "Spider.bmp", 1.5, 50, 5);
-	CM->add_creep("Medium Spider", 10, "Spider.bmp", 4, 40, 4);
+	CM->add_creep("Medium Spider", 10, "Spider.bmp", 3, 40, 4);
+	CM->add_creep("Large Spider", 20, "Spider.bmp", 6, 35, 3.5);
 	CM->add_creep("Huge Spider", 500, "Spider.bmp", 10, 20, 2,Vector3d(1,0,0),"Tiny Spider", "Bug Bullet", 1000, 15, 200);
+	CM->add_creep("Uber Spider", 10000, "Spider.bmp", 15, 20, 2,Vector3d(1,0,0),"Medium Spider", "Tiny Spider", 200, 50, 200);
 	CM->add_creep("Boss1", 200, "Spider.bmp", 6, 15, 2,Vector3d(1,0,0),"Tiny Spider", "Bug Bullet", 2000, 5, 20);
 			
 
@@ -251,9 +259,7 @@ void Scene::Timer(int value){
 		GS.GamePaused = !GS.GamePaused;
 		if (GS.HeroHealth <= 0)
 		{
-			//todo add restart
-			exit(0);
-			ptrInstance->Clear();
+			ptrInstance->DestructGame();
 			ptrInstance->InitGame();
 		}
 	}
@@ -268,13 +274,20 @@ void Scene::Timer(int value){
 		glutPostRedisplay(); // redraw everything;
 	//No creeps left, we Won!
 	if(GS.TheCreepManager != NULL)
+	{
+		if(GS.KeyDown(ONE_KEY))
+		{
+			((MessageScreen*)GS.TheMessageScreen)->setMessage("You skipped the level\nCHEATER!!!\nPress R to continue");
+			ptrInstance->NextLevel();
+			GS.GamePaused = true;
+		}
 		if(GS.TheCreepManager->begin() == GS.TheCreepManager->end())
 		{
 			((MessageScreen*)GS.TheMessageScreen)->setMessage("You beat the level\nPress R to continue");
 			ptrInstance->NextLevel();
-			
 			GS.GamePaused = true;
 		}
+	}
     glutTimerFunc(UPDATE_INTERVAL, Timer, 0);
 }
 
@@ -312,6 +325,8 @@ UpdateResult Scene::update2(int ms, GlobalState &GS)
 			GS.KeyStates |= SPACE_KEY;
 		if (key == 'u' || key == 'U')
 			GS.KeyStates |= U_KEY;
+		if (key == '1')
+			GS.KeyStates |= ONE_KEY;
 	}
 
 	void Scene::releaseNormalKeys(unsigned char key, int xx, int yy){
@@ -339,6 +354,8 @@ UpdateResult Scene::update2(int ms, GlobalState &GS)
 			GS.KeyStates &= ~SPACE_KEY;
 		if (key == 'u' || key == 'U')
 			GS.KeyStates &= ~U_KEY;
+		if (key == '1')
+			GS.KeyStates &= ~ONE_KEY;
 	}
 
 	void Scene::pressSpecialKey(int key, int xx, int yy){
@@ -430,21 +447,24 @@ UpdateResult Scene::update2(int ms, GlobalState &GS)
 
 	void Scene::NextLevel()
 	{
-		//TODO: DELETE HEALTH PACKS BETWEEN LEVELS
-		//TODO: DELETE STUCK CREEP
+
+		static Health* HP = (Health*)AddChild(new Health(this, Vector2d(768, 1024-460)));
+		if (HP == 0)
+			HP = (Health*)AddChild(new Health(this, Vector2d(768, 1024-460)));
+		GS.TheCreepManager->Clear();
 		GS.CurrentLevel++;
-		if (GS.CurrentLevel == 4)
+		if (GS.CurrentLevel == 5)
 		{
-			GS.GamePaused = true;
-			((MessageScreen*)GS.TheMessageScreen)->setMessage("You Won!\nPress R to quit");
-			GS.HeroHealth = 0;
-			GS.CurrentLevel = 3;
-			return;
+			//GS.GamePaused = true;
+			//((MessageScreen*)GS.TheMessageScreen)->setMessage("You Won!\nPress R to replay");
+			//GS.HeroHealth = 0;
+			GS.CurrentLevel = 1;
+			//return;
 		}
 
 		GS.HeroHealth = GS.HeroMaxHealth;
 		//Slowly increase Spawn Amount
-		GS.CurrentSpawnAmount *= 2;
+		GS.CurrentSpawnAmount *= 1.5;
 
 		//Get the creep manager pointer as the correct type
 		creep_manager* CM = static_cast<creep_manager*>(GS.TheCreepManager);
@@ -456,19 +476,19 @@ UpdateResult Scene::update2(int ms, GlobalState &GS)
 
 			GS.TheHero->setPos(Vector2d(288, 1024-488));
 			LevelName = "Level1.bmp";
-			creep_spawner* CS1 = CM->add_spawner(Vector2d(504,1024-236), 10000, GS.CurrentSpawnAmount * 10, 0, "Medium Spider");
-			creep_spawner* CS2 = CM->add_spawner(Vector2d(516,1024-728), 2000, GS.CurrentSpawnAmount * 2, 0, "Medium Spider");
+			creep_spawner* CS1 = CM->add_spawner(Vector2d(504,1024-236), 10000, GS.CurrentSpawnAmount * 5, 0, "Medium Spider");
+			creep_spawner* CS2 = CM->add_spawner(Vector2d(516,1024-728), 2000, GS.CurrentSpawnAmount, 0, "Medium Spider");
 			Creep* Boss = CM->get_creep("Boss1");
 			CS1->setOnDeath(Boss,1);
 			CS2->setOnDeath(Boss,1);
-			AddChild(new Health(this, Vector2d(768, 1024-460)));
+			HP->setPos(Vector2d(768, 1024-460));
 			break;
 		}
 		case 2:
 		{
 			LevelName = "Level2.bmp";
 			GS.TheHero->setPos(Vector2d(714, 1024-702));
-			creep_spawner* CS1 = CM->add_spawner(Vector2d(932,1024-154), 10000, GS.CurrentSpawnAmount * 25, 0, "Tiny Spider");
+			creep_spawner* CS1 = CM->add_spawner(Vector2d(932,1024-154), 10000, GS.CurrentSpawnAmount * 20, 0, "Tiny Spider");
 			creep_spawner* CS2 = CM->add_spawner(Vector2d(300,1024-350), 1000, GS.CurrentSpawnAmount, 0, "Medium Spider");
 			Creep* Boss = CM->get_creep("Boss1");
 			Creep* Boss2 = CM->get_creep("Huge Spider");
@@ -476,7 +496,7 @@ UpdateResult Scene::update2(int ms, GlobalState &GS)
 			CS2->setOnDeath(Boss,1);
 
 			//Add a health pack
-			AddChild(new Health(this, Vector2d(692, 1024-520)));
+			HP->setPos(Vector2d(692, 1024-520));
 			break;
 		}
 		case 3:
@@ -491,20 +511,24 @@ UpdateResult Scene::update2(int ms, GlobalState &GS)
 			CS1->setOnDeath(Boss,1);
 			CS2->setOnDeath(Boss2,1);
 			CS3->setOnDeath(Boss,1);
+
+			//HP->setPos(Vector2d(692, 1024-520));
 			break;
 		}
 		case 4:
 		{
 			LevelName = "Level4.bmp";
 			GS.TheHero->setPos(Vector2d(898, 1024-856));
-			creep_spawner* CS1 = CM->add_spawner(Vector2d(380,685), 10000, GS.CurrentSpawnAmount * 50, 0, "Tiny Spider");
+			creep_spawner* CS1 = CM->add_spawner(Vector2d(380,685), 1000, GS.CurrentSpawnAmount * 4, 0, "Tiny Spider");
 			creep_spawner* CS2 = CM->add_spawner(Vector2d(400,665), 1000, GS.CurrentSpawnAmount * 2, 0, "Medium Spider");
+			creep_spawner* CS3 = CM->add_spawner(Vector2d(380,665), 1000, GS.CurrentSpawnAmount / 2, 0, "Large Spider");
 			Creep* Boss = CM->get_creep("Huge Spider");
-			CS1->setOnDeath(Boss,1);
+			Creep* Boss2 = CM->get_creep("Uber Spider");
+			CS1->setOnDeath(Boss2,1);
 			CS2->setOnDeath(Boss,1);
+			CS3->setOnDeath(Boss,1);
 
-			//Add a health pack
-			AddChild(new Health(this, Vector2d(692, 1024-520)));
+			HP->setPos(Vector2d(692, 1024-520));
 			break;
 		}
 		}
